@@ -107,14 +107,17 @@ Description: A project management tool that helps teams create and plan projects
 | status      |INT          | Task status (pending, in progress, completed)  |
 | project_id     |INT          | Foreign key (references Projects)  |
 | assignee_id      |ENUM           | Foreign key (references User)  |
-| created_at      |TIMESTAMP           | Time the project was created  |
-| updated_at      |TIMESTAMP           | Time project was updated |
+| created_at      |TIMESTAMP           | Time the task was created  |
+| updated_at      |TIMESTAMP           | Time task was updated |
 
-
-
-
-
-
-
+### Comments
+| Column name | Type          | Description                             |
+|-------------|---------------|-----------------------------------------|
+| id      |INT           | Primary key  |
+| content     | TEXT          | TComment content  |
+| task_id    |INT          | Foreign key (references Task)  |
+| user_id      | INT           | Foreign key (references User)  |
+| created_at      |TIMESTAMP           | Time the comment was created  |
+| updated_at      |TIMESTAMP           | Time comment was updated |
 
 
