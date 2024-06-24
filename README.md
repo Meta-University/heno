@@ -52,6 +52,37 @@ Description: A project management tool that helps teams create and plan projects
 - Heno Usage:
   - Marcel checks Heno regularly to view his assigned tasks and the project timeline. He uses the status updates to let his manager know how things are going. He finds the notification feature very helpful in keeping him informed.
 
+## Screen Archetypes
+
+1. Login
+2. Register
+3. Project Dashboard
+4. Task Dashboard
+5. Project creation
+6. Task creation
+7. Project update
+8. Task update
+9. Project view
+10. Task view
+11. User’s profile
+
+
+## Wireframe
+![image](https://github.com/Meta-University/heno/assets/102590542/d849b1ae-d370-43a7-8180-6d36003dc70e)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/72774582-1c99-483d-aa95-4d591e5cfcbe)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/f0bbeba5-2306-438b-b117-f006381dcc31)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/f059fefa-50f2-4e2e-95b3-55af323ababc)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/1767fdab-2b87-4704-9aff-78a568739e46)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/112b62f9-a057-48f3-a859-a42f6d5f3bc8)
+
+![image](https://github.com/Meta-University/heno/assets/102590542/edcd95b3-5e7c-4d5d-a6ca-a6f15f532349)
+
+
 ## Server Endpoints
 | HTTP Verb | Name           | Description                             | User stories|
 |-----------|----------------|-----------------------------------------|-------------|
@@ -69,6 +100,8 @@ Description: A project management tool that helps teams create and plan projects
 | GET    | tasks/id/users/user_id | Fetch a task from the user’s task collection | 2           |
 | DELETE    | tasks/id | Remove a task from the task collection | 1           |
 | PUT    | tasks/id | Update a task’s information | 2           |
+
+
 
 ## Data Model
 
