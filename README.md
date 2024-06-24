@@ -52,9 +52,22 @@ Description: A project management tool that helps teams create and plan projects
 - Heno Usage:
   - Marcel checks Heno regularly to view his assigned tasks and the project timeline. He uses the status updates to let his manager know how things are going. He finds the notification feature very helpful in keeping him informed.
 
-
-
-
-
+## Server Endpoints
+| HTTP Verb | Name           | Description                             | User stories|
+|-----------|----------------|-----------------------------------------|-------------|
+| POST      | user           |Add a new user to the users collection   | 2           |
+| GET       | user/id        |Fetch a user from the users collection   | 2           |
+| PUT       | user/id        |Update a user’s profile                  | 2           |
+| DELETE    | user/id        |Remove a user from the user collection   | 2           |
+| POST      | project        |Add a project to the project collection  | 1           |
+| GET       | projects/user/user_id | Fetch the list of a user’s project | 1           |
+| DELETE    | projects/id | Remove a project from the project collection | 1           |
+| PUT    | projects/id | Update a project’s information | 1           |
+| POST    | projects/id/tasks | Add a new task to the task collection | 1           |
+| GET    | projects/id/tasks | Fetch the list of tasks for a particular project | 2           |
+| GET    | tasks/users/user_id | Fetch the list of a user’s tasks | 2           |
+| GET    | tasks/id/users/user_id | Fetch a task from the user’s task collection | 2           |
+| DELETE    | tasks/id | Remove a task from the task collection | 1           |
+| PUT    | tasks/id | Update a task’s information | 2           |
 
 
