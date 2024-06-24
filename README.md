@@ -153,4 +153,22 @@ Description: A project management tool that helps teams create and plan projects
 | created_at      |TIMESTAMP           | Time the comment was created  |
 | updated_at      |TIMESTAMP           | Time comment was updated |
 
+## Technical Challenges
 
+For your project, you should demonstrate that you can apply what you’ve learned so far and expand on that knowledge to write code and implement features that go beyond the scope of the projects you worked on during CodePath.
+
+Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out. 
+
+### Technical Challenge #1 - [Name/Small Description]
+What
+What problem are you solving, and what parts go beyond what you learned in CodePath? 
+How
+Explain in words how you’ll solve this problem. 
+
+You’re encouraged to expand on this section with pseudo-code, links to external frameworks, architecture / design diagrams, anything that you can use to explain this to others!
+Technical Challenge #2
+What
+How
+
+## Database Integration
+I am using Postgres (PgAdmin)
