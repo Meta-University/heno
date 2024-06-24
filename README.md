@@ -70,4 +70,51 @@ Description: A project management tool that helps teams create and plan projects
 | DELETE    | tasks/id | Remove a task from the task collection | 1           |
 | PUT    | tasks/id | Update a task’s information | 2           |
 
+## Data Model
+
+### Users
+| Column name | Type          | Description                             |
+|-------------|---------------|-----------------------------------------|
+| id      |INT           | Primary key  |
+| name      |VARCHAR           | Full name of user  |
+| email      |VARCHAR           | User’s email  |
+| password      |VARCHAR           | User’s password  |
+| role      |ENUM           | User’s role (Project manager or Team member)  |
+| created_at      |TIMESTAMP           | The time and date a user created the account  |
+| updated_at      |TIMESTAMP           | The time and date a user updated their account  |
+
+### Projects
+| Column name | Type          | Description                             |
+|-------------|---------------|-----------------------------------------|
+| id      |INT           | Primary key  |
+| name      |VARCHAR           | Project name  |
+| description     |TEXT           | Project description  |
+| start_date      | DATE           | Project start date  |
+| due_date      | DATE           | Project end/due date |
+| status      |INT          | Project status (pending, in progress, completed)  |
+| manager_id      |ENUM           | Foreign key (references User)  |
+| created_at      |TIMESTAMP           | Time the project was created  |
+| updated_at      |TIMESTAMP           | Time project was updated |
+
+### Tasks
+| Column name | Type          | Description                             |
+|-------------|---------------|-----------------------------------------|
+| id      |INT           | Primary key  |
+| name      |VARCHAR           | Task name  |
+| description     |TEXT           | Task description  |
+| start_date      | DATE           | Task start date  |
+| due_date      | DATE           | Task end/due date |
+| status      |INT          | Task status (pending, in progress, completed)  |
+| project_id     |INT          | Foreign key (references Projects)  |
+| assignee_id      |ENUM           | Foreign key (references User)  |
+| created_at      |TIMESTAMP           | Time the project was created  |
+| updated_at      |TIMESTAMP           | Time project was updated |
+
+
+
+
+
+
+
+
 
