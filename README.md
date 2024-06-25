@@ -1,4 +1,5 @@
 # Project Name: Heno
+https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
 Intern: Joy Itodo  
 Intern Manager: Shulin Zhao  
