@@ -13,6 +13,9 @@ function Navbar() {
         <a href="#">Contact</a>
         <a href="#">About</a>
       </div>
+      <div className='user-profile'>
+        <i class="fa-solid fa-user"></i>
+      </div>
 
     </div>
   )

@@ -16,7 +16,7 @@
     text-align: center;
 }
 
-.login input[type=text], .login input[type=password] {
+.login input[type=email], .login input[type=password] {
     width: 30%;
     padding: 10px;
     border-radius: 7px;

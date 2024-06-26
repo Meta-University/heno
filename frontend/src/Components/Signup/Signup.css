@@ -1,15 +1,15 @@
-.register {
+.signup {
     display: flex;
     flex-direction: column;
     gap: 30px;
     padding: 40px;
 }
 
-.register h1 {
+.signup h1 {
     text-align: center;
 }
 
-.register input {
+.signup input {
     width: 30%;
     padding: 10px;
     border-radius: 7px;

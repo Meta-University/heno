@@ -1,0 +1,56 @@
+.project-list{
+    padding: 20px;
+    padding-left: 250px;
+}
+
+.project-header{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+
+}
+
+.create-button{
+    width: 100px;
+    background-color: rgba(30, 108, 225, 0.953);
+    color: white;
+}
+
+.projects-table {
+    width: 100%;
+    /* border-collapse: collapse; */
+    margin: 20px 0;
+    font-size: 1em;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.projects-table thead tr {
+    /* background-color: #009879;
+    color: #ffffff; */
+    text-align: left;
+}
+
+.projects-table th, .projects-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dddddd;
+}
+
+.projects-table tbody tr {
+    border-bottom: 1px solid ;
+}
+
+.projects-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3f3;
+}
+
+.projects-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.projects-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3f3;
+}
