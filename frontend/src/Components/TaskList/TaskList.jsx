@@ -1,9 +1,5 @@
-
-function TaskList(){
-    return(
-        <>
-        </>
-    )
+function TaskList() {
+  return <></>;
 }
 
 export default TaskList;

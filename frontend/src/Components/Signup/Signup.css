@@ -1,23 +1,23 @@
 .signup {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 40px;
 }
 
 .signup h1 {
-    text-align: center;
+  text-align: center;
 }
 
 .signup input {
-    width: 30%;
-    padding: 10px;
-    border-radius: 7px;
-    border: 1px solid black;
-    outline: none;
+  width: 30%;
+  padding: 10px;
+  border-radius: 7px;
+  border: 1px solid black;
+  outline: none;
 }
 
 select {
-    width: 20%;
-    border-radius: 5px;
+  width: 20%;
+  border-radius: 5px;
 }
