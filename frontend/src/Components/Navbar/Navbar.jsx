@@ -1,4 +1,4 @@
-import './Navbar.css';
+import "./Navbar.css";
 
 function Navbar() {
   return (
@@ -13,9 +13,11 @@ function Navbar() {
         <a href="#">Contact</a>
         <a href="#">About</a>
       </div>
-
+      <div className="user-profile">
+        <i class="fa-solid fa-user"></i>
+      </div>
     </div>
-  )
+  );
 }
 
 export default Navbar;

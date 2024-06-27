@@ -1,38 +1,38 @@
 .login {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 40px;
-
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 40px;
 }
 
-.inputs{
-    display: flex;
-    flex-direction: column;
-    gap: 120px;
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
 }
 
-.login h1{
-    text-align: center;
+.login h1 {
+  text-align: center;
 }
 
-.login input[type=text], .login input[type=password] {
-    width: 30%;
-    padding: 10px;
-    border-radius: 7px;
-    outline: none;
-    border: 1px solid black;
+.login input[type="email"],
+.login input[type="password"] {
+  width: 30%;
+  padding: 10px;
+  border-radius: 7px;
+  outline: none;
+  border: 1px solid black;
 }
 
 button {
-    width: 40%;
-    padding: 10px;
-    border-radius: 7px;
-    border: none;
-    outline: none;
+  width: 40%;
+  padding: 10px;
+  border-radius: 7px;
+  border: none;
+  outline: none;
 }
 
 .login-btn {
-    background-color: rgba(30, 108, 225, 0.953);
-    color: #fff;
+  background-color: rgba(30, 108, 225, 0.953);
+  color: #fff;
 }
