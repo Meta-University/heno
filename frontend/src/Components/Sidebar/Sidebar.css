@@ -1,21 +1,36 @@
+.sidebar-container {
+  position: relative;
+}
 .sidebar {
-  margin: 0;
-  padding: 5px;
-  width: 200px;
-  /* background-color: #f1f1f1; */
-  border-right: 2px solid gainsboro;
   position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
   height: 100%;
-  overflow: auto;
-  padding-left: 20px;
+  background-color: #f7d9c4;
+  color: #fff;
+  overflow-x: hidden;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.profile-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .sidebar-title {
   display: flex;
   flex-direction: row;
   gap: 10px;
-  /* justify-content: center; */
+  justify-content: space-between;
   align-items: center;
+  margin: 10px;
 }
 
 .sidebar-title h1 {
@@ -40,4 +55,24 @@
   flex-direction: row;
   gap: 10px;
   align-items: center;
+}
+
+.close-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.sidebar-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
 }

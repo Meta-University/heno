@@ -1,18 +1,15 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import env from "dotenv";
-import bcrypt from "bcrypt";
 import session from "express-session";
-import passport from "passport";
 import router from "./routes/users.js";
+import projectRouter from "./routes/projects.js";
 import Sequelize from "sequelize";
 import SequelizeStoreInit from "connect-session-sequelize";
 
 const app = express();
 const port = 3000;
-const prisma = new PrismaClient();
 env.config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
@@ -47,9 +44,7 @@ app.use(
 
 sessionStore.sync();
 app.use(router);
-
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(projectRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

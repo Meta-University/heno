@@ -1,44 +1,86 @@
 import "./ProjectList.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateForm from "../CreateForm/CreateForm";
-import Project from "../Project/Project";
+import ProjectCard from "../ProjectCard/ProjectCard";
 
-function ProjectList() {
+function ProjectList(props) {
   const [displayCreateProjectForm, setDisplayCreateProjectForm] =
     useState(false);
+  const [projects, setProjects] = useState([]);
+  const [projectId, setProjectId] = useState();
+
+  function handleSetProjectId(id) {
+    setProjectId(id);
+  }
 
   function handleDisplayCreateProjectForm() {
     setDisplayCreateProjectForm(!displayCreateProjectForm);
   }
 
+  async function receiveProjectList() {
+    try {
+      const response = await fetch("http://localhost:3000/projects", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setProjects(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    receiveProjectList();
+    console.log(projects);
+  }, []);
+
+  async function handleEditProject() {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/projects/${projectId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        receiveProjectList();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="project-list">
-      {displayCreateProjectForm && (
-        <CreateForm displayForm={handleDisplayCreateProjectForm} />
-      )}
       <div className="project-header">
         <h1>My Projects</h1>
         <button
-          className="create-button"
+          className="create-project-button"
           onClick={handleDisplayCreateProjectForm}
         >
           New Project
         </button>
       </div>
-      <table className="projects-table">
-        <thead>
-          <tr>
-            <th>Project Name</th>
-            <th>Status</th>
-            <th>Manager</th>
-            <th>Due date</th>
-          </tr>
-        </thead>
-
-        <tbody></tbody>
-
-        <Project />
-      </table>
+      {displayCreateProjectForm && (
+        <CreateForm
+          displayForm={handleDisplayCreateProjectForm}
+          refreshProjects={receiveProjectList}
+        />
+      )}
+      {projects.map((project, index) => (
+        <ProjectCard
+          key={index}
+          refreshProjects={receiveProjectList}
+          project={project}
+          projectId={project.id}
+        />
+      ))}
     </div>
   );
 }
