@@ -33,7 +33,7 @@ router.post("/signup", async (req, res) => {
         },
       });
       req.session.user = user;
-      res.json(user);
+      res.json({ user });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
       }
 
       req.session.user = user;
-      res.json(user);
+      res.json({ user });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -1,0 +1,41 @@
+.edit-project-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.edit-project-form h1 {
+  margin-bottom: 1rem;
+  font-size: 24px;
+  text-align: center;
+}
+
+.edit-project-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-project-form input,
+.edit-project-form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.edit-project-form button {
+  padding: 0.7rem;
+  margin-top: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-project-form button:hover {
+  background-color: #0056b3;
+}

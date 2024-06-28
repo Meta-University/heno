@@ -1,15 +1,24 @@
 import "./Login.css";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "../../UserContext";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function handleLogin(event) {
     event.preventDefault();
+    if (!email || !password) {
+      setError("Please fill in both fields");
+      return;
+    }
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
@@ -24,53 +33,57 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         const loggedInUser = data.user;
+        updateUser(loggedInUser);
         navigate("/projects");
       } else {
-        alert("Login failed");
+        setError("Login failed");
       }
     } catch (error) {
-      console.log(error);
+      setError("An error occurred");
+    } finally {
+      setLoading(false);
     }
   }
 
-  function navigateToSignup() {
-    navigate("/signup");
-  }
-
   return (
-    <div className="login">
-      <>
-        <h1>Log In</h1>
-      </>
-
-      <form onSubmit={handleLogin}>
-        <div className="inputs">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {/*
-                <div>
-                    <input type="checkbox"/>
-                    <span><a href="#">Forgot password?</a></span>
-                </div> */}
-
-        <button className="login-btn" onClick={handleLogin}>
-          Log In
-        </button>
-        <button className="register-btn" onClick={navigateToSignup}>
-          Signup
-        </button>
-      </form>
+    <div className="login-page">
+      <div className="login">
+        <>
+          <h1>Log In</h1>
+        </>
+        <form onSubmit={handleLogin}>
+          <div className="inputs">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="error">{error}</div>}
+          <p>
+            Do not have an account?{" "}
+            <Link to="/signup" className="signup-link">
+              Sign up
+            </Link>
+          </p>
+          <button
+            className="login-btn"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            Log In
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

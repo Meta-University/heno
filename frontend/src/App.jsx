@@ -15,12 +15,29 @@ import ProjectList from "./Components/ProjectList/ProjectList";
 import { UserContext } from "./UserContext";
 import HomePage from "./Components/HomePage/HomePage";
 import TaskList from "./Components/TaskList/TaskList";
+import EditForm from "./Components/EditForm/EditForm";
+import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
 
 function App() {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser === null ? null : JSON.parse(storedUser);
   });
+  const [projectId, setProjectId] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  function handleSetProjects(projects) {
+    setProjects(projects);
+  }
+
+  function toogleSidebar() {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
+
+  function handleSetProjectId(id) {
+    setProjectId(id);
+  }
 
   function updateUser(newUser) {
     setUser(newUser);
@@ -34,39 +51,43 @@ function App() {
     <div className="App">
       <UserContext.Provider value={{ user, updateUser }}>
         <Router>
-          <Routes>
-            <Route path="/" element={user ? <HomePage /> : <Login />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/home"
-              element={
-                <>
-                  <Sidebar />
-                  <HomePage />
-                </>
-              }
-            />
-            <Route
-              path="/projects"
-              element={
-                <>
-                  <Sidebar />
-                  <ProjectList />
-                </>
-              }
-            />
+          {user && (
+            <Sidebar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
+          )}
+          <div
+            className={`main-content ${
+              user ? (isSidebarOpen ? "with-sidebar" : "without-sidebar") : ""
+            }`}
+          >
+            <Routes>
+              <Route path="/" element={user ? <HomePage /> : <Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/home" element={user && <HomePage />} />
 
-            <Route
-              path="/tasks"
-              element={
-                <>
-                  <Sidebar />
-                  <TaskList />
-                </>
-              }
-            />
-          </Routes>
+              <Route
+                path="/projects"
+                element={
+                  user ? (
+                    <ProjectList
+                      handleSetProjectId={handleSetProjectId}
+                      projectId={projectId}
+                      handleSetProjects={handleSetProjects}
+                      projects={projects}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+
+              <Route path="/tasks" element={user ? <TaskList /> : <Login />} />
+              <Route
+                path="/projects/:id"
+                element={user ? <ProjectDetails /> : <Login />}
+              />
+            </Routes>
+          </div>
         </Router>
       </UserContext.Provider>
     </div>

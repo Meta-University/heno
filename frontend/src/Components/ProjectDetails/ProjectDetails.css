@@ -1,0 +1,91 @@
+.project-details-container {
+  position: relative;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  flex-direction: column;
+  /* margin-left: 250px; */
+  align-items: center;
+}
+
+.project-details-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.project-details {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+.project-details-header .fa-solid {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.fa-solid:hover {
+  color: #007bff;
+}
+
+.delete-edit-icon {
+  display: flex;
+  gap: 15px;
+}
+
+.edit-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #218838;
+}
+
+.edit-form-container {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.edit-form-container.visible {
+  right: 0;
+}
+
+.tasks table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.tasks th,
+.tasks td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.tasks th {
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+.project-title-and-delete-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
