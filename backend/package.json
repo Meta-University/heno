@@ -9,7 +9,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@prisma/client": "^5.16.0",
     "bcrypt": "^5.1.1",
@@ -28,5 +27,6 @@
   },
   "devDependencies": {
     "prisma": "^5.16.0"
-  }
+  },
+  "description": ""
 }
