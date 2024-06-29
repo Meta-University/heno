@@ -1,12 +1,11 @@
 .project-card {
-  border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px;
   margin: 16px;
   cursor: pointer;
   transition: box-shadow 0.3s;
-  background-color: whitesmoke;
-  max-height: 70px;
+  background-color: #f6cc9e;
+  max-height: 60px;
   overflow: hidden;
 }
 
@@ -30,7 +29,7 @@
   display: inline-block;
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #28a745;
+  background-color: #32292f;
   color: #fff;
   text-decoration: none;
   border-radius: 4px;
@@ -38,5 +37,19 @@
 }
 
 .details-button:hover {
-  background-color: #005b63;
+  background-color: #50404b;
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    padding: 15px;
+  }
+
+  .details-button {
+    font-size: 10px;
+  }
+
+  .project-title-and-view-icon h3 {
+    font-size: 15px;
+  }
 }

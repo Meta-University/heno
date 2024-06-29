@@ -34,27 +34,7 @@ function ProjectList(props) {
 
   useEffect(() => {
     receiveProjectList();
-    console.log(projects);
   }, []);
-
-  async function handleEditProject() {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/projects/${projectId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        receiveProjectList();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <div className="project-list">

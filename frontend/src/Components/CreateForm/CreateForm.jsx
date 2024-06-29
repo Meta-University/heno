@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./CreateForm.css";
+import AddTeamMembers from "../AddTeamMembers/AddTeamMembers";
 
 function CreateForm(props) {
   const [title, setTitle] = useState("");
@@ -9,6 +10,7 @@ function CreateForm(props) {
   const [startDate, setStartDate] = useState("");
   const [priority, setPriority] = useState("");
   const [projects, setProjects] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
 
   async function handleCreateProject(event) {
     event.preventDefault();
@@ -25,6 +27,7 @@ function CreateForm(props) {
           startDate,
           dueDate,
           priority,
+          teamMembers,
         }),
         credentials: "include",
       });
@@ -35,6 +38,10 @@ function CreateForm(props) {
       console.log(error);
     }
     props.displayForm();
+  }
+
+  function handleTeamMemberAdded(member) {
+    setTeamMembers([...teamMembers, member]);
   }
 
   return (
@@ -85,6 +92,7 @@ function CreateForm(props) {
           <option value="MEDIUM">Medium</option>
           <option value="HIGH">High</option>
         </select>
+        <AddTeamMembers onTeamMemberAdded={handleTeamMemberAdded} />
         <div className="buttons">
           <button type="submit" className="create">
             Create Project

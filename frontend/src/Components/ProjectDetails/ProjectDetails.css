@@ -1,24 +1,22 @@
 .project-details-container {
   position: relative;
   padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
+  background-color: #f6cc9e;
   flex-direction: column;
-  /* margin-left: 250px; */
   align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  max-width: 90%;
 }
 
 .project-details-header {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  max-width: 800px;
   margin-bottom: 20px;
 }
 
 .project-details {
-  width: 100%;
-  max-width: 800px;
+  border-radius: 8px;
   padding: 20px;
 }
 
@@ -27,8 +25,12 @@
   cursor: pointer;
 }
 
+.fa-solid {
+  color: #32292f;
+}
+
 .fa-solid:hover {
-  color: #007bff;
+  color: #50404b;
 }
 
 .delete-edit-icon {
@@ -70,11 +72,12 @@
 .tasks table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .tasks th,
 .tasks td {
+  width: 100%;
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -88,4 +91,59 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.create-task-card {
+  background-color: #32292f;
+  color: white;
+  padding: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-height: 50px;
+}
+
+.create-task-card.expanded {
+  max-height: 500px;
+}
+
+.create-task-card .card-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .project-details-container {
+    padding: 15px;
+  }
+
+  .project-details-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-details {
+    padding: 15px;
+    justify-content: center;
+  }
+
+  .edit-form-container {
+    width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-details-container {
+    padding: 10px;
+  }
+
+  .project-details-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .project-details {
+    padding: 10px;
+  }
 }

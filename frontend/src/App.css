@@ -1,6 +1,7 @@
 body {
+  background-color: #fcdebe;
   height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: "Libre Baskerville", serif;
   margin: 0;
 }
 
@@ -37,5 +38,16 @@ body {
 }
 
 .main-content.without-sidebar {
-  margin-left: 0;
+  margin-left: 200px;
+}
+
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-left: 0px;
+    padding: 15px;
+  }
+
+  .main-content.without-sidebar {
+    margin-left: 0;
+  }
 }

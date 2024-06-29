@@ -2,8 +2,8 @@
   position: absolute;
   top: 50px;
   right: 10px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #fcdebe;
+  border-radius: 7px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -23,7 +23,7 @@
 .profile button {
   margin-top: 10px;
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #32292f;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -31,5 +31,25 @@
 }
 
 .profile button:hover {
-  background-color: #005b63;
+  background-color: #50404b;
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 7px;
+    right: 1;
+    margin-left: 10px;
+  }
+
+  .profile h2 {
+    margin: 0;
+    font-size: 0.9em;
+    color: #000;
+  }
+
+  .profile p {
+    margin: 5px 0;
+    font-size: 0.7em;
+    color: #000;
+  }
 }

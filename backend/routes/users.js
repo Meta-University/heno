@@ -64,4 +64,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/users/search", async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            // email: {
+            //   email: {
+            //     contains: query,
+            //     mode: "insensitive",
+            //   },
+            // },
+          },
+        ],
+      },
+    });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

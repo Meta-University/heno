@@ -7,6 +7,7 @@ import router from "./routes/users.js";
 import projectRouter from "./routes/projects.js";
 import Sequelize from "sequelize";
 import SequelizeStoreInit from "connect-session-sequelize";
+import taskRouter from "./routes/tasks.js";
 
 const app = express();
 const port = 3000;
@@ -45,6 +46,7 @@ app.use(
 sessionStore.sync();
 app.use(router);
 app.use(projectRouter);
+app.use(taskRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

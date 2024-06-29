@@ -3,24 +3,42 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./ProjectDetails.css";
 import EditForm from "../EditForm/EditForm";
+import TaskList from "../TaskList/TaskList";
+import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 
 function ProjectDetails() {
   const { id } = useParams();
   const [project, setProject] = useState([]);
   const [displayEditForm, setDisplayEditForm] = useState(false);
   const navigate = useNavigate();
+  const [tasks, setTasks] = useState([]);
+  const [showTaskForm, setShowTaskForm] = useState(false);
 
-  function handleEditClick() {
-    setDisplayEditForm(!displayEditForm);
-  }
   async function fetchProject() {
     try {
       const resonse = await fetch(`http://localhost:3000/projects/${id}`);
       const data = await resonse.json();
       setProject(data);
+      setTasks(data.tasks || []);
     } catch (error) {
       console.error("Error fetching projects", error);
     }
+  }
+
+  useEffect(() => {
+    fetchProject();
+  }, [id]);
+
+  function addTask(task) {
+    setTasks([...tasks, task]);
+  }
+
+  function toogleTaskForm() {
+    setShowTaskForm(!showTaskForm);
+  }
+
+  function handleEditClick() {
+    setDisplayEditForm(!displayEditForm);
   }
 
   async function handleDeleteProject() {
@@ -38,10 +56,6 @@ function ProjectDetails() {
       console.log(error);
     }
   }
-
-  useEffect(() => {
-    fetchProject();
-  }, [id]);
 
   function handleDisplayProjectsList() {
     navigate("/projects");
@@ -67,7 +81,8 @@ function ProjectDetails() {
           <strong>Description:</strong> {project.description}
         </p>
         <p>
-          <strong>Manager:</strong> {project.manager}
+          <strong>Manager:</strong>{" "}
+          {project.manager ? project.manager.name : "N/A"}
         </p>
         <p>
           <strong>Status:</strong> {project.status}
@@ -79,29 +94,50 @@ function ProjectDetails() {
           <strong>Due Date:</strong> {project.due_date}
         </p>
         <p>
-          <strong>Team members:</strong> {[]}
+          <strong>Team members:</strong>
+          {project.teamMembers && project.teamMembers.length > 0
+            ? project.teamMembers.map((member) => member.name).join(", ")
+            : "No team members"}
         </p>
+
         <div className="tasks">
-          <h4>Tasks</h4>
+          <div
+            className={`create-task-card ${showTaskForm ? "expanded" : ""}`}
+            onClick={toogleTaskForm}
+          >
+            <div className="card-header">
+              {showTaskForm ? "Cancel" : "Create Task"}
+            </div>
+            <div onClick={(e) => e.stopPropagation()}>
+              {showTaskForm && (
+                <CreateTaskForm
+                  addTask={addTask}
+                  teamMembers={project.teamMembers}
+                  projectId={project.id}
+                />
+              )}
+            </div>
+          </div>
+
           <table>
             <thead>
               <tr>
-                <th>Task Name</th>
+                <th>Task Title</th>
                 <th>Assigned To</th>
                 <th>Status</th>
                 <th>Due Date</th>
               </tr>
             </thead>
-            {/* <tbody>
-              {project.tasks.map((task, index) => (
+            <tbody>
+              {tasks.map((task, index) => (
                 <tr key={index}>
-                  <td>{task.name}</td>
-                  <td>{task.assignedTo}</td>
+                  <td>{task.title}</td>
+                  <td>{task.assignee ? task.assignee.name : "Unassigned"}</td>
                   <td>{task.status}</td>
-                  <td>{task.dueDate}</td>
+                  <td>{task.due_date}</td>
                 </tr>
               ))}
-            </tbody> */}
+            </tbody>
           </table>
         </div>
       </div>

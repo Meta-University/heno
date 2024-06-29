@@ -10,6 +10,7 @@ function ProjectCard({ project, deleteProject, projectId }) {
     setShowDetails(!showDetails);
   }
 
+  console.log(project);
   return (
     <div
       className="project-card"
@@ -29,7 +30,8 @@ function ProjectCard({ project, deleteProject, projectId }) {
           <strong>Description:</strong> {project.description}
         </p>
         <p>
-          <strong>Manager:</strong> {project.manager}
+          <strong>Manager:</strong>{" "}
+          {project.manager ? project.manager.name : "N/A"}
         </p>
         <p>
           <strong>Status:</strong> {project.status}
@@ -41,55 +43,6 @@ function ProjectCard({ project, deleteProject, projectId }) {
           <strong>Due Date:</strong> {project.due_date}
         </p>
       </div>
-
-      {/* {showDetails && (
-        <div className="project-details">
-          <div className="edit-icon" onClick={(e) => e.stopPropagation()}>
-            <i className="fa-solid fa-pen"></i>
-          </div>
-          <p>
-            <strong>Description:</strong> {project.description}
-          </p>
-          <p>
-            <strong>Manager:</strong> {project.manager}
-          </p>
-          <p>
-            <strong>Status:</strong> {project.status}
-          </p>
-          <p>
-            <strong>Priority:</strong> {project.priority}
-          </p>
-          <p>
-            <strong>Due Date:</strong> {project.due_date}
-          </p>
-          <p>
-            <strong>Team members:</strong> {[]}
-          </p>
-          <div className="tasks">
-            <h4>Tasks</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Task Name</th>
-                  <th>Assigned To</th>
-                  <th>Status</th>
-                  <th>Due Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {project.tasks.map((task, index) => (
-                  <tr key={index}>
-                    <td>{task.name}</td>
-                    <td>{task.assignedTo}</td>
-                    <td>{task.status}</td>
-                    <td>{task.dueDate}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

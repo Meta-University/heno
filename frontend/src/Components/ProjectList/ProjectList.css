@@ -17,8 +17,12 @@
   padding: 10px 15px;
   font-size: 16px;
   color: white;
-  background-color: #007bff;
+  background-color: #32292f;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.create-project-button:hover {
+  background-color: #50404b;
 }

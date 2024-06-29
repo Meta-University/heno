@@ -4,10 +4,10 @@
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .edit-project-form h1 {
+  color: #32292f;
   margin-bottom: 1rem;
   font-size: 24px;
   text-align: center;
@@ -15,21 +15,24 @@
 
 .edit-project-form form {
   display: flex;
+  gap: 10px;
   flex-direction: column;
 }
 
 .edit-project-form input,
+.edit-project-form textarea,
 .edit-project-form select {
-  width: 100%;
+  width: calc(100%-30px);
   padding: 0.5rem;
   margin-top: 0.5rem;
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .edit-project-form button {
   padding: 0.7rem;
   margin-top: 1rem;
-  background-color: #007bff;
+  background-color: #32292f;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -37,5 +40,5 @@
 }
 
 .edit-project-form button:hover {
-  background-color: #0056b3;
+  background-color: #50404b;
 }
