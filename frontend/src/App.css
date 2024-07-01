@@ -1,10 +1,12 @@
 body {
+  background-color: #fff;
   height: 100vh;
-  font-family: Arial, sans-serif;
+  /* font-family: "Libre Baskerville", serif; */
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
 }
 
-.page-enter {
+/* .page-enter {
   opacity: 0;
   transform: translateY((20px));
 }
@@ -24,7 +26,7 @@ body {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 300ms, transform 300ms;
-}
+} */
 
 .main-content {
   flex-grow: 1;
@@ -37,5 +39,18 @@ body {
 }
 
 .main-content.without-sidebar {
-  margin-left: 0;
+  margin-top: -30px;
+
+  margin-left: 200px;
+}
+
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-left: 0px;
+    padding: 15px;
+  }
+
+  .main-content.without-sidebar {
+    margin-left: 0;
+  }
 }

@@ -1,0 +1,49 @@
+.task-view-container {
+  padding: 10px;
+}
+
+.task-view-container h1 {
+  color: #32292f;
+}
+
+.task-view-header {
+  margin-top: -20px;
+  border-bottom: 1px solid black;
+}
+
+.task-view-header h1 {
+  font-size: 24px;
+}
+
+.task-table {
+  width: 100%;
+  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.task-table th,
+.task-table td {
+  color: #32292f;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.task-table td a {
+  text-decoration: none;
+  color: #32292f;
+}
+
+.task-table th {
+  padding-top: 12px;
+  background-color: #f2f2f2;
+}
+
+/* .task-table tr:nth-child(even) {
+  background-color: #ddd;
+} */

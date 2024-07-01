@@ -22,10 +22,9 @@ function Sidebar(props) {
             <h1>HENO</h1>
           </div>
 
-          <PiSidebarDuotone
-            className="close-icon"
-            onClick={props.toogleSidebar}
-          />
+          <div className="close-icon">
+            <PiSidebarDuotone onClick={props.toogleSidebar} />
+          </div>
         </div>
 
         {showProfile && <UserProfile />}
@@ -33,17 +32,23 @@ function Sidebar(props) {
         <div className="sidebar-items">
           <div className="icon">
             <i className="fa-solid fa-house"></i>
-            <Link to="/home">Home</Link>
+            <Link to="/home">
+              <p>Home</p>
+            </Link>
           </div>
 
           <div className="icon">
             <i className="fa-solid fa-folder"></i>
-            <Link to="/projects">Projects</Link>
+            <Link to="/projects">
+              <p>Projects</p>
+            </Link>
           </div>
 
           <div className="icon">
-            <i className="fa-regular fa-square-check"></i>
-            <Link to="/tasks">Tasks</Link>
+            <i className="fa-solid fa-square-check"></i>
+            <Link to="/tasks">
+              <p>Tasks</p>
+            </Link>
           </div>
         </div>
       </div>

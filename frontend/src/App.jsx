@@ -17,6 +17,7 @@ import HomePage from "./Components/HomePage/HomePage";
 import TaskList from "./Components/TaskList/TaskList";
 import EditForm from "./Components/EditForm/EditForm";
 import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
+import TaskDetails from "./Components/TaskDetails/TaskDetails";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -72,6 +73,7 @@ function App() {
                     <ProjectList
                       handleSetProjectId={handleSetProjectId}
                       projectId={projectId}
+                      isSidebarOpen={isSidebarOpen}
                       handleSetProjects={handleSetProjects}
                       projects={projects}
                     />
@@ -80,11 +82,15 @@ function App() {
                   )
                 }
               />
-
-              <Route path="/tasks" element={user ? <TaskList /> : <Login />} />
               <Route
                 path="/projects/:id"
                 element={user ? <ProjectDetails /> : <Login />}
+              />
+
+              <Route path="/tasks" element={user ? <TaskList /> : <Login />} />
+              <Route
+                path="/tasks/:id"
+                element={user ? <TaskDetails /> : <Login />}
               />
             </Routes>
           </div>

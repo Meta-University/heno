@@ -19,8 +19,9 @@ model User {
   email String @unique
   password String
   role Role
-  projects Project[]
+  projects Project[] @relation("ManagerProjects")
   tasks Task[]
+  teamProjects Project[] @relation("TeamMembersProjects")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -34,7 +35,8 @@ model Project {
   due_date DateTime
   priority Priority
   manager_id Int
-  manager User @relation(fields: [manager_id], references: [id])
+  manager User @relation("ManagerProjects", fields: [manager_id], references: [id])
+  teamMembers User[] @relation("TeamMembersProjects")
   tasks Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,6 +53,7 @@ model Task {
   project Project @relation(fields: [project_id], references: [id])
   assignee_id Int
   assignee User @relation(fields: [assignee_id], references: [id])
+  is_updating Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

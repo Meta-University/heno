@@ -12,7 +12,7 @@ projectRouter.post("/projects", async (req, res) => {
     startDate,
     dueDate,
     priority,
-    manager_id,
+    teamMembers,
   } = req.body;
   const managerId = req.session.user.id;
 
@@ -25,7 +25,10 @@ projectRouter.post("/projects", async (req, res) => {
         start_date: new Date(startDate),
         due_date: new Date(dueDate),
         priority,
-        manager_id: managerId,
+        manager: { connect: { id: managerId } },
+        teamMembers: {
+          connect: teamMembers.map((member) => ({ id: member.id })),
+        },
       },
     });
     res.status(201).json(newProject);
@@ -36,7 +39,17 @@ projectRouter.post("/projects", async (req, res) => {
 
 projectRouter.get("/projects", async (req, res) => {
   try {
-    const projects = await prisma.project.findMany();
+    const projects = await prisma.project.findMany({
+      include: {
+        tasks: {
+          include: {
+            assignee: true,
+          },
+        },
+        manager: true,
+        teamMembers: true,
+      },
+    });
     res.json(projects);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -45,23 +58,28 @@ projectRouter.get("/projects", async (req, res) => {
 
 projectRouter.get("/projects/:id", async (req, res) => {
   const { id } = req.params;
-  try {
-    const project = await prisma.project.findUnique({
-      where: {
-        id: parseInt(id),
-        // include: {
-        //   tasks: true,
-        //   manager: true,
-        // },
+  // try {
+  const project = await prisma.project.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      tasks: {
+        include: {
+          assignee: true,
+        },
       },
-    });
-    if (!project) {
-      res.status(404).json({ error: "Project not found" });
-    }
-    res.json(project);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+      manager: true,
+      teamMembers: true,
+    },
+  });
+  if (!project) {
+    res.status(404).json({ error: "Project not found" });
   }
+  res.json(project);
+  // } catch (error) {
+  //   res.status(500).json({ error: error.message });
+  // }
 });
 
 projectRouter.put("/projects/:id", async (req, res) => {
@@ -105,6 +123,7 @@ projectRouter.put("/projects/:id", async (req, res) => {
 projectRouter.delete("/projects/:id", async (req, res) => {
   const { id } = req.params;
   try {
+    await prisma.task.deleteMany();
     const project = await prisma.project.delete({
       where: {
         id: parseInt(id),

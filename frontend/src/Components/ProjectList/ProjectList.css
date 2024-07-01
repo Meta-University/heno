@@ -1,14 +1,19 @@
 .project-list {
-  padding: 20px;
+  padding: 10px;
 }
 
 .project-header {
   display: flex;
+  margin-top: -20px;
   flex-direction: row;
   gap: 10px;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid gray;
+}
+
+.project-header h1 {
+  font-size: 24px;
 }
 
 .create-project-button {
@@ -17,8 +22,12 @@
   padding: 10px 15px;
   font-size: 16px;
   color: white;
-  background-color: #007bff;
+  background-color: #32292f;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.create-project-button:hover {
+  background-color: #50404b;
 }

@@ -24,7 +24,7 @@
   border: none;
   margin-top: 4px;
   margin-bottom: 16px;
-  border-bottom: 1px solid wheat;
+  border-bottom: 1px solid #ccc;
   outline: none;
 }
 
@@ -48,4 +48,42 @@
 .create-project-form .buttons button[type="button"] {
   background-color: #dc3545;
   color: white;
+}
+
+.add-team-members {
+  margin-top: 20px;
+}
+
+.add-team-members input {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.add-team-members ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.add-team-members ul li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  cursor: pointer;
+  width: 15%;
+  border-radius: 15px;
+}
+
+.add-team-members ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.add-team-members .selected-members ul {
+  margin-top: 20px;
+}
+
+.add-team-members .selected-members ul li {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
 }
