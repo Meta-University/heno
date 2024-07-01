@@ -1,0 +1,12 @@
+.add-team-members {
+  padding: 7px;
+}
+
+.add-team-members input {
+  width: 100%;
+}
+
+.name-close {
+  display: flex;
+  justify-content: space-between;
+}

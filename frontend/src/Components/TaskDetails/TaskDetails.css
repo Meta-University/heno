@@ -1,0 +1,34 @@
+.task-details-container {
+  padding: 20px;
+}
+
+.task-header {
+  margin-top: -30px;
+  /* display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center; */
+}
+
+.task-header h1 {
+  font-size: 24px;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+}
+
+.assignee-table p {
+  color: gray;
+}
+
+.detail .detail-title {
+  color: grey;
+}
+
+.task-details {
+  margin-top: 40px;
+  border-radius: 5px;
+}

@@ -86,7 +86,7 @@ function CreateTaskForm(props) {
         required
       >
         <option value="">Set Status</option>
-        <option value="TO_DO">To Do</option>
+        <option value="TODO">To Do</option>
         <option value="IN_PROGRESS">In Progress</option>
         <option value="COMPLETED">Completed</option>
       </select>

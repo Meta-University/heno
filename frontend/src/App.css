@@ -1,11 +1,12 @@
 body {
-  background-color: #fcdebe;
+  background-color: #fff;
   height: 100vh;
-  font-family: "Libre Baskerville", serif;
+  /* font-family: "Libre Baskerville", serif; */
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
 }
 
-.page-enter {
+/* .page-enter {
   opacity: 0;
   transform: translateY((20px));
 }
@@ -25,7 +26,7 @@ body {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 300ms, transform 300ms;
-}
+} */
 
 .main-content {
   flex-grow: 1;
@@ -38,6 +39,8 @@ body {
 }
 
 .main-content.without-sidebar {
+  margin-top: -30px;
+
   margin-left: 200px;
 }
 

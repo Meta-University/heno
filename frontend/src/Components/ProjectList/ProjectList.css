@@ -1,14 +1,19 @@
 .project-list {
-  padding: 20px;
+  padding: 10px;
 }
 
 .project-header {
   display: flex;
+  margin-top: -20px;
   flex-direction: row;
   gap: 10px;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid gray;
+}
+
+.project-header h1 {
+  font-size: 24px;
 }
 
 .create-project-button {

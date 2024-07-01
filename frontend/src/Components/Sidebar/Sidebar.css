@@ -7,7 +7,8 @@
   left: -250px;
   width: 250px;
   height: 100%;
-  background-color: #b56576;
+  /* background-color: #b56576; */
+  background-color: #fff;
   color: #fff;
   overflow-x: hidden;
   transition: left 0.3s ease;
@@ -66,7 +67,7 @@
 .close-icon {
   color: #32292f;
   position: absolute;
-  top: 20px;
+  top: 30px;
   right: 20px;
   font-size: 25px;
   cursor: pointer;
@@ -82,12 +83,12 @@
   cursor: pointer;
 }
 
-.sidebar-toggle {
+/* .sidebar-toogle {
   position: fixed;
   top: 20px;
   left: 20px;
   z-index: 1001;
-}
+} */
 
 @media (max-width: 768px) {
   .sidebar {

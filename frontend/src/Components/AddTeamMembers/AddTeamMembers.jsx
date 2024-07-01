@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import "./AddTeamMembers.css";
+import { IoMdClose } from "react-icons/io";
 
 function AddTeamMembers(props) {
   const [query, setQuery] = useState("");
@@ -22,6 +24,10 @@ function AddTeamMembers(props) {
     setSuggestions([]);
   }
 
+  function handleRemoveMember(id) {
+    setSelectedMembers(selectedMembers.filter((member) => member.id !== id));
+  }
+
   return (
     <div className="add-team-members">
       <input
@@ -40,7 +46,14 @@ function AddTeamMembers(props) {
       <div>
         <ul>
           {selectedMembers.map((member) => (
-            <li key={member.id}>{member.name}</li>
+            <li key={member.id}>
+              <div className="name-close">
+                {member.name}{" "}
+                <div onClick={() => handleRemoveMember(member.id)}>
+                  <IoMdClose />
+                </div>
+              </div>
+            </li>
           ))}
         </ul>
       </div>

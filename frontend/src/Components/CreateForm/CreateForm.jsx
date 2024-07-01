@@ -44,66 +44,72 @@ function CreateForm(props) {
     setTeamMembers([...teamMembers, member]);
   }
 
-  return (
-    <div className="create-project-form">
-      <h1>Create a New Project</h1>
-      <form onSubmit={handleCreateProject}>
-        <input
-          type="text"
-          placeholder="Project Title"
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Project Description"
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        ></textarea>
-        <input
-          type="date"
-          placeholder="Project Start Date"
-          onChange={(e) => setStartDate(e.target.value)}
-          required
-        />
-        <input
-          type="date"
-          placeholder="Project Due Date"
-          onChange={(e) => setDueDate(e.target.value)}
-          required
-        />
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          required
-        >
-          <option value="">Set Status</option>
-          <option value="NOT_STARTED">Not Started</option>
-          <option value="IN_PROGRESS">In Progress</option>
-          <option value="COMPLETED">Completed</option>
-          <option value="ON_HOLD">On Hold</option>
-        </select>
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-          required
-        >
-          <option value="">Set Priority</option>
-          <option value="LOW">Low</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="HIGH">High</option>
-        </select>
-        <AddTeamMembers onTeamMemberAdded={handleTeamMemberAdded} />
-        <div className="buttons">
-          <button type="submit" className="create">
-            Create Project
-          </button>
-          <button type="button" className="cancel" onClick={props.displayForm}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+  if (props.displayCreateProjectForm) {
+    return (
+      <div className="create-project-form">
+        <h1>Create a New Project</h1>
+        <form onSubmit={handleCreateProject}>
+          <input
+            type="text"
+            placeholder="Project Title"
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <textarea
+            placeholder="Project Description"
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          ></textarea>
+          <input
+            type="date"
+            placeholder="Project Start Date"
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+          <input
+            type="date"
+            placeholder="Project Due Date"
+            onChange={(e) => setDueDate(e.target.value)}
+            required
+          />
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            required
+          >
+            <option value="">Set Status</option>
+            <option value="NOT_STARTED">Not Started</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="ON_HOLD">On Hold</option>
+          </select>
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            required
+          >
+            <option value="">Set Priority</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+          </select>
+          <AddTeamMembers onTeamMemberAdded={handleTeamMemberAdded} />
+          <div className="buttons">
+            <button type="submit" className="create">
+              Create Project
+            </button>
+            <button
+              type="button"
+              className="cancel"
+              onClick={props.displayForm}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
 }
 
 export default CreateForm;

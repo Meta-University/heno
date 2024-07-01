@@ -33,6 +33,14 @@ function ProjectDetails() {
     setTasks([...tasks, task]);
   }
 
+  function formatText(text) {
+    return text
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
   function toogleTaskForm() {
     setShowTaskForm(!showTaskForm);
   }
@@ -64,7 +72,7 @@ function ProjectDetails() {
   if (!project) return <div>Loading...</div>;
 
   return (
-    <div className="project-details-container">
+    <div className="project-details-container ">
       <div className="project-details-header">
         <i
           className="fa-solid fa-arrow-left"
@@ -85,13 +93,15 @@ function ProjectDetails() {
           {project.manager ? project.manager.name : "N/A"}
         </p>
         <p>
-          <strong>Status:</strong> {project.status}
+          <strong>Status:</strong>{" "}
+          {project.status && formatText(project.status)}
         </p>
         <p>
-          <strong>Priority:</strong> {project.priority}
+          <strong>Priority:</strong>{" "}
+          {project.priority && formatText(project.priority)}
         </p>
         <p>
-          <strong>Due Date:</strong> {project.due_date}
+          <strong>Due Date:</strong> {new Date(project.due_date).toDateString()}
         </p>
         <p>
           <strong>Team members:</strong>
@@ -131,10 +141,12 @@ function ProjectDetails() {
             <tbody>
               {tasks.map((task, index) => (
                 <tr key={index}>
-                  <td>{task.title}</td>
+                  <td>
+                    <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+                  </td>
                   <td>{task.assignee ? task.assignee.name : "Unassigned"}</td>
-                  <td>{task.status}</td>
-                  <td>{task.due_date}</td>
+                  <td>{formatText(task.status)}</td>
+                  <td>{new Date(task.due_date).toDateString()}</td>
                 </tr>
               ))}
             </tbody>

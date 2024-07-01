@@ -24,7 +24,7 @@
   border: none;
   margin-top: 4px;
   margin-bottom: 16px;
-  border-bottom: 1px solid wheat;
+  border-bottom: 1px solid #ccc;
   outline: none;
 }
 
@@ -70,6 +70,8 @@
   border: 1px solid #ccc;
   margin-bottom: 5px;
   cursor: pointer;
+  width: 15%;
+  border-radius: 15px;
 }
 
 .add-team-members ul li:hover {

@@ -10,7 +10,14 @@ function ProjectCard({ project, deleteProject, projectId }) {
     setShowDetails(!showDetails);
   }
 
-  console.log(project);
+  function formatText(text) {
+    return text
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+
   return (
     <div
       className="project-card"
@@ -27,17 +34,14 @@ function ProjectCard({ project, deleteProject, projectId }) {
 
       <div className="project-det">
         <p>
-          <strong>Description:</strong> {project.description}
-        </p>
-        <p>
           <strong>Manager:</strong>{" "}
           {project.manager ? project.manager.name : "N/A"}
         </p>
         <p>
-          <strong>Status:</strong> {project.status}
+          <strong>Status:</strong> {formatText(project.status)}
         </p>
         <p>
-          <strong>Priority:</strong> {project.priority}
+          <strong>Priority:</strong> {formatText(project.priority)}
         </p>
         <p>
           <strong>Due Date:</strong> {project.due_date}

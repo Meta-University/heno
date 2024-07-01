@@ -2,6 +2,7 @@ import "./ProjectList.css";
 import React, { useState, useEffect } from "react";
 import CreateForm from "../CreateForm/CreateForm";
 import ProjectCard from "../ProjectCard/ProjectCard";
+import CreateProjectButton from "../CreateProjectButton/CreateProjectButton";
 
 function ProjectList(props) {
   const [displayCreateProjectForm, setDisplayCreateProjectForm] =
@@ -14,6 +15,8 @@ function ProjectList(props) {
   }
 
   function handleDisplayCreateProjectForm() {
+    console.log(displayCreateProjectForm);
+
     setDisplayCreateProjectForm(!displayCreateProjectForm);
   }
 
@@ -40,17 +43,13 @@ function ProjectList(props) {
     <div className="project-list">
       <div className="project-header">
         <h1>My Projects</h1>
-        <button
-          className="create-project-button"
-          onClick={handleDisplayCreateProjectForm}
-        >
-          New Project
-        </button>
+        <CreateProjectButton displayForm={handleDisplayCreateProjectForm} />
       </div>
       {displayCreateProjectForm && (
         <CreateForm
           displayForm={handleDisplayCreateProjectForm}
           refreshProjects={receiveProjectList}
+          displayCreateProjectForm={displayCreateProjectForm}
         />
       )}
       {projects.map((project, index) => (

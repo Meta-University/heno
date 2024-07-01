@@ -22,10 +22,9 @@ function Sidebar(props) {
             <h1>HENO</h1>
           </div>
 
-          <PiSidebarDuotone
-            className="close-icon"
-            onClick={props.toogleSidebar}
-          />
+          <div className="close-icon">
+            <PiSidebarDuotone onClick={props.toogleSidebar} />
+          </div>
         </div>
 
         {showProfile && <UserProfile />}
