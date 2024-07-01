@@ -1,10 +1,11 @@
 import "./TaskDetails.css";
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 function TaskDetails() {
   const { id } = useParams();
   const [task, setTask] = useState(null);
+  const navigate = useNavigate();
 
   async function fetchtask() {
     try {
@@ -28,12 +29,31 @@ function TaskDetails() {
       .join(" ");
   }
 
+  function handleDisplayTaskList() {
+    navigate("/tasks");
+  }
+
+  function handleEditClick() {}
+
+  function handleDeleteTask() {}
+
   if (!task) return <div>Loading...</div>;
 
   return (
     <div className="task-details-container">
       <div className="task-header">
-        <h1>{task.title}</h1>
+        <div>
+          <i
+            className="fa-solid fa-arrow-left"
+            onClick={handleDisplayTaskList}
+          ></i>
+          <h1>{task.title}</h1>
+        </div>
+
+        <div className="delete-edit-icon">
+          <i className="fa-solid fa-pen" onClick={handleEditClick}></i>
+          <i className="fa-solid fa-trash" onClick={handleDeleteTask}></i>
+        </div>
       </div>
       <div className="assignee-table">
         <p className="detail-title">
