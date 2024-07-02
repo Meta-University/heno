@@ -2,6 +2,11 @@
   padding: 10px;
 }
 
+.project-cards {
+  display: flex;
+  flex-direction: row;
+}
+
 .project-header {
   display: flex;
   margin-top: -20px;

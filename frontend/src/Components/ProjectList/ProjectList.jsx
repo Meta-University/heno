@@ -52,14 +52,16 @@ function ProjectList(props) {
           displayCreateProjectForm={displayCreateProjectForm}
         />
       )}
-      {projects.map((project, index) => (
-        <ProjectCard
-          key={index}
-          refreshProjects={receiveProjectList}
-          project={project}
-          projectId={project.id}
-        />
-      ))}
+      <div className="project-cards">
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            refreshProjects={receiveProjectList}
+            project={project}
+            projectId={project.id}
+          />
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,10 +1,31 @@
 import { useNavigate, Link } from "react-router-dom";
 import "./ProjectCard.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { createClient } from "pexels";
 
 function ProjectCard({ project, deleteProject, projectId }) {
   const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+
+  async function fetchImages() {
+    try {
+      const response = await axios.get("http://localhost:3000/api/images", {
+        params: {
+          query: "sky",
+        },
+      });
+      console.log(response);
+      setImageUrl(response.photos[0]?.src?.original || "");
+    } catch (error) {
+      console.error("Error fetching image: ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   function handleDisplayProjectDetails() {
     setShowDetails(!showDetails);
@@ -18,6 +39,10 @@ function ProjectCard({ project, deleteProject, projectId }) {
       .join(" ");
   }
 
+  function navigateToProjectDetails(id) {
+    navigate(`/projects/${id}`);
+  }
+
   return (
     <div
       className="project-card"
@@ -25,14 +50,18 @@ function ProjectCard({ project, deleteProject, projectId }) {
         handleDisplayProjectDetails();
       }}
     >
-      <div className="project-title-and-view-icon">
+      <div
+        onClick={() => navigateToProjectDetails(project.id)}
+        className="project-title-and-view-icon"
+      >
+        {imageUrl && <img src={imageUrl} />}
         <h3>{project.title}</h3>
-        <Link to={`/projects/${projectId}`} className="details-button">
+        {/* <Link to={`/projects/${projectId}`} className="details-button">
           View Details
-        </Link>
+        </Link> */}
       </div>
 
-      <div className="project-det">
+      {/* <div className="project-det">
         <p>
           <strong>Manager:</strong>{" "}
           {project.manager ? project.manager.name : "N/A"}
@@ -45,8 +74,8 @@ function ProjectCard({ project, deleteProject, projectId }) {
         </p>
         <p>
           <strong>Due Date:</strong> {project.due_date}
-        </p>
-      </div>
+        </p> */}
+      {/* </div> */}
     </div>
   );
 }
