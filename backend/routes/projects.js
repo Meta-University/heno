@@ -58,28 +58,28 @@ projectRouter.get("/projects", async (req, res) => {
 
 projectRouter.get("/projects/:id", async (req, res) => {
   const { id } = req.params;
-  // try {
-  const project = await prisma.project.findUnique({
-    where: {
-      id: parseInt(id),
-    },
-    include: {
-      tasks: {
-        include: {
-          assignee: true,
-        },
+  try {
+    const project = await prisma.project.findUnique({
+      where: {
+        id: parseInt(id),
       },
-      manager: true,
-      teamMembers: true,
-    },
-  });
-  if (!project) {
-    res.status(404).json({ error: "Project not found" });
+      include: {
+        tasks: {
+          include: {
+            assignee: true,
+          },
+        },
+        manager: true,
+        teamMembers: true,
+      },
+    });
+    if (!project) {
+      res.status(404).json({ error: "Project not found" });
+    }
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  res.json(project);
-  // } catch (error) {
-  //   res.status(500).json({ error: error.message });
-  // }
 });
 
 projectRouter.put("/projects/:id", async (req, res) => {

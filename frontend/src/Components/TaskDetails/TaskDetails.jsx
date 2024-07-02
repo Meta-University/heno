@@ -33,9 +33,25 @@ function TaskDetails() {
     navigate("/tasks");
   }
 
-  function handleEditClick() {}
+  function handleEditClick() {
+    navigate(`/tasks/${id}/edit`);
+  }
 
-  function handleDeleteTask() {}
+  async function handleDeleteTask() {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        navigate("/tasks");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (!task) return <div>Loading...</div>;
 
@@ -82,6 +98,18 @@ function TaskDetails() {
 
         <h4>Description</h4>
         <p>{task.description}</p>
+
+        <div className="file-upload">
+          <h3>Upload file</h3>
+          <input type="file" />
+        </div>
+
+        <div className="comment-section">
+          <h3>Comments</h3>
+          <ul></ul>
+          <textarea placeholder="Add a comment" />
+          <button>Send</button>
+        </div>
       </div>
     </div>
   );

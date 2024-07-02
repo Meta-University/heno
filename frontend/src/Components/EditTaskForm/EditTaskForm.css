@@ -1,0 +1,50 @@
+.task-edit-form-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-edit-form-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.task-edit-form-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-edit-form-container input,
+.task-edit-form-container textarea,
+.task-edit-form-container select {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.task-edit-form-container textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.task-edit-form-container button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.task-edit-form-container .error {
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+}

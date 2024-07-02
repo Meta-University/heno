@@ -8,9 +8,14 @@ import { PiSidebarDuotone } from "react-icons/pi";
 function Sidebar(props) {
   const { user, updateUser } = useContext(UserContext);
   const [showProfile, setShowProfile] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   function handleProfileDisplay() {
     setShowProfile(!showProfile);
+  }
+
+  function handleItemClick(item) {
+    setSelectedItem(item);
   }
 
   return (
@@ -19,7 +24,7 @@ function Sidebar(props) {
         <div className="sidebar-title">
           <div className="profile-title">
             <i onClick={handleProfileDisplay} className="fa-solid fa-user"></i>
-            <h1>HENO</h1>
+            <p>Heno</p>
           </div>
 
           <div className="close-icon">
@@ -30,26 +35,35 @@ function Sidebar(props) {
         {showProfile && <UserProfile />}
 
         <div className="sidebar-items">
-          <div className="icon">
-            <i className="fa-solid fa-house"></i>
-            <Link to="/home">
-              <p>Home</p>
-            </Link>
-          </div>
-
-          <div className="icon">
-            <i className="fa-solid fa-folder"></i>
-            <Link to="/projects">
-              <p>Projects</p>
-            </Link>
-          </div>
-
-          <div className="icon">
-            <i className="fa-solid fa-square-check"></i>
-            <Link to="/tasks">
-              <p>Tasks</p>
-            </Link>
-          </div>
+          <ul>
+            <li
+              className={selectedItem === "home" ? "selected" : ""}
+              onClick={() => handleItemClick("home")}
+            >
+              <Link to="/home">
+                <i className="fa-solid fa-house"></i>
+                <p>Home</p>
+              </Link>
+            </li>
+            <li
+              className={selectedItem === "projects" ? "selected" : ""}
+              onClick={() => handleItemClick("projects")}
+            >
+              <Link to="/projects">
+                <i className="fa-solid fa-folder"></i>
+                <p>Projects</p>
+              </Link>
+            </li>
+            <li
+              className={selectedItem === "tasks" ? "selected" : ""}
+              onClick={() => handleItemClick("tasks")}
+            >
+              <Link to="/tasks">
+                <i className="fa-solid fa-square-check"></i>
+                <p>Tasks</p>
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
       {!props.isOpen && (

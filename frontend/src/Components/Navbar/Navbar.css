@@ -5,8 +5,12 @@
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  padding: 0px 5px;
-  border-bottom: 1px solid black;
+  padding: 0px 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.navbar-title h1 {
+  font-size: 24px;
 }
 
 .navbar-links {
@@ -16,9 +20,13 @@
 }
 
 .navbar-links a {
+  font-size: 15px;
   text-decoration: none;
   color: black;
-  font-size: 18px;
+}
+
+.navbar-links a p {
+  font-size: 15px;
 }
 
 .user-profile {

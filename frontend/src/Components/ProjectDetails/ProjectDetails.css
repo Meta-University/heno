@@ -17,11 +17,36 @@
 }
 
 .project-details {
-  border-radius: 8px;
-  padding: 20px;
+  padding: 5px;
 }
 
-.project-details-header .fa-solid {
+.detail-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail .project-value {
+  margin-top: 0px;
+}
+
+.project-details .detail-row .detail .project-key {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.project-details .detail-row .detail .project-value {
+  font-size: 14px;
+}
+
+.project-details .project-details-header .fa-solid {
   font-size: 24px;
   cursor: pointer;
 }
@@ -79,6 +104,7 @@
 .tasks th,
 .tasks td {
   /* width: 100%; */
+  font-size: 14px;
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -108,15 +134,25 @@
   transition: all 0.3s ease;
   overflow: hidden;
   max-height: 50px;
+  font-size: 14px;
 }
 
 .create-task-card.expanded {
+  font-size: 14px;
   max-height: 500px;
 }
 
 .create-task-card .card-header {
   font-size: 18px;
   font-weight: bold;
+}
+
+.overview {
+  border-bottom: 1px solid #ccc;
+}
+
+.overview h3 {
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {

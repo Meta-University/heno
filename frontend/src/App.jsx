@@ -18,6 +18,7 @@ import TaskList from "./Components/TaskList/TaskList";
 import EditForm from "./Components/EditForm/EditForm";
 import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./Components/TaskDetails/TaskDetails";
+import EditTaskForm from "./Components/EditTaskForm/EditTaskForm";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -52,6 +53,7 @@ function App() {
     <div className="App">
       <UserContext.Provider value={{ user, updateUser }}>
         <Router>
+          {/* <Navbar /> */}
           {user && (
             <Sidebar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
           )}
@@ -92,6 +94,7 @@ function App() {
                 path="/tasks/:id"
                 element={user ? <TaskDetails /> : <Login />}
               />
+              <Route path="/tasks/:id/edit" element={<EditTaskForm />} />
             </Routes>
           </div>
         </Router>
