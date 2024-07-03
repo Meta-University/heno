@@ -53,7 +53,16 @@ model Task {
   project Project @relation(fields: [project_id], references: [id])
   assignee_id Int
   assignee User @relation(fields: [assignee_id], references: [id])
-  is_updating Boolean @default(false)
+  title_is_updating Boolean @default(false)
+  description_is_updating Boolean @default(false)
+  status_is_updating Boolean @default(false)
+  due_date_is_updating Boolean @default(false)
+  assignee_is_updating Boolean @default(false)
+  title_lockTimestamp DateTime?
+  description_lockTimestamp DateTime?
+  status_lockTimestamp DateTime?
+  due_date_lockTimestamp DateTime?
+  assignee_lockTimestamp DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

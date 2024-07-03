@@ -19,6 +19,21 @@
   width: 100%;
 }
 
+.password-container {
+  background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 10px;
+  border-radius: 5px;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
 .signup h1 {
   text-align: center;
   color: #32292f;
@@ -36,9 +51,14 @@
   margin-bottom: 2px;
 }
 
+.password-container {
+  margin: 10px;
+}
+
 .signup input,
 .signup select {
   width: calc(100%-30px);
+  outline: none;
   padding: 15px;
   margin-bottom: 20px;
   background-color: whitesmoke;

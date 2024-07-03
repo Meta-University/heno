@@ -10,6 +10,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -45,6 +46,10 @@ function Login() {
     }
   }
 
+  function tooglePasswordVisibility() {
+    setShowPassword(!showPassword);
+  }
+
   return (
     <div className="login-page">
       <div className="login">
@@ -60,13 +65,21 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <i
+                className={
+                  showPassword ? `fa-solid fa-eye-slash` : `fa-solid fa-eye`
+                }
+                onClick={tooglePasswordVisibility}
+              ></i>
+            </div>
           </div>
           {error && <div className="error">{error}</div>}
           <p>

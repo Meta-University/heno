@@ -11,6 +11,8 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("");
   const { updateUser } = useContext(UserContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSignup(event) {
     event.preventDefault();
@@ -51,6 +53,14 @@ function Signup() {
     navigate("/login");
   }
 
+  function tooglePasswordVisibility() {
+    setShowPassword(!showPassword);
+  }
+
+  function toogleConfirmPasswordVisibility() {
+    setShowConfirmPassword(!showConfirmPassword);
+  }
+
   return (
     <div className="signup-page">
       <div className="signup">
@@ -71,20 +81,40 @@ function Signup() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <i
+              className={
+                showPassword ? `fa-solid fa-eye-slash` : `fa-solid fa-eye`
+              }
+              onClick={tooglePasswordVisibility}
+            ></i>
+          </div>
+
+          <div className="password-container">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <i
+              className={
+                showConfirmPassword
+                  ? `fa-solid fa-eye-slash`
+                  : `fa-solid fa-eye`
+              }
+              onClick={toogleConfirmPasswordVisibility}
+            ></i>
+          </div>
+
           <select name="role" onChange={(e) => setRole(e.target.value)}>
             <option value="public">Select Role</option>
             <option value="PM">Project Manager</option>

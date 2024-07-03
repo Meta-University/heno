@@ -15,20 +15,42 @@
   font-size: 24px;
 }
 
-.detail {
+.task-details .detail {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  margin-top: 0px;
+}
+
+.assignee-table {
+  margin-top: -20px;
 }
 
 .assignee-table p {
   color: gray;
+  font-size: 14px;
 }
 
-.detail .detail-title {
+.task-details .detail .detail-title {
   color: grey;
 }
 
 .task-details {
   margin-top: 40px;
   border-radius: 5px;
+}
+
+.task-details p {
+  font-size: 14px;
+}
+
+.file-upload {
+  border: 3px dashed #ccc;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+  padding: 30px;
 }

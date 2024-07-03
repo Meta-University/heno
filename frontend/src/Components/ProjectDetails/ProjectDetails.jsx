@@ -83,32 +83,58 @@ function ProjectDetails() {
           <i className="fa-solid fa-trash" onClick={handleDeleteProject}></i>
         </div>
       </div>
+      <div className="overview">
+        <h3>Project overview</h3>
+      </div>
       <div className="project-details">
-        <h1>{project.title}</h1>
-        <p>
-          <strong>Description:</strong> {project.description}
-        </p>
-        <p>
-          <strong>Manager:</strong>{" "}
-          {project.manager ? project.manager.name : "N/A"}
-        </p>
-        <p>
-          <strong>Status:</strong>{" "}
-          {project.status && formatText(project.status)}
-        </p>
-        <p>
-          <strong>Priority:</strong>{" "}
-          {project.priority && formatText(project.priority)}
-        </p>
-        <p>
-          <strong>Due Date:</strong> {new Date(project.due_date).toDateString()}
-        </p>
-        <p>
-          <strong>Team members:</strong>
-          {project.teamMembers && project.teamMembers.length > 0
-            ? project.teamMembers.map((member) => member.name).join(", ")
-            : "No team members"}
-        </p>
+        <div className="detail-row">
+          <div className="detail">
+            <p className="project-key">Project</p>
+            <p className="project-value">{project.title}</p>
+          </div>
+          <div className="detail">
+            <p className="project-key">Due date</p>
+            <p className="project-value">{project.due_date}</p>
+          </div>
+        </div>
+
+        <div className="detail-row">
+          <div className="detail">
+            <p className="project-key">Priority</p>
+            <p className="project-value">
+              {project.priority && formatText(project.priority)}
+            </p>
+          </div>
+          <div className="detail">
+            <p className="project-key">Status</p>
+            <p className="project-value">
+              {project.status && formatText(project.status)}
+            </p>
+          </div>
+        </div>
+
+        <div className="detail-row">
+          <div className="detail">
+            <p className="project-key">Manager</p>
+            <p className="project-value">
+              {project.manager ? project.manager.name : "N/A"}
+            </p>
+          </div>
+          <div className="detail">
+            <p className="project-key">Team</p>
+            <p className="project-value">
+              {project.teamMembers && project.teamMembers.length > 0
+                ? project.teamMembers.map((member) => member.name).join(", ")
+                : "No team members"}
+            </p>
+          </div>
+        </div>
+        <div className="detail-row">
+          <div className="detail">
+            <p className="project-key">Description</p>
+            <p className="project-value">{project.description}</p>
+          </div>
+        </div>
 
         <div className="tasks">
           <div
@@ -132,8 +158,8 @@ function ProjectDetails() {
           <table>
             <thead>
               <tr>
-                <th>Task Title</th>
-                <th>Assigned To</th>
+                <th>Task</th>
+                <th>Assignee</th>
                 <th>Status</th>
                 <th>Due Date</th>
               </tr>
