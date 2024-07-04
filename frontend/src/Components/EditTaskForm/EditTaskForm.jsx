@@ -2,7 +2,7 @@ import "./EditTaskForm.css";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-function EditTaskForm() {
+function EditTaskForm(props) {
   const { id } = useParams();
   const [task, setTask] = useState();
   const [teamMembers, setTeamMembers] = useState([]);
@@ -56,7 +56,11 @@ function EditTaskForm() {
 
   return (
     <div className="task-edit-form-container">
-      <h1>Edit Task</h1>
+      <div>
+        <i className="fa-solid fa-xmark" onClick={props.displayEditForm}></i>
+        <h1>Edit Task</h1>
+      </div>
+
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleEditTask}>
         <input

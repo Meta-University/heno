@@ -1,5 +1,6 @@
 .task-details-container {
-  padding: 20px;
+  padding: 25px;
+  background-color: #fff;
 }
 
 .task-header {
@@ -53,4 +54,15 @@
   align-content: center;
   text-align: center;
   padding: 30px;
+}
+
+.title-back-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-back-icon i {
+  font-size: 25px;
 }

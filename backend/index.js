@@ -49,27 +49,6 @@ app.use(router);
 app.use(projectRouter);
 app.use(taskRouter);
 
-app.get("/api/images", async (req, res) => {
-  const { query } = req.query;
-
-  // try {
-  const response = await axios.get("https://api.pixels.com/v1/search", {
-    headers: {
-      Authorization: process.env.API_KEY,
-    },
-    params: {
-      query,
-      per_page: 1,
-    },
-  });
-  console.log(response);
-  res.json(response.data);
-
-  // } catch (error) {
-  //   res.status(500).json({ error: "Err9r fetching images" });
-  // }
-});
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });

@@ -1,5 +1,7 @@
 .task-view-container {
   padding: 10px;
+  background-color: #fff;
+  height: 100vh;
 }
 
 .task-view-container h1 {
@@ -7,8 +9,8 @@
 }
 
 .task-view-header {
-  margin-top: -20px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
 }
 
 .task-view-header h1 {
@@ -18,7 +20,7 @@
 .task-table {
   width: 100%;
   border-radius: 12px;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   border: 1px solid #ddd;
   margin-top: 20px;
@@ -37,13 +39,10 @@
 .task-table td a {
   text-decoration: none;
   color: #32292f;
+  border-bottom: 2px solid #333;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .task-table th {
   padding-top: 12px;
-  background-color: #f2f2f2;
 }
-
-/* .task-table tr:nth-child(even) {
-  background-color: #ddd;
-} */

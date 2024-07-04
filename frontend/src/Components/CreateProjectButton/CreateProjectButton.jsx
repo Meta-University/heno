@@ -1,14 +1,13 @@
 function CreateProjectButton(props) {
   return (
-    <button
-      className="create-project-button"
+    <div
+      className="add-button"
       onClick={() => {
-        console.log("hi");
         props.displayForm();
       }}
     >
-      New Project
-    </button>
+      <i className="fa-solid fa-plus"></i>
+    </div>
   );
 }
 

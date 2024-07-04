@@ -1,8 +1,35 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import axios from "axios";
+import { createClient } from "pexels";
+import env from "dotenv";
 
 const projectRouter = express.Router();
 const prisma = new PrismaClient();
+env.config();
+
+async function getImageUrl(description) {
+  const options = {
+    method: "GET",
+    url: "https://api.pexels.com/v1/search",
+    headers: {
+      Authorization: process.env.API_KEY,
+    },
+    params: {
+      query: description,
+      per_page: 1,
+      page: 1,
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    const imageUrl = response.data.photos[0].url;
+    console.log(imageUrl);
+  } catch (error) {
+    console.error("Error generating image: ", error);
+  }
+}
 
 projectRouter.post("/projects", async (req, res) => {
   const {
@@ -14,6 +41,7 @@ projectRouter.post("/projects", async (req, res) => {
     priority,
     teamMembers,
   } = req.body;
+
   const managerId = req.session.user.id;
 
   try {

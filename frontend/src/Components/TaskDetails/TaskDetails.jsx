@@ -1,13 +1,15 @@
 import "./TaskDetails.css";
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import EditTaskForm from "../EditTaskForm/EditTaskForm";
 
 function TaskDetails() {
   const { id } = useParams();
   const [task, setTask] = useState(null);
   const navigate = useNavigate();
+  const [displayEditForm, setDisplayEditForm] = useState(false);
 
-  async function fetchtask() {
+  async function fetchTask() {
     try {
       const response = await fetch(`http://localhost:3000/tasks/${id}`);
       const data = await response.json();
@@ -18,7 +20,7 @@ function TaskDetails() {
   }
 
   useEffect(() => {
-    fetchtask();
+    fetchTask();
   }, [id]);
 
   function formatText(text) {
@@ -34,7 +36,7 @@ function TaskDetails() {
   }
 
   function handleEditClick() {
-    navigate(`/tasks/${id}/edit`);
+    setDisplayEditForm(!displayEditForm);
   }
 
   async function handleDeleteTask() {
@@ -58,7 +60,7 @@ function TaskDetails() {
   return (
     <div className="task-details-container">
       <div className="task-header">
-        <div>
+        <div className="title-back-icon">
           <i
             className="fa-solid fa-arrow-left"
             onClick={handleDisplayTaskList}
@@ -110,6 +112,13 @@ function TaskDetails() {
           <textarea placeholder="Add a comment" />
           <button>Send</button>
         </div>
+      </div>
+      <div className={`edit-form-container ${displayEditForm && "visible"}`}>
+        <EditTaskForm
+          task={task}
+          displayEditForm={handleEditClick}
+          refreshTask={fetchTask}
+        />
       </div>
     </div>
   );

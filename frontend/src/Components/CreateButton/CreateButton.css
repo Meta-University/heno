@@ -1,0 +1,12 @@
+.add-button {
+  align-items: center;
+  background-color: #333;
+  cursor: pointer;
+  padding: 20px;
+  border-radius: 7px;
+}
+
+.add-button i {
+  color: white;
+  font-size: 20px;
+}

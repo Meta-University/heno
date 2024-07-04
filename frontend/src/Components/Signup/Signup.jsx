@@ -67,20 +67,26 @@ function Signup() {
         <h1>Welcome to Heno</h1>
         <p className="create-account-text">Create an account</p>
         <form onSubmit={handleSignup}>
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-container">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
@@ -115,11 +121,16 @@ function Signup() {
             ></i>
           </div>
 
-          <select name="role" onChange={(e) => setRole(e.target.value)}>
+          <select
+            className="select-signup"
+            name="role"
+            onChange={(e) => setRole(e.target.value)}
+          >
             <option value="public">Select Role</option>
             <option value="PM">Project Manager</option>
             <option value="TM">Team Member</option>
           </select>
+
           <p>
             Already have an account?{" "}
             <a className="login-link" onClick={navigateToLogin}>

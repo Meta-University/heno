@@ -39,64 +39,73 @@ function CreateTaskForm(props) {
   }
 
   return (
-    <form onSubmit={handleCreateTask} className="task-form">
-      <input
-        type="text"
-        placeholder="Task Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <textarea
-        placeholder="Task Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-      ></textarea>
-      <input
-        type="date"
-        placeholder="Task Start Date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        required
-      />
-      <input
-        type="date"
-        value={dueDate}
-        placeholder="Task Due Date"
-        onChange={(e) => setDueDate(e.target.value)}
-        required
-      />
-      <select
-        value={assigneeId}
-        onChange={(e) => setAssigneeId(e.target.value)}
-        required
-      >
-        <option value="">Select team member</option>
-        {props.teamMembers.map((member) => (
-          <option key={member.id} value={member.id}>
-            {member.name}
-          </option>
-        ))}
-      </select>
+    <div className="modal-overlay">
+      <div className="modal-content" id="create-task-form">
+        <div className="create-close-task">
+          <h2>Create a new Task</h2>
+          <i className="fa-solid fa-xmark" onClick={props.displayForm}></i>
+        </div>
 
-      <select
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        required
-      >
-        <option value="">Set Status</option>
-        <option value="TODO">To Do</option>
-        <option value="IN_PROGRESS">In Progress</option>
-        <option value="COMPLETED">Completed</option>
-      </select>
+        <form onSubmit={handleCreateTask} className="task-form">
+          <input
+            type="text"
+            placeholder="Task Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <textarea
+            placeholder="Task Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          ></textarea>
+          <input
+            type="date"
+            placeholder="Task Start Date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+          <input
+            type="date"
+            value={dueDate}
+            placeholder="Task Due Date"
+            onChange={(e) => setDueDate(e.target.value)}
+            required
+          />
+          <select
+            value={assigneeId}
+            onChange={(e) => setAssigneeId(e.target.value)}
+            required
+          >
+            <option value="">Select team member</option>
+            {/* {props.teamMembers.map((member) => (
+              <option key={member.id} value={member.id}>
+                {member.name}
+              </option>
+            ))} */}
+          </select>
 
-      <div className="buttons">
-        <button type="submit" className="create">
-          Create Task
-        </button>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            required
+          >
+            <option value="">Set Status</option>
+            <option value="TODO">To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+
+          <div className="buttons">
+            <button type="submit" className="create">
+              Create Task
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
 }
 

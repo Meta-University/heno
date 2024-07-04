@@ -1,0 +1,36 @@
+.add-project {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.project {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.add-project i,
+.add-project p,
+.project i {
+  color: gray;
+}
+
+.add-project i {
+  border: 2px dashed gray;
+  padding: 15px;
+  border-radius: 15px;
+}
+
+.fa-solid.fa-list {
+  background-color: aquamarine;
+  color: white;
+  font-size: 20px;
+  padding: 15px;
+  border-radius: 15px;
+}

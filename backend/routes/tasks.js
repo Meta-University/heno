@@ -83,7 +83,11 @@ taskRouter.get("/tasks", async (req, res) => {
   try {
     const tasks = await prisma.task.findMany({
       include: {
-        project: true,
+        project: {
+          include: {
+            teamMembers: true,
+          },
+        },
         assignee: true,
       },
     });

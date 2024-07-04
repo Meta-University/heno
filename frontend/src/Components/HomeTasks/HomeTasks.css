@@ -1,0 +1,29 @@
+.task {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.add-task i,
+.add-task p,
+.task i {
+  color: gray;
+}
+
+.status-due-date {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.task-project-title {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}

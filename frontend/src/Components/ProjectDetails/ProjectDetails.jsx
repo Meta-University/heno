@@ -74,18 +74,16 @@ function ProjectDetails() {
   return (
     <div className="project-details-container ">
       <div className="project-details-header">
-        <i
-          className="fa-solid fa-arrow-left"
-          onClick={handleDisplayProjectsList}
-        ></i>
+        <div className="overview">
+          <i className="fa-solid fa-list"></i>
+          <h3>Project overview</h3>
+        </div>
         <div className="delete-edit-icon">
           <i className="fa-solid fa-pen" onClick={handleEditClick}></i>
           <i className="fa-solid fa-trash" onClick={handleDeleteProject}></i>
         </div>
       </div>
-      <div className="overview">
-        <h3>Project overview</h3>
-      </div>
+
       <div className="project-details">
         <div className="detail-row">
           <div className="detail">
@@ -137,23 +135,18 @@ function ProjectDetails() {
         </div>
 
         <div className="tasks">
-          <div
-            className={`create-task-card ${showTaskForm ? "expanded" : ""}`}
-            onClick={toogleTaskForm}
-          >
-            <div className="card-header">
-              {showTaskForm ? "Cancel" : "Create Task"}
-            </div>
-            <div onClick={(e) => e.stopPropagation()}>
-              {showTaskForm && (
-                <CreateTaskForm
-                  addTask={addTask}
-                  teamMembers={project.teamMembers}
-                  projectId={project.id}
-                />
-              )}
-            </div>
-          </div>
+          <button className="add-task-btn" onClick={toogleTaskForm}>
+            Add Task
+          </button>
+
+          {showTaskForm && (
+            <CreateTaskForm
+              addTask={addTask}
+              teamMembers={project.teamMembers}
+              projectId={project.id}
+              displayForm={toogleTaskForm}
+            />
+          )}
 
           <table>
             <thead>

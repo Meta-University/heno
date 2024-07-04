@@ -19,6 +19,7 @@ import EditForm from "./Components/EditForm/EditForm";
 import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./Components/TaskDetails/TaskDetails";
 import EditTaskForm from "./Components/EditTaskForm/EditTaskForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -53,7 +54,9 @@ function App() {
     <div className="App">
       <UserContext.Provider value={{ user, updateUser }}>
         <Router>
-          {/* <Navbar /> */}
+          {user && (
+            <Navbar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
+          )}
           {user && (
             <Sidebar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
           )}
