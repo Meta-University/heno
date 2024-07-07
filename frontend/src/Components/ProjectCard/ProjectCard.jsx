@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import "./ProjectCard.css";
 import { useState, useEffect } from "react";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function ProjectCard({ project, deleteProject, projectId }) {
   const navigate = useNavigate();
@@ -33,8 +34,7 @@ function ProjectCard({ project, deleteProject, projectId }) {
         onClick={() => navigateToProjectDetails(project.id)}
         className="project-title-and-view-icon"
       >
-        <img src={project.image_url} />
-        <h3>{project.title}</h3>
+        <p>{capitalizeFirstLetters(project.title)}</p>
       </div>
     </div>
   );

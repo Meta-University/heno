@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjectButton from "../CreateProjectButton/CreateProjectButton";
 import CreateForm from "../CreateForm/CreateForm";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function HomeProjects() {
   const [projects, setProjects] = useState([]);
@@ -17,6 +18,7 @@ function HomeProjects() {
     try {
       const response = await fetch("http://localhost:3000/projects", {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,7 +44,12 @@ function HomeProjects() {
         <h3>Projects</h3>
         <CreateProjectButton displayForm={handleDisplayForm} />
       </div>
-      {displayForm && <CreateForm displayForm={handleDisplayForm} />}
+      {displayForm && (
+        <CreateForm
+          refreshProjects={receiveProjectList}
+          displayForm={handleDisplayForm}
+        />
+      )}
       <div className="home-projects">
         {projects.map((project, index) => (
           <div
@@ -51,7 +58,7 @@ function HomeProjects() {
             onClick={() => handleNavigateToProjectDetail(project.id)}
           >
             <i className="fa-solid fa-list"></i>
-            <p>{project.title}</p>
+            <p>{capitalizeFirstLetters(project.title)}</p>
           </div>
         ))}
       </div>

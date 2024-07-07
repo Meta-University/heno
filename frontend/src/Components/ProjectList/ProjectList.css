@@ -5,11 +5,11 @@
 .project-cards {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .project-header {
   display: flex;
-
   flex-direction: row;
   gap: 10px;
   justify-content: space-between;
@@ -27,12 +27,12 @@
   padding: 10px 15px;
   font-size: 16px;
   color: white;
-  background-color: #32292f;
+  background-color: #333;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .create-project-button:hover {
-  background-color: #50404b;
+  background-color: #454545;
 }

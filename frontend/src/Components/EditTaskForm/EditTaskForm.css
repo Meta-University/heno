@@ -32,11 +32,15 @@
 .task-edit-form-container button {
   padding: 0.7rem;
   margin-top: 1rem;
-  background-color: #32292f;
+  background-color: #333;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.task-edit-form-container button:hover {
+  background-color: #454545;
 }
 
 .task-edit-form-container .error {

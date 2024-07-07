@@ -12,6 +12,7 @@ import axios from "axios";
 
 const app = express();
 const port = 3000;
+const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
@@ -39,7 +40,7 @@ app.use(
     cookie: {
       sameSite: false,
       secure: false,
-      expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + YEAR_TO_MILLISECOND_CONVERTION_FACTOR),
     },
   })
 );

@@ -93,7 +93,7 @@
   padding: 15px;
   border: none;
   border-radius: 5px;
-  background-color: #32292f;
+  background-color: #333;
   color: #ffffff;
   font-size: 16px;
   cursor: pointer;
@@ -101,7 +101,7 @@
 }
 
 .signup button:hover {
-  background-color: #50404b;
+  background-color: #454545;
 }
 
 .signup p {
@@ -109,12 +109,12 @@
 }
 
 .signup .login-link {
-  color: #32292f;
+  color: #333;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .signup .login-link:hover {
-  color: #50404b;
+  color: #454545;
 }

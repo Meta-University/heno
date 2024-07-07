@@ -3,33 +3,11 @@ import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 import { createClient } from "pexels";
 import env from "dotenv";
+import checkProjectPermission from "../permission.js";
 
 const projectRouter = express.Router();
 const prisma = new PrismaClient();
 env.config();
-
-async function getImageUrl(description) {
-  const options = {
-    method: "GET",
-    url: "https://api.pexels.com/v1/search",
-    headers: {
-      Authorization: process.env.API_KEY,
-    },
-    params: {
-      query: description,
-      per_page: 1,
-      page: 1,
-    },
-  };
-
-  try {
-    const response = await axios.request(options);
-    const imageUrl = response.data.photos[0].url;
-    console.log(imageUrl);
-  } catch (error) {
-    console.error("Error generating image: ", error);
-  }
-}
 
 projectRouter.post("/projects", async (req, res) => {
   const {
@@ -66,8 +44,18 @@ projectRouter.post("/projects", async (req, res) => {
 });
 
 projectRouter.get("/projects", async (req, res) => {
+  const userId = req.session.user.id;
+
   try {
     const projects = await prisma.project.findMany({
+      where: {
+        OR: [
+          { manager_id: userId },
+          {
+            teamMembers: { some: { id: userId } },
+          },
+        ],
+      },
       include: {
         tasks: {
           include: {
@@ -78,6 +66,7 @@ projectRouter.get("/projects", async (req, res) => {
         teamMembers: true,
       },
     });
+
     res.json(projects);
   } catch (error) {
     res.status(500).json({ error: error.message });

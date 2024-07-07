@@ -1,0 +1,32 @@
+.custom-alert {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 20px;
+  z-index: 1000;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.custom-alert-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-alert-message {
+  color: #721c24;
+  font-size: 16px;
+}
+
+.custom-alert-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #721c24;
+}

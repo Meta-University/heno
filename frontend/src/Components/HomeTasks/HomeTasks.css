@@ -6,6 +6,7 @@
   border-bottom: 1px solid #ddd;
   cursor: pointer;
   justify-content: space-between;
+  font-size: 14px;
 }
 
 .add-task i,
@@ -27,3 +28,19 @@
   gap: 5px;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .task-create h3 {
+    font-size: 13px;
+  }
+
+  .task {
+    font-size: 8px;
+  }
+}
+
+/* @media (max-width: 480px) {
+  .task {
+    font-size: 10px;
+  }
+} */

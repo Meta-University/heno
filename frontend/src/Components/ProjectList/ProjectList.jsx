@@ -24,6 +24,7 @@ function ProjectList(props) {
     try {
       const response = await fetch("http://localhost:3000/projects", {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

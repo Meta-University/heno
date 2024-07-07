@@ -10,3 +10,18 @@
   color: white;
   font-size: 20px;
 }
+
+.add-button:hover {
+  background-color: #454545;
+}
+
+@media (max-width: 768px) {
+  .add-button {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .add-button i {
+    font-size: 12px;
+  }
+}

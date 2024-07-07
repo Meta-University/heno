@@ -99,28 +99,24 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 200px;
+    width: 60px;
+  }
+
+  .sidebar-items ul li {
+    margin-bottom: 20px;
+  }
+
+  .sidebar-items ul li a p {
+    display: none;
+  }
+
+  .sidebar-items ul li.selected {
+    padding: 10px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 350px) {
   .sidebar {
-    width: 150px;
-  }
-
-  .icon {
-    padding: 10px;
-  }
-
-  .profile-title {
-    gap: 5px;
-  }
-
-  .sidebar-title h1 {
-    font-size: 19px;
-  }
-
-  .sidebar-items {
-    gap: 4px;
+    height: 100vh;
   }
 }

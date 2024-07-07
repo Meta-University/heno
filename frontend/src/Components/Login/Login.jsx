@@ -35,7 +35,7 @@ function Login() {
         const data = await response.json();
         const loggedInUser = data.user;
         updateUser(loggedInUser);
-        navigate("/projects");
+        navigate("/home");
       } else {
         setError("Login failed");
       }

@@ -36,7 +36,7 @@ function Signup() {
       if (response.ok) {
         const loggedInUser = data.user;
         updateUser(loggedInUser);
-        navigate("/projects");
+        navigate("/home");
       } else {
         setError("Login failed");
       }

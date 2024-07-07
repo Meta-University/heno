@@ -7,10 +7,11 @@
   padding: 20px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  min-height: 300px;
+  min-height: 200px;
 }
 
 .tabs {
+  width: 100%;
   display: flex;
   margin-bottom: 1rem;
   border-bottom: 1px solid #ddd;
@@ -24,11 +25,12 @@
   background-color: white;
   color: black;
   transition: background-color 0.3s;
+  font-size: 14px;
 }
 
 .tabs button.active,
 .tabs button:hover {
-  border-bottom: 3px solid black;
+  border-bottom: 3px solid #333;
 }
 
 .projects {
@@ -37,7 +39,7 @@
   padding: 20px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  min-height: 300px;
+  min-height: 200px;
 }
 
 .task-create {
@@ -52,4 +54,27 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+@media (max-width: 770px) {
+  .homepage h1 {
+    font-size: 15px;
+  }
+
+  .tabs button {
+    padding: 0.1rem 0.5rem;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* .tabs button {
+    font-size: 7px;
+  } */
+}
+
+@media (max-width: 344px) {
+  /* .tabs button {
+    font-size: 5px;
+  } */
 }

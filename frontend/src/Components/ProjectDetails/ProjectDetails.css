@@ -1,12 +1,7 @@
 .project-details-container {
-  position: relative;
-  padding: 5px;
-  /* background-color: #f6cc9e; */
-  background-color: whitesmoke;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 10px;
   height: 100vh;
 }
 
@@ -57,9 +52,9 @@
   color: #32292f;
 }
 
-.fa-solid:hover {
+/* .fa-solid:hover {
   color: #50404b;
-}
+} */
 
 .delete-edit-icon {
   display: flex;
@@ -68,6 +63,27 @@
 
 .delete-edit-icon i {
   font-size: 25px;
+}
+
+.low {
+  background-color: rgb(98, 225, 98);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.medium {
+  background-color: rgb(247, 187, 74);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.high {
+  background-color: rgb(252, 99, 99);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
 }
 
 .edit-button {
@@ -172,7 +188,7 @@
   font-size: 20px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .project-details-container {
     padding: 15px;
   }
@@ -205,4 +221,4 @@
   .project-details {
     padding: 10px;
   }
-}
+} */

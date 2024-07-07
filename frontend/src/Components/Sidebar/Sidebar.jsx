@@ -46,7 +46,7 @@ function Sidebar(props) {
             onClick={() => handleItemClick("tasks")}
           >
             <Link to="/tasks">
-              <i className="fa-regular fa-circle-check"></i>
+              <i className="fa-solid fa-circle-check"></i>
               <p>Tasks</p>
             </Link>
           </li>

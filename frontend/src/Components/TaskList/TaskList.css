@@ -1,8 +1,17 @@
 .task-view-container {
-  padding: 10px;
+  padding: 25px;
   background-color: #fff;
+  border-radius: 10px;
   height: 100vh;
 }
+
+/* .task.todo {
+  background-color: rgb(163, 163, 248);
+  width: 50px;
+  text-align: end;
+  padding: 0.3rem;
+  border-radius: 10px;
+} */
 
 .task-view-container h1 {
   color: #32292f;
@@ -18,6 +27,7 @@
 }
 
 .task-table {
+  padding: 5px;
   width: 100%;
   border-radius: 12px;
   border-collapse: collapse;
@@ -45,4 +55,18 @@
 
 .task-table th {
   padding-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .task-table th,
+  .task-table td {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-table th,
+  .task-table td {
+    font-size: 8px;
+  }
 }

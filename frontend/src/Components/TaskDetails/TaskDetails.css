@@ -1,10 +1,11 @@
 .task-details-container {
   padding: 25px;
   background-color: #fff;
+  border-radius: 10px;
+  height: 100vh;
 }
 
 .task-header {
-  margin-top: -30px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -46,7 +47,8 @@
 }
 
 .file-upload {
-  border: 3px dashed #ccc;
+  margin: 20px;
+  border: 2px dashed #ccc;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
@@ -54,6 +56,7 @@
   align-content: center;
   text-align: center;
   padding: 30px;
+  text-wrap: wrap;
 }
 
 .title-back-icon {
@@ -65,4 +68,55 @@
 
 .title-back-icon i {
   font-size: 25px;
+}
+
+.comment-section {
+  margin: 10px;
+}
+
+.comment-section input {
+  width: 80%;
+  height: 20px;
+  border-radius: 20px;
+  margin: 10px;
+  outline: none;
+  border: 1px solid #ccc;
+}
+
+.comment-section button {
+  border: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .task-details-container {
+    margin-top: 20px;
+    padding: 30px;
+  }
+
+  .task-header h1 {
+    font-size: 14px;
+  }
+
+  .title-back-icon i {
+    font-size: 14px;
+  }
+
+  .file-upload {
+    padding: 10px;
+  }
+
+  .delete-edit-icon i {
+    font-size: 14px;
+  }
+
+  .detail-title p {
+    font-size: 10px;
+  }
+
+  .task-details p {
+    font-size: 12px;
+  }
 }

@@ -4,6 +4,7 @@ import "./HomeTasks.css";
 import { useState, useEffect } from "react";
 import CreateButton from "../CreateButton/CreateButton";
 import { useNavigate } from "react-router-dom";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function HomeTasks() {
   const [tasks, setTasks] = useState([]);
@@ -28,7 +29,9 @@ function HomeTasks() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks");
+      const response = await fetch("http://localhost:3000/tasks", {
+        credentials: "include",
+      });
       const data = await response.json();
       setTasks(data);
     } catch (error) {
@@ -52,11 +55,11 @@ function HomeTasks() {
 
   const filteredTasks = tasks.filter((task) => {
     if (activeTab === "upcoming") {
-      return task.due_date > today && task.status !== "completed";
+      return task.due_date > today && task.status !== "COMPLETED";
     } else if (activeTab === "overdue") {
-      return task.due_date < today && task.status !== "completed";
+      return task.due_date < today && task.status !== "COMPLETED";
     } else if (activeTab === "completed") {
-      return task.status === "completed";
+      return task.status === "COMPLETED";
     } else {
       return false;
     }
@@ -78,7 +81,7 @@ function HomeTasks() {
       </div>
       {displayForm && (
         <CreateTaskForm
-          teamMembers={tasks.project.teamMembers}
+          teamMembers={tasks[0].project && tasks[0].project.teamMembers}
           displayForm={handleDisplayForm}
         />
       )}
@@ -103,7 +106,7 @@ function HomeTasks() {
         </button>
       </div>
 
-      <div className="home-tasks">
+      <div key={count} className="home-tasks">
         {activeTab === "overdue"
           ? filteredTasks.length === 0 && (
               <p>You don't have any overdue tasks. Nice!</p>
@@ -128,7 +131,8 @@ function HomeTasks() {
               <div className="task-project-title">
                 <i className="fa-regular fa-circle-check"></i>
                 <p>
-                  {task.title}; {task.project && task.project.title}
+                  {capitalizeFirstLetters(task.title)};{" "}
+                  {task.project && capitalizeFirstLetters(task.project.title)}
                 </p>
               </div>
 

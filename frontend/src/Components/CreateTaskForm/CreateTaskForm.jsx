@@ -36,13 +36,14 @@ function CreateTaskForm(props) {
     } catch (error) {
       console.error("Error creating task", task);
     }
+    props.displayForm();
   }
 
   return (
     <div className="modal-overlay">
       <div className="modal-content" id="create-task-form">
         <div className="create-close-task">
-          <h2>Create a new Task</h2>
+          <h2>Create a New Task</h2>
           <i className="fa-solid fa-xmark" onClick={props.displayForm}></i>
         </div>
 
@@ -80,11 +81,11 @@ function CreateTaskForm(props) {
             required
           >
             <option value="">Select team member</option>
-            {/* {props.teamMembers.map((member) => (
+            {props.teamMembers.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name}
               </option>
-            ))} */}
+            ))}
           </select>
 
           <select

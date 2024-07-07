@@ -13,6 +13,7 @@
   align-items: center;
   margin-top: 10px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .add-project i,
@@ -33,4 +34,15 @@
   font-size: 20px;
   padding: 15px;
   border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .fa-solid.fa-list {
+    padding: 10px;
+    font-size: 10px;
+    border-radius: 9px;
+  }
+  .project {
+    font-size: 10px;
+  }
 }

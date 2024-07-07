@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
@@ -76,6 +77,10 @@
   color: white;
 }
 
+#create-project-form .buttons button[type="submit"]:hover {
+  background-color: #454545;
+}
+
 .add-team-members {
   margin-top: 20px;
 }
@@ -93,10 +98,11 @@
 
 .add-team-members ul li {
   padding: 10px;
+  text-wrap: wrap;
   border: 1px solid #ccc;
   margin-bottom: 5px;
   cursor: pointer;
-  width: 15%;
+  width: 50%;
   border-radius: 15px;
 }
 
