@@ -130,7 +130,7 @@ function Signup() {
             <option value="PM">Project Manager</option>
             <option value="TM">Team Member</option>
           </select>
-
+          {error && <div className="error">{error}</div>}
           <p>
             Already have an account?{" "}
             <a className="login-link" onClick={navigateToLogin}>
