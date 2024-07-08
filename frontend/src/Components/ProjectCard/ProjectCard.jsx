@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import "./ProjectCard.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function ProjectCard({ project, deleteProject, projectId }) {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ function ProjectCard({ project, deleteProject, projectId }) {
       .join(" ");
   }
 
+  function navigateToProjectDetails(id) {
+    navigate(`/projects/${id}`);
+  }
+
   return (
     <div
       className="project-card"
@@ -25,27 +30,11 @@ function ProjectCard({ project, deleteProject, projectId }) {
         handleDisplayProjectDetails();
       }}
     >
-      <div className="project-title-and-view-icon">
-        <h3>{project.title}</h3>
-        <Link to={`/projects/${projectId}`} className="details-button">
-          View Details
-        </Link>
-      </div>
-
-      <div className="project-det">
-        <p>
-          <strong>Manager:</strong>{" "}
-          {project.manager ? project.manager.name : "N/A"}
-        </p>
-        <p>
-          <strong>Status:</strong> {formatText(project.status)}
-        </p>
-        <p>
-          <strong>Priority:</strong> {formatText(project.priority)}
-        </p>
-        <p>
-          <strong>Due Date:</strong> {project.due_date}
-        </p>
+      <div
+        onClick={() => navigateToProjectDetails(project.id)}
+        className="project-title-and-view-icon"
+      >
+        <p>{capitalizeFirstLetters(project.title)}</p>
       </div>
     </div>
   );

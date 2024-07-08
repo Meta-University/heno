@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.16.1",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "connect-session-sequelize": "^7.1.7",
     "cors": "^2.8.5",
@@ -21,6 +22,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "pexels": "^1.4.0",
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3"

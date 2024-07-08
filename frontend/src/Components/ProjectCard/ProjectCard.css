@@ -1,13 +1,17 @@
 .project-card {
   border-radius: 8px;
-  padding: 16px;
+  padding: 100px;
   margin: 16px;
   cursor: pointer;
   transition: box-shadow 0.3s;
-  /* background-color: #f6cc9e; */
   background-color: whitesmoke;
+  max-width: 60px;
   max-height: 60px;
   overflow: hidden;
+  text-align: center;
+  color: #333;
+  align-items: center;
+  justify-content: center;
 }
 
 .project-card:hover {
@@ -43,14 +47,11 @@
 
 @media (max-width: 768px) {
   .project-card {
-    padding: 15px;
+    padding: 45px;
+    font-size: 12px;
   }
 
   .details-button {
     font-size: 10px;
-  }
-
-  .project-title-and-view-icon h3 {
-    font-size: 15px;
   }
 }

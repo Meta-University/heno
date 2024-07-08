@@ -1,0 +1,27 @@
+.add-button {
+  align-items: center;
+  background-color: #333;
+  cursor: pointer;
+  padding: 20px;
+  border-radius: 7px;
+}
+
+.add-button i {
+  color: white;
+  font-size: 20px;
+}
+
+.add-button:hover {
+  background-color: #454545;
+}
+
+@media (max-width: 768px) {
+  .add-button {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .add-button i {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,74 @@
+.homepage {
+  padding: 1rem;
+}
+
+.upcoming-tasks {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  min-height: 200px;
+}
+
+.tabs {
+  width: 100%;
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.tabs button {
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.tabs button.active,
+.tabs button:hover {
+  border-bottom: 3px solid #333;
+}
+
+.projects {
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  min-height: 200px;
+}
+
+.task-create {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-create {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 770px) {
+  .homepage h1 {
+    font-size: 15px;
+  }
+
+  .tabs button {
+    padding: 0.1rem 0.5rem;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+}
+
+@media (max-width: 344px) {
+}

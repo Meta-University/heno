@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./TaskList.css";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function TaskList(props) {
   const [tasks, setTasks] = useState([]);
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks");
+      const response = await fetch("http://localhost:3000/tasks", {
+        credentials: "include",
+      });
       const data = await response.json();
       setTasks(data);
     } catch (error) {
@@ -25,6 +28,20 @@ function TaskList(props) {
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+  }
+
+  function getStatusClass(status) {
+    if (status == "NOT_STARTED") {
+      return "not-started";
+    } else if (status === "TODO") {
+      return "todo";
+    } else if (status === "IN_PROGRESS") {
+      return "in-progress";
+    } else if (status === "COMPLETED") {
+      return "completed";
+    } else if (status === "ON_HOLD") {
+      return "on-hold";
+    }
   }
 
   return (
@@ -49,11 +66,17 @@ function TaskList(props) {
           {tasks.map((task) => (
             <tr key={task.id}>
               <td>#{task.id}</td>
-              <td>{task.title}</td>
-              <td>{formatText(task.status)}</td>
-              <td>{task.project.title}</td>
-              <td>{task.assignee ? task.assignee.name : "Unaasigned"}</td>
-              <td>{new Date(task.due_date).toDateString()}</td>
+              <td>{capitalizeFirstLetters(task.title)}</td>
+              <td className={getStatusClass(task.status)}>
+                {formatText(task.status)}
+              </td>
+              <td>{capitalizeFirstLetters(task.project.title)}</td>
+              <td>
+                {task.assignee
+                  ? capitalizeFirstLetters(task.assignee.name)
+                  : "Unaasigned"}
+              </td>
+              <td>{new Date(task.due_date).toLocaleDateString()}</td>
               <td>
                 <Link to={`/tasks/${task.id}`}>View</Link>
               </td>

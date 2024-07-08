@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import checkProjectPermission from "../permission.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();
@@ -80,10 +81,26 @@ taskRouter.post("/tasks", async (req, res) => {
 });
 
 taskRouter.get("/tasks", async (req, res) => {
+  const userId = req.session.user.id;
   try {
     const tasks = await prisma.task.findMany({
+      where: {
+        OR: [
+          { assignee_id: userId },
+          { project: { manager_id: userId } },
+          {
+            project: {
+              teamMembers: { some: { id: userId } },
+            },
+          },
+        ],
+      },
       include: {
-        project: true,
+        project: {
+          include: {
+            teamMembers: true,
+          },
+        },
         assignee: true,
       },
     });
@@ -149,6 +166,12 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     }
 
     setTimeout(async () => {
+      for (const field of fieldsToLock) {
+        await releaseLock(id, field);
+      }
+    }, LOCK_TIMEOUT);
+
+    setTimeout(async () => {
       await prisma.task.update({
         where: { id: parseInt(id) },
         data: {
@@ -160,10 +183,8 @@ taskRouter.put("/tasks/:id", async (req, res) => {
           assignee: { connect: { id: parseInt(assignee_id) } },
         },
       });
+
       res.json({ message: "Task updated successfuly" });
-      for (const field of fieldsToLock) {
-        await releaseLock(id, field);
-      }
     }, 5000);
   } catch (err) {
     console.error("Error updating task", err);

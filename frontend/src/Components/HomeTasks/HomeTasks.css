@@ -1,0 +1,40 @@
+.task {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.add-task i,
+.add-task p,
+.task i {
+  color: gray;
+}
+
+.status-due-date {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.task-project-title {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .task-create h3 {
+    font-size: 13px;
+  }
+
+  .task {
+    font-size: 8px;
+  }
+}

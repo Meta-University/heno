@@ -3,7 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  align-content: center;
+  height: 100%;
   margin: 0;
 }
 
@@ -50,31 +51,46 @@
   cursor: pointer;
 }
 
+.input-container {
+  width: 93%;
+}
+
+.input-container,
 .password-container {
   background-color: whitesmoke;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  /* padding: 20px; */
-  padding-right: 20px;
 
+  padding-right: 20px;
   border-radius: 5px;
 }
 
+.input-container input,
 .password-container input {
-  width: 100%;
-  padding-right: 40px;
+  width: 90%;
+  outline: none;
+  border: none;
+}
+
+.password-container input {
+  margin-left: -10px;
+  margin-right: 50px;
+}
+
+.password-container .fa-solid {
+  padding-right: 5px;
 }
 
 .login-btn {
-  background-color: #32292f;
+  background-color: #333;
   color: #fff;
   margin-bottom: 10px;
 }
 
 .login-btn:hover {
-  background-color: #50404b;
+  background-color: #454545;
 }
 
 .register-btn {
@@ -91,12 +107,12 @@
 }
 
 .login .signup-link {
-  color: #32292f;
+  color: #333;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .login .signup-link:hover {
-  color: #50404b;
+  color: #454545;
 }

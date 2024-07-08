@@ -5,6 +5,7 @@ import "./ProjectDetails.css";
 import EditForm from "../EditForm/EditForm";
 import TaskList from "../TaskList/TaskList";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function ProjectDetails() {
   const { id } = useParams();
@@ -69,45 +70,74 @@ function ProjectDetails() {
     navigate("/projects");
   }
 
+  function getStatusClass(status) {
+    if (status == "NOT_STARTED") {
+      return "not-started";
+    } else if (status === "TODO") {
+      return "todo";
+    } else if (status === "IN_PROGRESS") {
+      return "in-progress";
+    } else if (status === "COMPLETED") {
+      return "completed";
+    } else if (status === "ON_HOLD") {
+      return "on-hold";
+    }
+  }
+
+  function getPriorityClass(priority) {
+    if (priority === "LOW") {
+      return "low";
+    } else if (priority === "MEDIUM") {
+      return "medium";
+    } else if (priority === "HIGH") {
+      return "high";
+    }
+  }
+
   if (!project) return <div>Loading...</div>;
 
   return (
     <div className="project-details-container ">
+      <button>AI please help me reorganise</button>
       <div className="project-details-header">
-        <i
-          className="fa-solid fa-arrow-left"
-          onClick={handleDisplayProjectsList}
-        ></i>
+        <div className="overview">
+          <i className="fa-solid fa-list"></i>
+          <h3>Project Overview</h3>
+        </div>
         <div className="delete-edit-icon">
           <i className="fa-solid fa-pen" onClick={handleEditClick}></i>
           <i className="fa-solid fa-trash" onClick={handleDeleteProject}></i>
         </div>
       </div>
-      <div className="overview">
-        <h3>Project overview</h3>
-      </div>
+
       <div className="project-details">
         <div className="detail-row">
           <div className="detail">
             <p className="project-key">Project</p>
-            <p className="project-value">{project.title}</p>
+            <p className="project-value">
+              {project.title && capitalizeFirstLetters(project.title)}
+            </p>
           </div>
           <div className="detail">
             <p className="project-key">Due date</p>
-            <p className="project-value">{project.due_date}</p>
+            <p className="project-value">
+              {new Date(project.due_date).toLocaleDateString()}
+            </p>
           </div>
         </div>
 
         <div className="detail-row">
           <div className="detail">
             <p className="project-key">Priority</p>
-            <p className="project-value">
+            <p
+              className={`project-value ${getPriorityClass(project.priority)}`}
+            >
               {project.priority && formatText(project.priority)}
             </p>
           </div>
           <div className="detail">
             <p className="project-key">Status</p>
-            <p className="project-value">
+            <p className={`project-value ${getStatusClass(project.status)}`}>
               {project.status && formatText(project.status)}
             </p>
           </div>
@@ -117,7 +147,9 @@ function ProjectDetails() {
           <div className="detail">
             <p className="project-key">Manager</p>
             <p className="project-value">
-              {project.manager ? project.manager.name : "N/A"}
+              {project.manager
+                ? capitalizeFirstLetters(project.manager.name)
+                : "N/A"}
             </p>
           </div>
           <div className="detail">
@@ -137,23 +169,18 @@ function ProjectDetails() {
         </div>
 
         <div className="tasks">
-          <div
-            className={`create-task-card ${showTaskForm ? "expanded" : ""}`}
-            onClick={toogleTaskForm}
-          >
-            <div className="card-header">
-              {showTaskForm ? "Cancel" : "Create Task"}
-            </div>
-            <div onClick={(e) => e.stopPropagation()}>
-              {showTaskForm && (
-                <CreateTaskForm
-                  addTask={addTask}
-                  teamMembers={project.teamMembers}
-                  projectId={project.id}
-                />
-              )}
-            </div>
-          </div>
+          <button className="add-task-btn" onClick={toogleTaskForm}>
+            Add Task
+          </button>
+
+          {showTaskForm && (
+            <CreateTaskForm
+              addTask={addTask}
+              teamMembers={project.teamMembers}
+              projectId={project.id}
+              displayForm={toogleTaskForm}
+            />
+          )}
 
           <table>
             <thead>
@@ -168,10 +195,14 @@ function ProjectDetails() {
               {tasks.map((task, index) => (
                 <tr key={index}>
                   <td>
-                    <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+                    <Link to={`/tasks/${task.id}`}>
+                      {capitalizeFirstLetters(task.title)}
+                    </Link>
                   </td>
                   <td>{task.assignee ? task.assignee.name : "Unassigned"}</td>
-                  <td>{formatText(task.status)}</td>
+                  <td className={`${getStatusClass(task.status)}`}>
+                    {formatText(task.status)}
+                  </td>
                   <td>{new Date(task.due_date).toDateString()}</td>
                 </tr>
               ))}

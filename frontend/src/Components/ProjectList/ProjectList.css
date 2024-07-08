@@ -2,13 +2,18 @@
   padding: 10px;
 }
 
+.project-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
 .project-header {
   display: flex;
-  margin-top: -20px;
   flex-direction: row;
   gap: 10px;
   justify-content: space-between;
-  align-items: center;
+  padding: 10px;
   border-bottom: 1px solid gray;
 }
 
@@ -22,12 +27,12 @@
   padding: 10px 15px;
   font-size: 16px;
   color: white;
-  background-color: #32292f;
+  background-color: #333;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .create-project-button:hover {
-  background-color: #50404b;
+  background-color: #454545;
 }

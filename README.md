@@ -1,11 +1,11 @@
 # Project Name: Heno
 https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
-Intern: Joy Itodo  
-Intern Manager: Shulin Zhao  
-Intern Director: Cesar Barraza  
+Intern: Joy Itodo
+Intern Manager: Shulin Zhao
+Intern Director: Cesar Barraza
 
-Category: Productivity/Professional Services  
+Category: Productivity/Professional Services
 Description: A project management tool that helps teams create and plan projects and tasks, with real-time updates and effective communication
 
 ## User roles
@@ -21,7 +21,7 @@ Description: A project management tool that helps teams create and plan projects
 6. As a team member, I want to view my task(s), so I can know the description of my task(s) and be aware of the timeline
 7. As a team member, I want to update the status of my task, so I can keep my team informed on my progress
 8. As a team member, I want to view comments, so I can see others feedbacks or thoughts on my task
-9. As a team member, I want to comment on a task, so I can  effectively collaborate with my team 
+9. As a team member, I want to comment on a task, so I can  effectively collaborate with my team
 10. As a team member, I want to receive notifications about my task updates, so I can stay informed on any important update
 
 ## User personas:
@@ -68,20 +68,7 @@ Description: A project management tool that helps teams create and plan projects
 11. User’s profile
 
 
-## Wireframe
-![image](https://github.com/Meta-University/heno/assets/102590542/d849b1ae-d370-43a7-8180-6d36003dc70e)
 
-![image](https://github.com/Meta-University/heno/assets/102590542/72774582-1c99-483d-aa95-4d591e5cfcbe)
-
-![image](https://github.com/Meta-University/heno/assets/102590542/f0bbeba5-2306-438b-b117-f006381dcc31)
-
-![image](https://github.com/Meta-University/heno/assets/102590542/f059fefa-50f2-4e2e-95b3-55af323ababc)
-
-![image](https://github.com/Meta-University/heno/assets/102590542/1767fdab-2b87-4704-9aff-78a568739e46)
-
-![image](https://github.com/Meta-University/heno/assets/102590542/112b62f9-a057-48f3-a859-a42f6d5f3bc8)
-
-![image](https://github.com/Meta-University/heno/assets/102590542/edcd95b3-5e7c-4d5d-a6ca-a6f15f532349)
 
 
 ## Server Endpoints
@@ -158,13 +145,13 @@ Description: A project management tool that helps teams create and plan projects
 
 For your project, you should demonstrate that you can apply what you’ve learned so far and expand on that knowledge to write code and implement features that go beyond the scope of the projects you worked on during CodePath.
 
-Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out. 
+Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out.
 
 ### Technical Challenge #1 - [Name/Small Description]
 What
-What problem are you solving, and what parts go beyond what you learned in CodePath? 
+What problem are you solving, and what parts go beyond what you learned in CodePath?
 How
-Explain in words how you’ll solve this problem. 
+Explain in words how you’ll solve this problem.
 
 You’re encouraged to expand on this section with pseudo-code, links to external frameworks, architecture / design diagrams, anything that you can use to explain this to others!
 Technical Challenge #2

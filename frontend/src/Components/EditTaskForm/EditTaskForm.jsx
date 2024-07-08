@@ -1,8 +1,9 @@
 import "./EditTaskForm.css";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import CustomAlert from "../CustomAlert/CustomAlert";
 
-function EditTaskForm() {
+function EditTaskForm(props) {
   const { id } = useParams();
   const [task, setTask] = useState();
   const [teamMembers, setTeamMembers] = useState([]);
@@ -41,10 +42,14 @@ function EditTaskForm() {
       });
 
       if (response.ok) {
-        navigate(`/tasks/${id}`);
+        props.displayEditForm();
+        props.refreshTask();
       } else {
         const data = await response.json();
         setError(data.error);
+
+        // props.handleError(data.error);
+        // props.displayEditForm();
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -56,8 +61,13 @@ function EditTaskForm() {
 
   return (
     <div className="task-edit-form-container">
-      <h1>Edit Task</h1>
+      <div>
+        <i className="fa-solid fa-xmark" onClick={props.displayEditForm}></i>
+        <h1>Edit Task</h1>
+      </div>
+
       {error && <div className="error">{error}</div>}
+
       <form onSubmit={handleEditTask}>
         <input
           type="text"

@@ -35,7 +35,7 @@ function Login() {
         const data = await response.json();
         const loggedInUser = data.user;
         updateUser(loggedInUser);
-        navigate("/projects");
+        navigate("/home");
       } else {
         setError("Login failed");
       }
@@ -58,13 +58,16 @@ function Login() {
         </>
         <form onSubmit={handleLogin}>
           <div className="inputs">
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div className="input-container">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
             <div className="password-container">
               <input
                 type={showPassword ? "text" : "password"}

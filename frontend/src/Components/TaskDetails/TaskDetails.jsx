@@ -1,13 +1,18 @@
 import "./TaskDetails.css";
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import EditTaskForm from "../EditTaskForm/EditTaskForm";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import CustomAlert from "../CustomAlert/CustomAlert";
 
 function TaskDetails() {
   const { id } = useParams();
   const [task, setTask] = useState(null);
   const navigate = useNavigate();
+  const [displayEditForm, setDisplayEditForm] = useState(false);
+  const [error, setError] = useState("");
 
-  async function fetchtask() {
+  async function fetchTask() {
     try {
       const response = await fetch(`http://localhost:3000/tasks/${id}`);
       const data = await response.json();
@@ -18,7 +23,7 @@ function TaskDetails() {
   }
 
   useEffect(() => {
-    fetchtask();
+    fetchTask();
   }, [id]);
 
   function formatText(text) {
@@ -29,12 +34,30 @@ function TaskDetails() {
       .join(" ");
   }
 
+  function handleSetErrorMessage(message) {
+    setError(message);
+  }
+
   function handleDisplayTaskList() {
     navigate("/tasks");
   }
 
   function handleEditClick() {
-    navigate(`/tasks/${id}/edit`);
+    setDisplayEditForm(!displayEditForm);
+  }
+
+  function getStatusClass(status) {
+    if (status == "NOT_STARTED") {
+      return "not-started";
+    } else if (status === "TODO") {
+      return "todo";
+    } else if (status === "IN_PROGRESS") {
+      return "in-progress";
+    } else if (status === "COMPLETED") {
+      return "completed";
+    } else if (status === "ON_HOLD") {
+      return "on-hold";
+    }
   }
 
   async function handleDeleteTask() {
@@ -54,16 +77,17 @@ function TaskDetails() {
   }
 
   if (!task) return <div>Loading...</div>;
+  if (error) return <CustomAlert message={"error"} onClose={setError("")} />;
 
   return (
     <div className="task-details-container">
       <div className="task-header">
-        <div>
+        <div className="title-back-icon">
           <i
             className="fa-solid fa-arrow-left"
             onClick={handleDisplayTaskList}
           ></i>
-          <h1>{task.title}</h1>
+          <h1>{capitalizeFirstLetters(task.title)}</h1>
         </div>
 
         <div className="delete-edit-icon">
@@ -73,7 +97,10 @@ function TaskDetails() {
       </div>
       <div className="assignee-table">
         <p className="detail-title">
-          Assigned to {task.assignee ? task.assignee.name : "unassigned"}
+          Assigned to{" "}
+          {task.assignee
+            ? capitalizeFirstLetters(task.assignee.name)
+            : "unassigned"}
         </p>
       </div>
 
@@ -81,19 +108,22 @@ function TaskDetails() {
         <h4>Details</h4>
         <div className="detail">
           <p className="detail-title">Status</p>
-          <p>{formatText(task.status)}</p>
+          <p className={`task ${getStatusClass(task.status)}`}>
+            {formatText(task.status)}
+          </p>
         </div>
-        <div className="detail">
-          <p className="detail-title">Due date</p>
-          <p>{new Date(task.due_date).toDateString()}</p>
-        </div>
+
         <div className="detail">
           <p className="detail-title">Created</p>
-          <p>{new Date(task.createdAt).toDateString()}</p>
+          <p>{new Date(task.createdAt).toLocaleDateString()}</p>
         </div>
         <div className="detail">
           <p className="detail-title">Updated</p>
-          <p>{new Date(task.updatedAt).toDateString()}</p>
+          <p>{new Date(task.updatedAt).toLocaleDateString()}</p>
+        </div>
+        <div className="detail">
+          <p className="detail-title">Due date</p>
+          <p>{new Date(task.due_date).toLocaleDateString()}</p>
         </div>
 
         <h4>Description</h4>
@@ -107,9 +137,17 @@ function TaskDetails() {
         <div className="comment-section">
           <h3>Comments</h3>
           <ul></ul>
-          <textarea placeholder="Add a comment" />
+          <input placeholder="Add a comment" />
           <button>Send</button>
         </div>
+      </div>
+      <div className={`edit-form-container ${displayEditForm && "visible"}`}>
+        <EditTaskForm
+          task={task}
+          displayEditForm={handleEditClick}
+          refreshTask={fetchTask}
+          handleError={handleSetErrorMessage}
+        />
       </div>
     </div>
   );

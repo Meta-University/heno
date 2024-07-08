@@ -44,10 +44,14 @@ function CreateForm(props) {
     setTeamMembers([...teamMembers, member]);
   }
 
-  if (props.displayCreateProjectForm) {
-    return (
-      <div className="create-project-form">
-        <h1>Create a New Project</h1>
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content" id="create-project-form">
+        <div className="create-close-project">
+          <h2>Create a New Project</h2>
+          <i className="fa-solid fa-xmark" onClick={props.displayForm}></i>
+        </div>
+
         <form onSubmit={handleCreateProject}>
           <input
             type="text"
@@ -98,18 +102,11 @@ function CreateForm(props) {
             <button type="submit" className="create">
               Create Project
             </button>
-            <button
-              type="button"
-              className="cancel"
-              onClick={props.displayForm}
-            >
-              Cancel
-            </button>
           </div>
         </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default CreateForm;

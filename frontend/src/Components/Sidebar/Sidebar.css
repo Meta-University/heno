@@ -1,19 +1,15 @@
-.sidebar-container {
-  position: relative;
-}
 .sidebar {
+  width: 250px;
+  background-color: #333;
+  color: white;
+  padding-top: 60px;
+  height: 100vh;
   position: fixed;
-  top: 0;
-  left: -350px;
-  width: 300px;
-  height: 100%;
-  /* background-color: #b56576; */
-  background-color: #fff;
-  color: #fff;
-  overflow-x: hidden;
-  transition: left 0.3s ease;
-  z-index: 1000;
-  padding: 20px;
+  top: 40px;
+  left: -250px;
+  overflow: hidden;
+  transition: 0.5s;
+  z-index: 1;
 }
 
 .sidebar.open {
@@ -24,7 +20,6 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  margin-top: -25px;
 }
 
 .sidebar-title {
@@ -46,6 +41,7 @@
   flex-direction: column;
   gap: 7px;
   margin-left: -25px;
+  margin-top: -45px;
 }
 
 .sidebar-items li {
@@ -53,9 +49,12 @@
   gap: 10px;
   flex-direction: row;
   align-items: center;
+  color: white;
 }
 
 .sidebar-items ul li.selected {
+  margin-right: 10px;
+  padding-left: 10px;
   background-color: #ccc;
   border-radius: 7px;
 }
@@ -66,17 +65,19 @@
   gap: 10px;
   align-items: center;
   text-decoration: none;
-  color: black;
+  color: white;
   font-size: 15px;
-  padding-left: 10px;
 }
 
+.sidebar-items i {
+  color: white;
+}
 .icon:hover {
   color: #50404b;
 }
 
 .close-icon {
-  color: #32292f;
+  color: white;
   position: absolute;
   top: 30px;
   right: 20px;
@@ -96,28 +97,24 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 200px;
+    width: 60px;
+  }
+
+  .sidebar-items ul li {
+    margin-bottom: 20px;
+  }
+
+  .sidebar-items ul li a p {
+    display: none;
+  }
+
+  .sidebar-items ul li.selected {
+    padding: 10px;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 350px) {
   .sidebar {
-    width: 150px;
-  }
-
-  .icon {
-    padding: 10px;
-  }
-
-  .profile-title {
-    gap: 5px;
-  }
-
-  .sidebar-title h1 {
-    font-size: 19px;
-  }
-
-  .sidebar-items {
-    gap: 4px;
+    height: 100vh;
   }
 }

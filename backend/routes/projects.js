@@ -1,8 +1,13 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import axios from "axios";
+import { createClient } from "pexels";
+import env from "dotenv";
+import checkProjectPermission from "../permission.js";
 
 const projectRouter = express.Router();
 const prisma = new PrismaClient();
+env.config();
 
 projectRouter.post("/projects", async (req, res) => {
   const {
@@ -14,6 +19,7 @@ projectRouter.post("/projects", async (req, res) => {
     priority,
     teamMembers,
   } = req.body;
+
   const managerId = req.session.user.id;
 
   try {
@@ -38,8 +44,18 @@ projectRouter.post("/projects", async (req, res) => {
 });
 
 projectRouter.get("/projects", async (req, res) => {
+  const userId = req.session.user.id;
+
   try {
     const projects = await prisma.project.findMany({
+      where: {
+        OR: [
+          { manager_id: userId },
+          {
+            teamMembers: { some: { id: userId } },
+          },
+        ],
+      },
       include: {
         tasks: {
           include: {
@@ -50,6 +66,7 @@ projectRouter.get("/projects", async (req, res) => {
         teamMembers: true,
       },
     });
+
     res.json(projects);
   } catch (error) {
     res.status(500).json({ error: error.message });

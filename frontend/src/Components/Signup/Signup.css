@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   margin: 0;
 }
 
@@ -19,19 +19,39 @@
   width: 100%;
 }
 
+.input-container {
+  width: 96%;
+}
+
+.select-signup {
+  width: 100%;
+}
+
+.input-container,
 .password-container {
   background-color: whitesmoke;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-right: 10px;
+  padding-right: 20px;
   border-radius: 5px;
 }
 
+.input-container input,
 .password-container input {
-  width: 100%;
-  padding-right: 40px;
+  width: 90%;
+  outline: none;
+  border: none;
+}
+
+.password-container input {
+  margin-left: -10px;
+  margin-right: 50px;
+}
+
+.password-container .fa-solid {
+  padding-right: 5px;
 }
 
 .signup h1 {
@@ -43,6 +63,7 @@
 .signup form {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .signup .create-account-text {
@@ -52,7 +73,7 @@
 }
 
 .password-container {
-  margin: 10px;
+  margin-left: 10px;
 }
 
 .signup input,
@@ -60,7 +81,8 @@
   width: calc(100%-30px);
   outline: none;
   padding: 15px;
-  margin-bottom: 20px;
+  border: none;
+
   background-color: whitesmoke;
   border-radius: 5px;
   font-size: 16px;
@@ -71,7 +93,7 @@
   padding: 15px;
   border: none;
   border-radius: 5px;
-  background-color: #32292f;
+  background-color: #333;
   color: #ffffff;
   font-size: 16px;
   cursor: pointer;
@@ -79,7 +101,7 @@
 }
 
 .signup button:hover {
-  background-color: #50404b;
+  background-color: #454545;
 }
 
 .signup p {
@@ -87,12 +109,12 @@
 }
 
 .signup .login-link {
-  color: #32292f;
+  color: #333;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 .signup .login-link:hover {
-  color: #50404b;
+  color: #454545;
 }
