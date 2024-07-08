@@ -2,11 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function checkProjectPermission(req, res, next) {
-  //   if (!req.session || !req.session.user) {
-  //     return res
-  //       .status(401)
-  //       .json({ message: "You are not authorized to access this page" });
-  //   }
   const projectId = parseInt(req.params.projectId);
 
   const userId = req.session.user.id;

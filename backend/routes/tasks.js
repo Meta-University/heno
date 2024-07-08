@@ -183,9 +183,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
           assignee: { connect: { id: parseInt(assignee_id) } },
         },
       });
-      // for (const field of fieldsToLock) {
-      //   await releaseLock(id, field);
-      // }
+
       res.json({ message: "Task updated successfuly" });
     }, 5000);
   } catch (err) {

@@ -77,14 +77,6 @@ router.get("/users/search", async (req, res) => {
               mode: "insensitive",
             },
           },
-          {
-            // email: {
-            //   email: {
-            //     contains: query,
-            //     mode: "insensitive",
-            //   },
-            // },
-          },
         ],
       },
     });
