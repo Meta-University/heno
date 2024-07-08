@@ -66,7 +66,6 @@ function EditTaskForm(props) {
         <h1>Edit Task</h1>
       </div>
 
-      {/* {error && <CustomAlert message={error} onClose={setError("")} />}  */}
       {error && <div className="error">{error}</div>}
 
       <form onSubmit={handleEditTask}>

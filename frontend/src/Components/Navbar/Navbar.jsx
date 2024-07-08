@@ -27,7 +27,6 @@ function Navbar(props) {
       </div>
       {showProfile && <UserProfile />}
       <div className="user-profile">
-        {/* <p onClick={handleProfileDisplay}>{initials}</p> */}
         <i onClick={handleProfileDisplay} className="fa-solid fa-user"></i>
       </div>
     </div>

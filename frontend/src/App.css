@@ -11,7 +11,6 @@ body {
 .App {
   display: flex;
   flex-direction: column;
-  /* width: 100vw; */
 }
 
 .main-content {
@@ -24,47 +23,6 @@ body {
 .main-content.with-sidebar {
   margin-left: 250px;
 }
-
-/* .todo {
-  background-color: rgb(105, 198, 230);
-  width: 10%;
-  padding: 0.3rem;
-
-} */
-
-/* .not-started {
-  background-color: rgb(163, 163, 248);
-  width: 20%;
-  padding: 0.3rem;
-  border-radius: 10px;
-}
-
-.in-progress {
-  background-color: yellow;
-  width: 20%;
-  padding: 0.3rem;
-  border-radius: 10px;
-} */
-
-/* .tbody .in-progress {
-  background-color: yellow;
-  width: 20%;
-  padding: 0.3rem;
-} */
-
-/* .completed {
-  background-color: rgb(98, 202, 98);
-  width: 20%;
-  padding: 0.3rem;
-  border-radius: 10px;
-}
-
-.on-hold {
-  background-color: red;
-  width: 20%;
-  padding: 0.3rem;
-  border-radius: 10px;
-} */
 
 .main-content.without-sidebar {
   margin-left: 70px;
