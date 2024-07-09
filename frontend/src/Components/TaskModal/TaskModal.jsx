@@ -64,7 +64,7 @@ function TaskModal({ task, onClose }) {
       });
 
       if (response.ok) {
-        // navigate(`/tasks/${id}`);
+        navigate(`/tasks/${id}`);
       } else {
         const data = await response.json();
         setError(data.error);

@@ -19,6 +19,7 @@ import EditForm from "./Components/EditForm/EditForm";
 import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./Components/TaskDetails/TaskDetails";
 import EditTaskForm from "./Components/EditTaskForm/EditTaskForm";
+import ScheduleDiff from "./Components/ScheduleDiff/ScheduleDiff";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function App() {
@@ -29,6 +30,13 @@ function App() {
   const [projectId, setProjectId] = useState(null);
   const [projects, setProjects] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentSchedule, setCurrentSchedule] = useState([]);
+  const [aiSuggestedSchedyle, setAiSuggestedSchedule] = useState([]);
+
+  function handleSetScheduleDetails(current, aiSuggested) {
+    setCurrentSchedule(current);
+    setAiSuggestedSchedule(aiSuggested);
+  }
 
   function handleSetProjects(projects) {
     setProjects(projects);
@@ -89,7 +97,28 @@ function App() {
               />
               <Route
                 path="/projects/:id"
-                element={user ? <ProjectDetails /> : <Login />}
+                element={
+                  user ? (
+                    <ProjectDetails
+                      handleSetScheduleDetails={handleSetScheduleDetails}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+              <Route
+                path="/projects/:id/diff"
+                element={
+                  user ? (
+                    <ScheduleDiff
+                      currentSchedule={currentSchedule}
+                      aiSuggestedSchedule={aiSuggestedSchedyle}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
               />
 
               <Route path="/tasks" element={user ? <TaskList /> : <Login />} />
