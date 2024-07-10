@@ -23,8 +23,8 @@ function ProjectDetails(props) {
 
   async function fetchProject() {
     try {
-      const resonse = await fetch(`http://localhost:3000/projects/${id}`);
-      const data = await resonse.json();
+      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const data = await response.json();
       setProject(data);
       setCurrentSchedule(data);
       setTasks(data.tasks || []);
@@ -104,12 +104,19 @@ function ProjectDetails(props) {
   async function reorganiseButtonClick() {
     try {
       setLoading(true);
-      const suggestedSchedule = await reorganiseSchedule(currentSchedule);
-      console.log(currentSchedule);
+      const [suggestedSchedule, changes] = await reorganiseSchedule(
+        currentSchedule
+      );
+
       setAiSuggestedSchedule(suggestedSchedule);
       console.log(suggestedSchedule);
+
       setShowDiff(true);
-      props.handleSetScheduleDetails(currentSchedule, suggestedSchedule);
+      props.handleSetScheduleDetails(
+        currentSchedule,
+        suggestedSchedule,
+        changes
+      );
 
       navigate(`/projects/${id}/diff`);
     } catch (error) {

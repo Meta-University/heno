@@ -47,9 +47,6 @@ function EditTaskForm(props) {
       } else {
         const data = await response.json();
         setError(data.error);
-
-        // props.handleError(data.error);
-        // props.displayEditForm();
       }
     } catch (error) {
       console.error("Error updating task:", error);

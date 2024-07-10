@@ -68,3 +68,20 @@ td {
   background-color: #ddffdd;
   border-left: 4px solid #00ff00;
 }
+
+.reasons {
+  margin-top: 10px;
+}
+
+.reasons h3 {
+  margin-top: 5px;
+}
+
+.reasons ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.reasons li {
+  margin-bottom: 5px;
+}

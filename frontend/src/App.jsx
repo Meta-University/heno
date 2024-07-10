@@ -32,10 +32,12 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentSchedule, setCurrentSchedule] = useState([]);
   const [aiSuggestedSchedyle, setAiSuggestedSchedule] = useState([]);
+  const [changesMade, setChangesMade] = useState([]);
 
-  function handleSetScheduleDetails(current, aiSuggested) {
+  function handleSetScheduleDetails(current, aiSuggested, changes) {
     setCurrentSchedule(current);
     setAiSuggestedSchedule(aiSuggested);
+    setChangesMade(changes);
   }
 
   function handleSetProjects(projects) {
@@ -114,6 +116,8 @@ function App() {
                     <ScheduleDiff
                       currentSchedule={currentSchedule}
                       aiSuggestedSchedule={aiSuggestedSchedyle}
+                      changes={changesMade}
+                      refreshProject={projects}
                     />
                   ) : (
                     <Login />

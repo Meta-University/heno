@@ -1,10 +1,22 @@
 import "./ScheduleDiff.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { useState, useEffect } from "react";
+import { reorganiseSchedule } from "../../reorganiseSchedule";
 
-function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
+function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  async function handleAiSuggestedSchedule() {
+    const [suggestedSchedule, changes] = await reorganiseSchedule(
+      currentSchedule
+    );
+    setChanges(changes);
+    setAiSuggestedSchedule(suggestedSchedule);
+  }
+
+  console.log(aiSuggestedSchedule);
 
   function formatText(text) {
     return text
@@ -13,11 +25,10 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   }
+  console.log(changes);
 
   function getDifferences(current, suggested) {
     return current.tasks.map((task, index) => {
-      console.log(current.tasks);
-      console.log(suggested);
       const suggestedTask = suggested[index];
       return {
         ...task,
@@ -32,12 +43,38 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
       };
     });
   }
+  console.log(aiSuggestedSchedule);
 
   function handleRollBack() {
     navigate(`/projects/${id}`);
   }
 
-  function handleUpdateProjectDetails() {}
+  async function handleUpdateProjectDetails() {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/projects/${id}/approve-suggestions`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tasks: aiSuggestedSchedule.tasks,
+          }),
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Project updated: ", data.message);
+        navigate(`/projects/${id}`);
+      } else {
+        console.error("Failed to update project");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const differences = getDifferences(
     currentSchedule,
@@ -54,7 +91,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Description</th>
+
                 <th>Status</th>
                 <th>Start Date</th>
                 <th>Due Date</th>
@@ -71,13 +108,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
                   >
                     {capitalizeFirstLetters(task.title)}
                   </td>
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.description ? "diff" : ""
-                    }`}
-                  >
-                    {task.description}
-                  </td>
+
                   <td
                     className={`diff-item ${
                       differences[index].differences.status ? "diff" : ""
@@ -117,7 +148,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Description</th>
+
                 <th>Status</th>
                 <th>Start Date</th>
                 <th>Due Date</th>
@@ -136,15 +167,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
                   >
                     {capitalizeFirstLetters(task.title)}
                   </td>
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.description
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {task.description}
-                  </td>
+
                   <td
                     className={`diff-item ${
                       differences[index].differences.status
@@ -186,6 +209,14 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule }) {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="reasons">
+        <h3>Reasons for changes</h3>
+        <ul>
+          {changes.map((change, index) => (
+            <li key={index}>{change.change}</li>
+          ))}
+        </ul>
       </div>
       <div className="ok-rollback-btn">
         <button className="ok-btn" onClick={handleUpdateProjectDetails}>
