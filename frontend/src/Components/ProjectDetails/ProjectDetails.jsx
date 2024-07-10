@@ -6,20 +6,27 @@ import EditForm from "../EditForm/EditForm";
 import TaskList from "../TaskList/TaskList";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { reorganiseSchedule } from "../../reorganiseSchedule";
+import ScheduleDiff from "../ScheduleDiff/ScheduleDiff";
 
-function ProjectDetails() {
+function ProjectDetails(props) {
   const { id } = useParams();
   const [project, setProject] = useState([]);
   const [displayEditForm, setDisplayEditForm] = useState(false);
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [currentSchedule, setCurrentSchedule] = useState([]);
+  const [aiSuggestedSchedyle, setAiSuggestedSchedule] = useState([]);
+  const [showDiff, setShowDiff] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function fetchProject() {
     try {
-      const resonse = await fetch(`http://localhost:3000/projects/${id}`);
-      const data = await resonse.json();
+      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const data = await response.json();
       setProject(data);
+      setCurrentSchedule(data);
       setTasks(data.tasks || []);
     } catch (error) {
       console.error("Error fetching projects", error);
@@ -94,11 +101,37 @@ function ProjectDetails() {
     }
   }
 
+  async function reorganiseButtonClick() {
+    try {
+      setLoading(true);
+      const [suggestedSchedule, changes] = await reorganiseSchedule(
+        currentSchedule
+      );
+
+      setAiSuggestedSchedule(suggestedSchedule);
+      console.log(suggestedSchedule);
+
+      setShowDiff(true);
+      props.handleSetScheduleDetails(
+        currentSchedule,
+        suggestedSchedule,
+        changes
+      );
+
+      navigate(`/projects/${id}/diff`);
+    } catch (error) {
+      console.error("Error reorganising schedule: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (!project) return <div>Loading...</div>;
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="project-details-container ">
-      <button>AI please help me reorganise</button>
       <div className="project-details-header">
         <div className="overview">
           <i className="fa-solid fa-list"></i>
@@ -167,6 +200,9 @@ function ProjectDetails() {
             <p className="project-value">{project.description}</p>
           </div>
         </div>
+        <button className="reorganise-btn" onClick={reorganiseButtonClick}>
+          AI please help me reorganise
+        </button>
 
         <div className="tasks">
           <button className="add-task-btn" onClick={toogleTaskForm}>

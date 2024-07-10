@@ -9,6 +9,12 @@ import Sequelize from "sequelize";
 import SequelizeStoreInit from "connect-session-sequelize";
 import taskRouter from "./routes/tasks.js";
 import axios from "axios";
+import reorganiseRouuter from "./reorganise.js";
+import {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} from "@google/generative-ai";
 
 const app = express();
 const port = 3000;
@@ -49,6 +55,7 @@ sessionStore.sync();
 app.use(router);
 app.use(projectRouter);
 app.use(taskRouter);
+app.use(reorganiseRouuter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

@@ -137,6 +137,34 @@ projectRouter.put("/projects/:id", async (req, res) => {
   }
 });
 
+projectRouter.put(
+  "/projects/:projectId/approve-suggestions",
+  async (req, res) => {
+    const { projectId } = req.params;
+    const { tasks } = req.body;
+
+    for (const task of tasks) {
+      const { id, project_id, assignee_id, ...updateData } = task;
+      await prisma.task.update({
+        where: {
+          id: parseInt(task.id),
+        },
+        data: {
+          ...updateData,
+          project: {
+            connect: { id: parseInt(project_id) },
+          },
+          assignee: {
+            connect: { id: parseInt(assignee_id) },
+          },
+        },
+      });
+    }
+
+    res.status(200).json({ message: "Project updated successfuly" });
+  }
+);
+
 projectRouter.delete("/projects/:id", async (req, res) => {
   const { id } = req.params;
   try {
