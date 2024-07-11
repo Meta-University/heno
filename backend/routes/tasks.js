@@ -1,9 +1,11 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import checkProjectPermission from "../permission.js";
+import { Server as SocketIOServer } from "socket.io";
+import { emitNotification } from "./notifications.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();
+const io = new SocketIOServer();
 
 const LOCK_TIMEOUT = 60000;
 
@@ -82,6 +84,7 @@ taskRouter.post("/tasks", async (req, res) => {
 
 taskRouter.get("/tasks", async (req, res) => {
   const userId = req.session.user.id;
+
   try {
     const tasks = await prisma.task.findMany({
       where: {
@@ -172,7 +175,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     }, LOCK_TIMEOUT);
 
     setTimeout(async () => {
-      await prisma.task.update({
+      const updatedTask = await prisma.task.update({
         where: { id: parseInt(id) },
         data: {
           title,
@@ -183,6 +186,14 @@ taskRouter.put("/tasks/:id", async (req, res) => {
           assignee: { connect: { id: parseInt(assignee_id) } },
         },
       });
+
+      await emitNotification(
+        "TASK_EDIT",
+        parseInt(id),
+        null,
+        `Task ${updatedTask.title} has been edited`,
+        updatedTask.project_id
+      );
 
       res.json({ message: "Task updated successfuly" });
     }, 5000);
@@ -195,6 +206,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
 taskRouter.delete("/tasks/:id", async (req, res) => {
   const { id } = req.params;
   try {
+    await prisma.comment.deleteMany();
     const task = await prisma.task.delete({
       where: {
         id: parseInt(id),
@@ -203,6 +215,101 @@ taskRouter.delete("/tasks/:id", async (req, res) => {
     res.json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+taskRouter.get("/tasks/:id/comments", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { task_id: parseInt(id) },
+      include: { user: true },
+    });
+
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch comments" });
+  }
+});
+
+taskRouter.post("/tasks/:taskId/comments", async (req, res) => {
+  const { taskId } = req.params;
+  const userId = req.session.user.id;
+  const { content } = req.body;
+
+  try {
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        user: {
+          connect: { id: parseInt(userId) },
+        },
+        task: {
+          connect: { id: parseInt(taskId) },
+        },
+      },
+    });
+
+    const task = await prisma.task.findUnique({
+      where: { id: parseInt(taskId) },
+      include: { project: true },
+    });
+
+    if (task) {
+      await emitNotification(
+        "COMMENT",
+        parseInt(taskId),
+        comment.id,
+        `New comment has been added on task ${task.title}: ${content}`
+      );
+    }
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create comment" });
+  }
+});
+
+taskRouter.delete("/comments/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+  const userId = req.session.user.id;
+
+  try {
+    const comment = await prisma.comment.findUnique({
+      where: { id: parseInt(commentId) },
+      include: {
+        task: {
+          include: {
+            project: {
+              include: {
+                manager: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    if (
+      comment.user_id !== userId &&
+      comment.task.project.manager_id != userId
+    ) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    await prisma.comment.delete({
+      where: { id: parseInt(commentId) },
+    });
+    res.status(204).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete comment" });
   }
 });
 

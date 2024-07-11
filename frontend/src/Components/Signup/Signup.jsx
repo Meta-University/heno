@@ -13,40 +13,41 @@ function Signup() {
   const { updateUser } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSignup(event) {
     event.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          confirmPassword,
-          role,
-        }),
-        credentials: "include",
-      });
+    // try {
+    const response = await fetch("http://localhost:3000/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        confirmPassword,
+        role,
+      }),
+      credentials: "include",
+    });
 
-      const data = await response.json();
-      if (response.ok) {
-        const loggedInUser = data.user;
-        updateUser(loggedInUser);
-        navigate("/home");
-      } else {
-        setError("Login failed");
-      }
-
-      if (data.error) {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.log(error);
+    const data = await response.json();
+    if (response.ok) {
+      const loggedInUser = data.user;
+      updateUser(loggedInUser);
+      navigate("/home");
+    } else {
+      setError("Login failed");
     }
+
+    if (data.error) {
+      alert(data.error);
+    }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   function navigateToLogin() {

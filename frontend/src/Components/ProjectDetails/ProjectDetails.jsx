@@ -109,7 +109,6 @@ function ProjectDetails(props) {
       );
 
       setAiSuggestedSchedule(suggestedSchedule);
-      console.log(suggestedSchedule);
 
       setShowDiff(true);
       props.handleSetScheduleDetails(

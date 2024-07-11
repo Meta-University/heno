@@ -8,15 +8,13 @@ import projectRouter from "./routes/projects.js";
 import Sequelize from "sequelize";
 import SequelizeStoreInit from "connect-session-sequelize";
 import taskRouter from "./routes/tasks.js";
-import axios from "axios";
 import reorganiseRouuter from "./reorganise.js";
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import notificationRouter from "./routes/notifications.js";
 
 const app = express();
+
 const port = 3000;
 const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
@@ -51,16 +49,38 @@ app.use(
   })
 );
 
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
 sessionStore.sync();
 app.use(router);
 app.use(projectRouter);
 app.use(taskRouter);
 app.use(reorganiseRouuter);
+app.use(notificationRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(port, () => {
+io.on("connection", (socket) => {
+  console.log("User connected ", socket.id);
+
+  socket.emit("notification", { messagee: `Welcome to heno` });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected ", socket.id);
+  });
+});
+
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+export { io };
