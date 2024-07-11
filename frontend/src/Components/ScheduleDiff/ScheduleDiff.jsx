@@ -8,16 +8,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  async function handleAiSuggestedSchedule() {
-    const [suggestedSchedule, changes] = await reorganiseSchedule(
-      currentSchedule
-    );
-    setChanges(changes);
-    setAiSuggestedSchedule(suggestedSchedule);
-  }
-
-  console.log(aiSuggestedSchedule);
-
   function formatText(text) {
     return text
       .toLowerCase()
@@ -25,10 +15,9 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   }
-  console.log(changes);
 
   function getDifferences(current, suggested) {
-    return current.tasks.map((task, index) => {
+    return current.map((task, index) => {
       const suggestedTask = suggested[index];
       return {
         ...task,
@@ -43,7 +32,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
       };
     });
   }
-  console.log(aiSuggestedSchedule);
 
   function handleRollBack() {
     navigate(`/projects/${id}`);
@@ -66,7 +54,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
       );
       if (response.ok) {
         const data = await response.json();
-        console.log("Project updated: ", data.message);
+
         navigate(`/projects/${id}`);
       } else {
         console.error("Failed to update project");
@@ -77,7 +65,7 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
   }
 
   const differences = getDifferences(
-    currentSchedule,
+    currentSchedule.tasks,
     aiSuggestedSchedule.tasks
   );
 
@@ -156,56 +144,58 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
               </tr>
             </thead>
             <tbody>
-              {aiSuggestedSchedule.tasks.map((task, index) => (
-                <tr key={task.id} className="diff-row">
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.title
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {capitalizeFirstLetters(task.title)}
-                  </td>
+              {aiSuggestedSchedule.tasks
+                .slice(0, currentSchedule.tasks.length)
+                .map((task, index) => (
+                  <tr key={task.id} className="diff-row">
+                    <td
+                      className={`diff-item ${
+                        differences[index].differences.title
+                          ? "suggested-diff"
+                          : ""
+                      }`}
+                    >
+                      {capitalizeFirstLetters(task.title)}
+                    </td>
 
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.status
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {formatText(task.status)}
-                  </td>
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.start_date
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {new Date(task.start_date).toLocaleDateString()}
-                  </td>
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.due_date
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {new Date(task.due_date).toLocaleDateString()}
-                  </td>
-                  <td
-                    className={`diff-item ${
-                      differences[index].differences.assignee
-                        ? "suggested-diff"
-                        : ""
-                    }`}
-                  >
-                    {task.assignee.name}
-                  </td>
-                </tr>
-              ))}
+                    <td
+                      className={`diff-item ${
+                        differences[index].differences.status
+                          ? "suggested-diff"
+                          : ""
+                      }`}
+                    >
+                      {formatText(task.status)}
+                    </td>
+                    <td
+                      className={`diff-item ${
+                        differences[index].differences.start_date
+                          ? "suggested-diff"
+                          : ""
+                      }`}
+                    >
+                      {new Date(task.start_date).toLocaleDateString()}
+                    </td>
+                    <td
+                      className={`diff-item ${
+                        differences[index].differences.due_date
+                          ? "suggested-diff"
+                          : ""
+                      }`}
+                    >
+                      {new Date(task.due_date).toLocaleDateString()}
+                    </td>
+                    <td
+                      className={`diff-item ${
+                        differences[index].differences.assignee
+                          ? "suggested-diff"
+                          : ""
+                      }`}
+                    >
+                      {task.assignee.name}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -214,7 +204,9 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
         <h3>Reasons for changes</h3>
         <ul>
           {changes.map((change, index) => (
-            <li key={index}>{change.change}</li>
+            <li key={index}>
+              {change.message ? change.message : change.change}
+            </li>
           ))}
         </ul>
       </div>

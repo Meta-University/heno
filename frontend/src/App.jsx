@@ -20,6 +20,7 @@ import ProjectDetails from "./Components/ProjectDetails/ProjectDetails";
 import TaskDetails from "./Components/TaskDetails/TaskDetails";
 import EditTaskForm from "./Components/EditTaskForm/EditTaskForm";
 import ScheduleDiff from "./Components/ScheduleDiff/ScheduleDiff";
+import Notifications from "./Components/Notifications/Notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function App() {
@@ -131,6 +132,10 @@ function App() {
                 element={user ? <TaskDetails /> : <Login />}
               />
               <Route path="/tasks/:id/edit" element={<EditTaskForm />} />
+              <Route
+                path="/notifications"
+                element={user ? <Notifications /> : <Login />}
+              />
             </Routes>
           </div>
         </Router>

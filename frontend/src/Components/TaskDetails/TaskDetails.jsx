@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import EditTaskForm from "../EditTaskForm/EditTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import CustomAlert from "../CustomAlert/CustomAlert";
+import Comments from "../Comments/Comments";
 
 function TaskDetails() {
   const { id } = useParams();
@@ -134,12 +135,7 @@ function TaskDetails() {
           <input type="file" />
         </div>
 
-        <div className="comment-section">
-          <h3>Comments</h3>
-          <ul></ul>
-          <input placeholder="Add a comment" />
-          <button>Send</button>
-        </div>
+        <Comments taskId={id} />
       </div>
       <div className={`edit-form-container ${displayEditForm && "visible"}`}>
         <EditTaskForm

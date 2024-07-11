@@ -21,6 +21,8 @@ model User {
   role Role
   projects Project[] @relation("ManagerProjects")
   tasks Task[]
+  comments Comment[]
+  notifications Notification[]
   teamProjects Project[] @relation("TeamMembersProjects")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -52,6 +54,7 @@ model Task {
   project_id Int
   project Project @relation(fields: [project_id], references: [id])
   assignee_id Int
+  comments Comment[]
   assignee User @relation(fields: [assignee_id], references: [id])
   title_is_updating Boolean @default(false)
   description_is_updating Boolean @default(false)
@@ -66,6 +69,29 @@ model Task {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String
+  createdAt DateTime @default(now())
+  task_id Int
+  user_id Int
+  task Task @relation(fields: [task_id], references: [id])
+  user User @relation(fields: [user_id], references: [id])
+
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  content String
+  type NotificationType
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+  task_id Int?
+  comment_id Int?
+  isRead Boolean @default(false)
+  createdAt DateTime @default(now())
 }
 
 
@@ -91,4 +117,9 @@ enum Priority {
   LOW
   MEDIUM
   HIGH
+}
+
+enum NotificationType {
+  TASK_EDIT
+  COMMENT
 }

@@ -1,9 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import axios from "axios";
-import { createClient } from "pexels";
 import env from "dotenv";
-import checkProjectPermission from "../permission.js";
 
 const projectRouter = express.Router();
 const prisma = new PrismaClient();

@@ -50,6 +50,16 @@ function Sidebar(props) {
               <p>Tasks</p>
             </Link>
           </li>
+
+          <li
+            className={selectedItem === "notifications" ? "selected" : ""}
+            onClick={() => handleItemClick("notifications")}
+          >
+            <Link to="/notifications">
+              <i className="fa-solid fa-bell"></i>
+              <p>Notifications</p>
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
