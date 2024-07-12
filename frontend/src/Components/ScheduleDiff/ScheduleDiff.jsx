@@ -1,12 +1,47 @@
 import "./ScheduleDiff.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { useState, useEffect } from "react";
+import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { reorganiseSchedule } from "../../reorganiseSchedule";
+import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 
-function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
+function ScheduleDiff() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [currentSchedule, setCurrentSchedule] = useState(null);
+  const [aiSuggestedSchedule, setAiSuggestedSchedule] = useState(null);
+  const [changes, setChanges] = useState([]);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    async function fetchSchedules() {
+      try {
+        const currentResponse = await fetch(
+          `http://localhost:3000/projects/${id}`
+        );
+
+        if (currentResponse.ok) {
+          const currentData = await currentResponse.json();
+          const [suggestedSchedule, changesData] = await reorganiseSchedule(
+            currentData
+          );
+
+          setCurrentSchedule(currentData);
+          setAiSuggestedSchedule(suggestedSchedule);
+          setChanges(changesData);
+        } else {
+          console.error("Failed to fetch schedules or changes");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchSchedules();
+  }, [id]);
 
   function formatText(text) {
     return text
@@ -53,8 +88,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
         }
       );
       if (response.ok) {
-        const data = await response.json();
-
         navigate(`/projects/${id}`);
       } else {
         console.error("Failed to update project");
@@ -62,6 +95,10 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  if (!currentSchedule || !aiSuggestedSchedule) {
+    return <SkeletonLoader />;
   }
 
   const differences = getDifferences(
@@ -79,7 +116,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
             <thead>
               <tr>
                 <th>Title</th>
-
                 <th>Status</th>
                 <th>Start Date</th>
                 <th>Due Date</th>
@@ -96,7 +132,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
                   >
                     {capitalizeFirstLetters(task.title)}
                   </td>
-
                   <td
                     className={`diff-item ${
                       differences[index].differences.status ? "diff" : ""
@@ -136,7 +171,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
             <thead>
               <tr>
                 <th>Title</th>
-
                 <th>Status</th>
                 <th>Start Date</th>
                 <th>Due Date</th>
@@ -157,7 +191,6 @@ function ScheduleDiff({ currentSchedule, aiSuggestedSchedule, changes }) {
                     >
                       {capitalizeFirstLetters(task.title)}
                     </td>
-
                     <td
                       className={`diff-item ${
                         differences[index].differences.status

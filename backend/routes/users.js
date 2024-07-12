@@ -4,7 +4,6 @@ import env from "dotenv";
 import bcrypt from "bcrypt";
 
 const router = express.Router();
-const port = 3000;
 const prisma = new PrismaClient();
 const saltRounds = 10;
 env.config();

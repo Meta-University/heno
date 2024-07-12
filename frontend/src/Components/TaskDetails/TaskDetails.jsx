@@ -115,16 +115,20 @@ function TaskDetails() {
         </div>
 
         <div className="detail">
+          <p className="detail-title">Start date</p>
+          <p>{new Date(task.start_date).toLocaleDateString()}</p>
+        </div>
+        <div className="detail">
+          <p className="detail-title">Due date</p>
+          <p>{new Date(task.due_date).toLocaleDateString()}</p>
+        </div>
+        <div className="detail">
           <p className="detail-title">Created</p>
           <p>{new Date(task.createdAt).toLocaleDateString()}</p>
         </div>
         <div className="detail">
           <p className="detail-title">Updated</p>
           <p>{new Date(task.updatedAt).toLocaleDateString()}</p>
-        </div>
-        <div className="detail">
-          <p className="detail-title">Due date</p>
-          <p>{new Date(task.due_date).toLocaleDateString()}</p>
         </div>
 
         <h4>Description</h4>

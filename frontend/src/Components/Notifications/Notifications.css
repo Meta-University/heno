@@ -1,5 +1,4 @@
 .notifications-container {
-  max-width: 600px;
   margin: 20px auto;
   padding: 20px;
   background-color: #f0f0f0;
@@ -18,6 +17,9 @@
 }
 
 .notification-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;

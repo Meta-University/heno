@@ -56,7 +56,7 @@ reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
       const result = await chatSession.sendMessage(
         `Reorganize the following project  schedule to be more efficient and balanced:\n  ${JSON.stringify(
           schedule
-        )}\n  Provide the reorganized schedule in the same format`
+        )}\n  Provide the reorganized schedule in the same format and do not suggest a new task`
       );
       const message = await chatSession.sendMessage(
         `Send a message on each of the changes made as a JSON.`

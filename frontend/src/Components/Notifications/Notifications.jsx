@@ -38,14 +38,21 @@ function Notifications() {
     }
   }
 
+  const sortedNotifications = [...notifications].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   return (
     <div className="notifications-container">
       <h3>Notifications</h3>
       <div className="notifications-list">
-        {notifications.map((notification, index) => (
-          <div key={index} className="notifcation-item">
+        {sortedNotifications.map((notification, index) => (
+          <div key={index} className="notification-item">
             <p>{notification.content}</p>
-            <p>At {new Date(notification.createdAt).toLocaleDateString()}</p>
+            <p>
+              {new Date(notification.createdAt).toLocaleDateString()} at{" "}
+              {new Date(notification.createdAt).toLocaleTimeString()}
+            </p>
           </div>
         ))}
       </div>

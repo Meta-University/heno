@@ -3,8 +3,7 @@
   top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  background-color: #c51524;
   padding: 20px;
   z-index: 1000;
   width: 300px;
@@ -19,7 +18,7 @@
 }
 
 .custom-alert-message {
-  color: #721c24;
+  color: #fff;
   font-size: 16px;
 }
 
@@ -28,5 +27,5 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #721c24;
+  color: #fff;
 }
