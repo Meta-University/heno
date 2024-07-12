@@ -70,18 +70,43 @@ td {
 }
 
 .reasons {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .reasons h3 {
-  margin-top: 5px;
+  text-align: center;
 }
 
 .reasons ul {
-  list-style-type: disc;
-  padding-left: 20px;
+  list-style-type: none;
+  padding: 0;
 }
 
 .reasons li {
-  margin-bottom: 5px;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.ok-rollback-btn {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.ok-btn,
+.rollback-btn {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.ok-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.rollback-btn {
+  background-color: #f44336;
+  color: white;
 }

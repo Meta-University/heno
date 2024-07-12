@@ -9,6 +9,7 @@ function EditTaskForm(props) {
   const [teamMembers, setTeamMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [displayAlert, setDisplayAlert] = useState(false);
   const navigate = useNavigate();
 
   async function fetchTask() {
@@ -30,6 +31,10 @@ function EditTaskForm(props) {
     fetchTask();
   }, [id]);
 
+  function handleDisplayAlert() {
+    setDisplayAlert(false);
+  }
+
   async function handleEditTask(event) {
     event.preventDefault();
     try {
@@ -47,6 +52,7 @@ function EditTaskForm(props) {
       } else {
         const data = await response.json();
         setError(data.error);
+        setDisplayAlert(true);
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -63,7 +69,9 @@ function EditTaskForm(props) {
         <h1>Edit Task</h1>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && displayAlert && (
+        <CustomAlert message={error} onClose={handleDisplayAlert} />
+      )}
 
       <form onSubmit={handleEditTask}>
         <input

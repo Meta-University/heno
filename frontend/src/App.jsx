@@ -39,6 +39,7 @@ function App() {
     setCurrentSchedule(current);
     setAiSuggestedSchedule(aiSuggested);
     setChangesMade(changes);
+    console.log(currentSchedule);
   }
 
   function handleSetProjects(projects) {

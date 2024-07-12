@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./ProjectDetails.css";
 import EditForm from "../EditForm/EditForm";
-import TaskList from "../TaskList/TaskList";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
-import { reorganiseSchedule } from "../../reorganiseSchedule";
-import ScheduleDiff from "../ScheduleDiff/ScheduleDiff";
+import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 
 function ProjectDetails(props) {
   const { id } = useParams();
@@ -17,8 +14,6 @@ function ProjectDetails(props) {
   const [tasks, setTasks] = useState([]);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [currentSchedule, setCurrentSchedule] = useState([]);
-  const [aiSuggestedSchedyle, setAiSuggestedSchedule] = useState([]);
-  const [showDiff, setShowDiff] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function fetchProject() {
@@ -73,10 +68,6 @@ function ProjectDetails(props) {
     }
   }
 
-  function handleDisplayProjectsList() {
-    navigate("/projects");
-  }
-
   function getStatusClass(status) {
     if (status == "NOT_STARTED") {
       return "not-started";
@@ -103,20 +94,6 @@ function ProjectDetails(props) {
 
   async function reorganiseButtonClick() {
     try {
-      setLoading(true);
-      const [suggestedSchedule, changes] = await reorganiseSchedule(
-        currentSchedule
-      );
-
-      setAiSuggestedSchedule(suggestedSchedule);
-
-      setShowDiff(true);
-      props.handleSetScheduleDetails(
-        currentSchedule,
-        suggestedSchedule,
-        changes
-      );
-
       navigate(`/projects/${id}/diff`);
     } catch (error) {
       console.error("Error reorganising schedule: ", error);
@@ -125,9 +102,9 @@ function ProjectDetails(props) {
     }
   }
 
-  if (!project) return <div>Loading...</div>;
+  if (!project) return <SkeletonLoader />;
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <SkeletonLoader />;
 
   return (
     <div className="project-details-container ">
@@ -148,6 +125,15 @@ function ProjectDetails(props) {
             <p className="project-key">Project</p>
             <p className="project-value">
               {project.title && capitalizeFirstLetters(project.title)}
+            </p>
+          </div>
+        </div>
+
+        <div className="detail-row">
+          <div className="detail">
+            <p className="project-key">Start Date</p>
+            <p className="project-value">
+              {new Date(project.start_date).toLocaleDateString()}
             </p>
           </div>
           <div className="detail">

@@ -163,7 +163,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
       const acquired = await acquireLock(id, field);
       if (!acquired) {
         return res.status(409).json({
-          error: `Task is being upated by someone else. Please try again later`,
+          error: `This task is being upated by someone else. Please try again after one minute`,
         });
       }
     }
@@ -196,7 +196,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
       );
 
       res.json({ message: "Task updated successfuly" });
-    }, 5000);
+    }, 2000);
   } catch (err) {
     console.error("Error updating task", err);
     res.status(500).json({ message: "Internal server error" });
