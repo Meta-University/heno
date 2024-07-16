@@ -37,8 +37,8 @@ function AddTeamMembers(props) {
         onChange={(e) => setQuery(e.target.value)}
       />
       <ul>
-        {suggestions.map((user) => (
-          <li key={user.id} onClick={() => handleAddMember(user)}>
+        {suggestions.map((user, index) => (
+          <li key={index} onClick={() => handleAddMember(user)}>
             {user.name} ({user.email})
           </li>
         ))}

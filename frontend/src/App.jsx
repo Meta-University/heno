@@ -22,6 +22,7 @@ import EditTaskForm from "./Components/EditTaskForm/EditTaskForm";
 import ScheduleDiff from "./Components/ScheduleDiff/ScheduleDiff";
 import Notifications from "./Components/Notifications/Notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Recommendation from "./Components/Recommendation/Recommendation";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -136,6 +137,10 @@ function App() {
               <Route
                 path="/notifications"
                 element={user ? <Notifications /> : <Login />}
+              />
+              <Route
+                path="/ai-recommend-tasks"
+                element={user ? <Recommendation /> : <Login />}
               />
             </Routes>
           </div>

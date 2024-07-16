@@ -6,6 +6,7 @@ function CreateTaskForm(props) {
   const [description, setDescription] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
   const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const projectId = props.projectId;
@@ -17,6 +18,7 @@ function CreateTaskForm(props) {
       description,
       assigneeId: parseInt(assigneeId),
       status,
+      priority,
       due_date: dueDate,
       start_date: startDate,
       projectId,
@@ -61,6 +63,7 @@ function CreateTaskForm(props) {
             onChange={(e) => setDescription(e.target.value)}
             required
           ></textarea>
+          <label>Start date</label>
           <input
             type="date"
             placeholder="Task Start Date"
@@ -68,6 +71,7 @@ function CreateTaskForm(props) {
             onChange={(e) => setStartDate(e.target.value)}
             required
           />
+          <label>Due date</label>
           <input
             type="date"
             value={dueDate}
@@ -97,6 +101,17 @@ function CreateTaskForm(props) {
             <option value="TODO">To Do</option>
             <option value="IN_PROGRESS">In Progress</option>
             <option value="COMPLETED">Completed</option>
+          </select>
+
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            required
+          >
+            <option value="">Set Priority</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
           </select>
 
           <div className="buttons">

@@ -64,12 +64,14 @@ function CreateForm(props) {
             onChange={(e) => setDescription(e.target.value)}
             required
           ></textarea>
+          <label>Start date</label>
           <input
             type="date"
             placeholder="Project Start Date"
             onChange={(e) => setStartDate(e.target.value)}
             required
           />
+          <label>Due date</label>
           <input
             type="date"
             placeholder="Project Due Date"

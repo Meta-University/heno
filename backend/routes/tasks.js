@@ -57,29 +57,31 @@ taskRouter.post("/tasks", async (req, res) => {
     title,
     description,
     status,
+    priority,
     due_date,
     start_date,
     assigneeId,
     projectId,
   } = req.body;
-  try {
-    const task = await prisma.task.create({
-      data: {
-        title,
-        description,
-        status,
-        start_date: new Date(start_date),
-        due_date: new Date(due_date),
-        assignee: { connect: { id: assigneeId } },
-        project: {
-          connect: { id: projectId },
-        },
+  // try {
+  const task = await prisma.task.create({
+    data: {
+      title,
+      description,
+      status,
+      priority,
+      start_date: new Date(start_date),
+      due_date: new Date(due_date),
+      assignee: { connect: { id: assigneeId } },
+      project: {
+        connect: { id: projectId },
       },
-    });
-    res.json(task);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    },
+  });
+  res.json(task);
+  // } catch (err) {
+  //   res.status(500).json({ message: err.message });
+  // }
 });
 
 taskRouter.get("/tasks", async (req, res) => {
