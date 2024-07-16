@@ -12,6 +12,7 @@ import reorganiseRouuter from "./reorganise.js";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import notificationRouter from "./routes/notifications.js";
+import recommendRouuter from "./recommend.js";
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use(projectRouter);
 app.use(taskRouter);
 app.use(reorganiseRouuter);
 app.use(notificationRouter);
+app.use(recommendRouuter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

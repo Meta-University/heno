@@ -15,8 +15,6 @@ function ProjectList(props) {
   }
 
   function handleDisplayCreateProjectForm() {
-    console.log(displayCreateProjectForm);
-
     setDisplayCreateProjectForm(!displayCreateProjectForm);
   }
 

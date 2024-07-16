@@ -55,6 +55,7 @@ model Task {
   project Project @relation(fields: [project_id], references: [id])
   assignee_id Int
   comments Comment[]
+  priority Priority
   assignee User @relation(fields: [assignee_id], references: [id])
   title_is_updating Boolean @default(false)
   description_is_updating Boolean @default(false)

@@ -61,6 +61,16 @@ function TaskDetails() {
     }
   }
 
+  function getPriorityClass(priority) {
+    if (priority === "LOW") {
+      return "low";
+    } else if (priority === "MEDIUM") {
+      return "medium";
+    } else if (priority === "HIGH") {
+      return "high";
+    }
+  }
+
   async function handleDeleteTask() {
     try {
       const response = await fetch(`http://localhost:3000/tasks/${id}`, {
@@ -111,6 +121,12 @@ function TaskDetails() {
           <p className="detail-title">Status</p>
           <p className={`task ${getStatusClass(task.status)}`}>
             {formatText(task.status)}
+          </p>
+        </div>
+        <div className="detail">
+          <p className="detail-title">Prioritycd</p>
+          <p className={`task ${getPriorityClass(task.priority)}`}>
+            {formatText(task.priority)}
           </p>
         </div>
 

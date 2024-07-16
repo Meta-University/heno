@@ -60,6 +60,15 @@ function Sidebar(props) {
               <p>Notifications</p>
             </Link>
           </li>
+          <li
+            className={selectedItem === "ai-recommend-tasks" ? "selected" : ""}
+            onClick={() => handleItemClick("ai-recommend-tasks")}
+          >
+            <Link to="/ai-recommend-tasks">
+              <i className="fa-solid fa-chalkboard"></i>
+              <p>AI Recommended Tasks</p>
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
