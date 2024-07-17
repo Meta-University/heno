@@ -23,6 +23,9 @@ import ScheduleDiff from "./Components/ScheduleDiff/ScheduleDiff";
 import Notifications from "./Components/Notifications/Notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Recommendation from "./Components/Recommendation/Recommendation";
+import SkeletonLoader from "./Components/SkeletonLoader/SkeletonLoader";
+import RecommendationTable from "./Components/RecommendationTable/RecommendationTable";
+import RecommendationLoader from "./Components/RecommendationLoader/RecommendationLoader";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -35,6 +38,9 @@ function App() {
   const [currentSchedule, setCurrentSchedule] = useState([]);
   const [aiSuggestedSchedyle, setAiSuggestedSchedule] = useState([]);
   const [changesMade, setChangesMade] = useState([]);
+  const [recommendedProjectInfo, setRecommendedProjectInfo] = useState([]);
+  const [recommendedTasks, setRecommendedTasks] = useState([]);
+  const [recommendationLoading, setRecommendationLoading] = useState(false);
 
   function handleSetScheduleDetails(current, aiSuggested, changes) {
     setCurrentSchedule(current);
@@ -57,6 +63,12 @@ function App() {
 
   function updateUser(newUser) {
     setUser(newUser);
+  }
+
+  function handleSetRecommendationData(projectInfo, tasks, loading) {
+    setRecommendedProjectInfo(projectInfo);
+    setRecommendedTasks(tasks);
+    setRecommendationLoading(loading);
   }
 
   useEffect(() => {
@@ -139,8 +151,35 @@ function App() {
                 element={user ? <Notifications /> : <Login />}
               />
               <Route
+                path="/ai-recommendation"
+                element={
+                  user ? (
+                    <Recommendation
+                      recommendationInfo={handleSetRecommendationData}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+              <Route
                 path="/ai-recommend-tasks"
-                element={user ? <Recommendation /> : <Login />}
+                element={
+                  user ? (
+                    <RecommendationTable
+                      projectInfo={recommendedProjectInfo}
+                      tasks={recommendedTasks}
+                      loading={recommendationLoading}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
+              />
+
+              <Route
+                path="/loading"
+                element={user ? <RecommendationLoader /> : <Login />}
               />
             </Routes>
           </div>

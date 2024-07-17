@@ -1,0 +1,13 @@
+.recommendation-container {
+  background-color: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.recommendation-btn {
+  background-color: #333;
+  border: none;
+  outline: none;
+  color: white;
+  border-radius: 5px;
+}

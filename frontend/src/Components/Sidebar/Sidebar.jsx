@@ -64,7 +64,7 @@ function Sidebar(props) {
             className={selectedItem === "ai-recommend-tasks" ? "selected" : ""}
             onClick={() => handleItemClick("ai-recommend-tasks")}
           >
-            <Link to="/ai-recommend-tasks">
+            <Link to="/ai-recommendation">
               <i className="fa-solid fa-chalkboard"></i>
               <p>AI Recommended Tasks</p>
             </Link>

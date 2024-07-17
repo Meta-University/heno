@@ -124,7 +124,7 @@ function TaskDetails() {
           </p>
         </div>
         <div className="detail">
-          <p className="detail-title">Prioritycd</p>
+          <p className="detail-title">Priority</p>
           <p className={`task ${getPriorityClass(task.priority)}`}>
             {formatText(task.priority)}
           </p>
