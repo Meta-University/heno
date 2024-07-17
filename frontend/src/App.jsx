@@ -26,6 +26,7 @@ import Recommendation from "./Components/Recommendation/Recommendation";
 import SkeletonLoader from "./Components/SkeletonLoader/SkeletonLoader";
 import RecommendationTable from "./Components/RecommendationTable/RecommendationTable";
 import RecommendationLoader from "./Components/RecommendationLoader/RecommendationLoader";
+import ProjectChart from "./Components/DataVisualization/ProjectChart";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -180,6 +181,10 @@ function App() {
               <Route
                 path="/loading"
                 element={user ? <RecommendationLoader /> : <Login />}
+              />
+              <Route
+                path="/visualization/:id"
+                element={user ? <ProjectChart /> : <Login />}
               />
             </Routes>
           </div>

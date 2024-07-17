@@ -26,10 +26,10 @@ function ScheduleDiff() {
         if (currentResponse.ok) {
           const currentData = await currentResponse.json();
           const [suggestedSchedule, changesData] = await reorganiseSchedule(
-            currentData
+            currentData.project
           );
 
-          setCurrentSchedule(currentData);
+          setCurrentSchedule(currentData.project);
           setAiSuggestedSchedule(suggestedSchedule);
           setChanges(changesData);
         } else {
