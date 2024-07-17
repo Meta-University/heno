@@ -9,20 +9,16 @@ function MultiLineChart({ tasks, width, height }) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Clear the canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Define colors for different lines
     const colors = ["red", "blue", "green"];
     const padding = 50;
 
-    // Calculate the range of dates
     const startDates = tasks.map((task) => new Date(task.start_date).getTime());
     const endDates = tasks.map((task) => new Date(task.due_date).getTime());
     const minDate = Math.min(...startDates);
     const maxDate = Math.max(...endDates);
 
-    // Draw each task timeline
     tasks.forEach((task, index) => {
       const startX =
         padding +
@@ -42,12 +38,10 @@ function MultiLineChart({ tasks, width, height }) {
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw task labels
       ctx.fillStyle = colors[index % colors.length];
       ctx.fillText(task.title, endX + 5, y + 5);
     });
 
-    // Draw axis
     ctx.beginPath();
     ctx.moveTo(padding, padding);
     ctx.lineTo(padding, height - padding);
@@ -57,7 +51,6 @@ function MultiLineChart({ tasks, width, height }) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Draw axis labels
     ctx.fillStyle = "#000";
     ctx.fillText("Tasks", padding - 30, padding - 10);
     ctx.fillText("Time", width - padding + 10, height - padding + 10);
