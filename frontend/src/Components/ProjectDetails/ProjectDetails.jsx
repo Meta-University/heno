@@ -20,9 +20,9 @@ function ProjectDetails(props) {
     try {
       const response = await fetch(`http://localhost:3000/projects/${id}`);
       const data = await response.json();
-      setProject(data);
-      setCurrentSchedule(data);
-      setTasks(data.tasks || []);
+      setProject(data.project);
+      setCurrentSchedule(data.project);
+      setTasks(data.project.tasks || []);
     } catch (error) {
       console.error("Error fetching projects", error);
     }
@@ -118,6 +118,15 @@ function ProjectDetails(props) {
           <i className="fa-solid fa-trash" onClick={handleDeleteProject}></i>
         </div>
       </div>
+
+      <Link
+        to={{
+          pathname: `/visualization/${id}`,
+          state: { projectData: tasks },
+        }}
+      >
+        View Data Visualization
+      </Link>
 
       <div className="project-details">
         <div className="detail-row">

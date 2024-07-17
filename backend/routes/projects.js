@@ -87,14 +87,33 @@ projectRouter.get("/projects/:id", async (req, res) => {
         teamMembers: true,
       },
     });
+    const tasks = await prisma.task.findMany({
+      where: { project_id: parseInt(id) },
+    });
     if (!project) {
       res.status(404).json({ error: "Project not found" });
     }
-    res.json(project);
+
+    const progress = calculateProgress(tasks);
+    res.json({ project, progress });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+function calculateProgress(tasks) {
+  const statusValues = {
+    TODO: 0,
+    IN_PROGRESS: 0.5,
+    COMPLETED: 1,
+  };
+
+  const totalProgress = tasks.reduce(
+    (acc, task) => acc + statusValues[task.status],
+    0
+  );
+  return (totalProgress / tasks.length) * 100;
+}
 
 projectRouter.put("/projects/:id", async (req, res) => {
   const { id } = req.params;
