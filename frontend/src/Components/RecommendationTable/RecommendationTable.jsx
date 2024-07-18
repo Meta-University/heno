@@ -4,9 +4,10 @@ import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { UserContext } from "../../UserContext";
 import { useNavigate } from "react-router-dom";
 
-function RecommendationTable({ projectInfo, tasks }) {
+function RecommendationTable({ projectInfo, tasks, loading }) {
   const { user, updateUser } = useContext(UserContext);
   const navigate = useNavigate();
+
   async function handleApprove() {
     try {
       const response = await fetch("http://localhost:3000/api/store-project", {
@@ -24,14 +25,14 @@ function RecommendationTable({ projectInfo, tasks }) {
 
       const data = await response.json();
 
-      navigate("/ai-recommend-tasks");
+      navigate("/ai-recommendation");
     } catch (error) {
       console.error("Error storing project:", error);
     }
   }
 
   async function handleDisapprove() {
-    navigate("/ai-recommend-tasks");
+    navigate("/ai-recommendation");
   }
 
   function getStatusClass(status) {
@@ -66,112 +67,119 @@ function RecommendationTable({ projectInfo, tasks }) {
       .join(" ");
   }
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="recommendation-table-container">
-      <div className="project-details-header">
-        <div className="overview">
-          <i className="fa-solid fa-list"></i>
-          <h3>AI Recommended Tasks</h3>
+    <>
+      <div className="recommendation-table-container">
+        <div className="project-details-header">
+          <div className="overview">
+            <i className="fa-solid fa-list"></i>
+            <h3>AI Recommended Tasks</h3>
+          </div>
         </div>
-      </div>
+        <div className="project-details">
+          <div className="detail-row">
+            <div className="detail">
+              <p className="project-key">Project</p>
+              <p className="project-value">
+                {projectInfo.title && capitalizeFirstLetters(projectInfo.title)}
+              </p>
+            </div>
+          </div>
 
-      <div className="project-details">
-        <div className="detail-row">
-          <div className="detail">
-            <p className="project-key">Project</p>
-            <p className="project-value">
-              {projectInfo.title && capitalizeFirstLetters(projectInfo.title)}
-            </p>
+          <div className="detail-row">
+            <div className="detail">
+              <p className="project-key">Start Date</p>
+              <p className="project-value">
+                {new Date(projectInfo.startDate).toLocaleDateString()}
+              </p>
+            </div>
+            <div className="detail">
+              <p className="project-key">Due date</p>
+              <p className="project-value">
+                {new Date(projectInfo.endDate).toLocaleDateString()}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="detail-row">
-          <div className="detail">
-            <p className="project-key">Start Date</p>
-            <p className="project-value">
-              {new Date(projectInfo.startDate).toLocaleDateString()}
-            </p>
+          <div className="detail-row">
+            <div className="detail">
+              <p className="project-key">Priority</p>
+              <p className={`project-value ${getPriorityClass("MEDIUM")}`}>
+                {formatText("MEDIUM")}
+              </p>
+            </div>
+            <div className="detail">
+              <p className="project-key">Status</p>
+              <p className={`project-value ${getStatusClass("NOT_STARTED")}`}>
+                {formatText("NOT_STARTED")}
+              </p>
+            </div>
           </div>
-          <div className="detail">
-            <p className="project-key">Due date</p>
-            <p className="project-value">
-              {new Date(projectInfo.endDate).toLocaleDateString()}
-            </p>
-          </div>
-        </div>
 
-        <div className="detail-row">
-          <div className="detail">
-            <p className="project-key">Priority</p>
-            <p className={`project-value ${getPriorityClass("MEDIUM")}`}>
-              {formatText("MEDIUM")}
-            </p>
+          <div className="detail-row">
+            <div className="detail">
+              <p className="project-key">Manager</p>
+              <p className="project-value">
+                {capitalizeFirstLetters(user.name)}
+              </p>
+            </div>
+            <div className="detail">
+              <p className="project-key">Team</p>
+              <p className="project-value">
+                {projectInfo.teamMembers && projectInfo.teamMembers.length > 0
+                  ? projectInfo.teamMembers
+                      .map((member) => member.name)
+                      .join(", ")
+                  : "No team members"}
+              </p>
+            </div>
           </div>
-          <div className="detail">
-            <p className="project-key">Status</p>
-            <p className={`project-value ${getStatusClass("NOT_STARTED")}`}>
-              {formatText("NOT_STARTED")}
-            </p>
+          <div className="detail-row">
+            <div className="detail">
+              <p className="project-key">Description</p>
+              <p className="project-value">{projectInfo.description}</p>
+            </div>
           </div>
-        </div>
 
-        <div className="detail-row">
-          <div className="detail">
-            <p className="project-key">Manager</p>
-            <p className="project-value">{capitalizeFirstLetters(user.name)}</p>
-          </div>
-          <div className="detail">
-            <p className="project-key">Team</p>
-            <p className="project-value">
-              {projectInfo.teamMembers && projectInfo.teamMembers.length > 0
-                ? projectInfo.teamMembers
-                    .map((member) => member.name)
-                    .join(", ")
-                : "No team members"}
-            </p>
-          </div>
-        </div>
-        <div className="detail-row">
-          <div className="detail">
-            <p className="project-key">Description</p>
-            <p className="project-value">{projectInfo.description}</p>
-          </div>
-        </div>
-
-        <table className="tasks-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Assignee</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map((task, index) => (
-              <tr key={index}>
-                <td>{task.title}</td>
-                <td>{task.description}</td>
-                <td>{task.status}</td>
-                <td>{new Date(task.startDate).toLocaleDateString()}</td>
-                <td>{new Date(task.dueDate).toLocaleDateString()}</td>
-                <td>{task.assignment}</td>
+          <table className="tasks-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Assignee</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="buttons">
-          <button className="approve-button" onClick={handleApprove}>
-            Approve
-          </button>
-          <button className="disapprove-button" onClick={handleDisapprove}>
-            Disapprove
-          </button>
+            </thead>
+            <tbody>
+              {tasks.map((task, index) => (
+                <tr key={index}>
+                  <td>{task.title}</td>
+                  <td>{task.description}</td>
+                  <td>{task.status}</td>
+                  <td>{new Date(task.startDate).toLocaleDateString()}</td>
+                  <td>{new Date(task.dueDate).toLocaleDateString()}</td>
+                  <td>{task.assignment}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="buttons">
+            <button className="approve-button" onClick={handleApprove}>
+              Approve
+            </button>
+            <button className="disapprove-button" onClick={handleDisapprove}>
+              Disapprove
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

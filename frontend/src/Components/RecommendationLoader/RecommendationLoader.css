@@ -1,0 +1,60 @@
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+.skeleton-text {
+  height: 20px;
+  width: 100%;
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 100px;
+  margin: 10px;
+}
+
+.project-details-header .overview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.project-details-header .overview i {
+  font-size: 24px;
+}
+
+.project-details {
+  margin-top: 20px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.detail {
+  flex: 1;
+}
+
+.tasks-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.tasks-table th,
+.tasks-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
