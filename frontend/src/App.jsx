@@ -26,6 +26,9 @@ import Recommendation from "./Components/Recommendation/Recommendation";
 import SkeletonLoader from "./Components/SkeletonLoader/SkeletonLoader";
 import RecommendationTable from "./Components/RecommendationTable/RecommendationTable";
 import RecommendationLoader from "./Components/RecommendationLoader/RecommendationLoader";
+import ProjectChart from "./Components/DataVisualization/ProjectChart";
+import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
+import TaskCalendar from "./Components/TaskCalendar/TaskCalendar";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -112,11 +115,12 @@ function App() {
                   )
                 }
               />
+
               <Route
                 path="/projects/:id"
                 element={
                   user ? (
-                    <ProjectDetails
+                    <ProjectInfoPage
                       handleSetScheduleDetails={handleSetScheduleDetails}
                     />
                   ) : (
@@ -180,6 +184,14 @@ function App() {
               <Route
                 path="/loading"
                 element={user ? <RecommendationLoader /> : <Login />}
+              />
+              <Route
+                path="/visualization/:id"
+                element={user ? <ProjectChart /> : <Login />}
+              />
+              <Route
+                path="/calender"
+                element={user ? <TaskCalendar /> : <Login />}
               />
             </Routes>
           </div>
