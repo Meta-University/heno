@@ -93,7 +93,7 @@ function Recommendation(props) {
         <h3>Welcome to AI help me recommend</h3>
         <p>
           Recommend tasks according to your project description, end goal, start
-          ad due date, and help assign to team members provided by you.
+          and due date, and help assign to team members provided by you.
         </p>
       </div>
       <button
@@ -102,18 +102,6 @@ function Recommendation(props) {
       >
         Click to Start
       </button>
-
-      {/* {isLoading && <p>Loading...</p>}
-
-      {!isLoading && recommendedTasks.length > 0 ? (
-        <RecommendationTable
-          isLoading={isLoading}
-          projectInfo={projectInfo}
-          tasks={recommendedTasks}
-        />
-      ) : (
-
-      )} */}
     </div>
   );
 }

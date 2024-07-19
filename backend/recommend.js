@@ -16,9 +16,6 @@ recommendRouuter.post("/ai-recommend-tasks", async (req, res) => {
   const { title, description, endGoals, startDate, endDate, teamMembers } =
     req.body;
   const teamMembersNames = teamMembers.map((member) => member.name);
-
-  console.log(teamMembersNames);
-
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
   });
@@ -78,8 +75,7 @@ recommendRouuter.post("/ai-recommend-tasks", async (req, res) => {
     );
 
     const recommendedTask = JSON.parse(result.response.text());
-    console.log("hi");
-    console.log(recommendedTask);
+
     res.json(recommendedTask);
   }
 
@@ -101,10 +97,8 @@ recommendRouuter.post("/api/store-project", async (req, res) => {
     const { title, description, startDate, endDate, teamMembers, tasks, user } =
       req.body;
     const teamMembersNames = teamMembers.map((member) => member.name);
-    console.log(req.session.user);
+
     const managerId = user.id;
-    console.log(teamMembersNames);
-    console.log(tasks.assignment);
 
     const newProject = await prisma.project.create({
       data: {
@@ -117,7 +111,7 @@ recommendRouuter.post("/api/store-project", async (req, res) => {
         due_date: new Date(endDate),
         manager: { connect: { id: managerId } },
         teamMembers: {
-          connect: teamMembers.slice(1).map((member) => ({
+          connect: teamMembers.map((member) => ({
             id: parseInt(member.id),
           })),
         },
