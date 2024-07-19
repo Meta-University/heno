@@ -47,7 +47,7 @@
 }
 
 .low {
-  background-color: rgb(98, 225, 98);
+  background-color: rgb(149, 235, 149);
   width: 20%;
   padding: 0.3rem;
   border-radius: 10px;
@@ -62,6 +62,27 @@
 
 .high {
   background-color: rgb(252, 99, 99);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.project-value.not-started {
+  background-color: rgb(170, 165, 165);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.project-value.in-progress {
+  background-color: rgb(164, 206, 220);
+  width: 20%;
+  padding: 0.3rem;
+  border-radius: 10px;
+}
+
+.project-value.completed {
+  background-color: rgb(149, 235, 149);
   width: 20%;
   padding: 0.3rem;
   border-radius: 10px;

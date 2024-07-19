@@ -69,6 +69,15 @@ function Sidebar(props) {
               <p>AI Recommended Tasks</p>
             </Link>
           </li>
+          <li
+            className={selectedItem === "calender" ? "selected" : ""}
+            onClick={() => handleItemClick("calender")}
+          >
+            <Link to="/calender">
+              <i className="fa-solid fa-calendar-days"></i>
+              <p>Calender</p>
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

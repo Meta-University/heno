@@ -3,6 +3,7 @@ import ProjectDetails from "../ProjectDetails/ProjectDetails";
 import ProjectChart from "../DataVisualization/ProjectChart";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import KanbanBoard from "../KanbanBoard/KanbanBoard";
 
 function ProjectInfoPage({ handleSetScheduleDetails }) {
   const { id } = useParams();
@@ -65,15 +66,15 @@ function ProjectInfoPage({ handleSetScheduleDetails }) {
       </div>
 
       <div className="tab-content">
-        {activeTab === "info" ? (
+        {activeTab === "info" && (
           <ProjectDetails
             handleSetScheduleDetails={handleSetScheduleDetails}
             edit={displayEditForm}
             editClick={handleEditClick}
           />
-        ) : (
-          <ProjectChart />
         )}
+
+        {activeTab === "visualization" && <ProjectChart />}
       </div>
     </div>
   );

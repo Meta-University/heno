@@ -31,7 +31,6 @@ function ProjectChart() {
 
   return (
     <div className="project-chart-container">
-      <h3>Project Progress Chart</h3>
       {tasks.length > 0 ? (
         <>
           <ProjectPieChart />

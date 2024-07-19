@@ -125,6 +125,17 @@ function EditTaskForm(props) {
           <option value="COMPLETED">Completed</option>
         </select>
 
+        <select
+          value={task.priority}
+          onChange={(e) => setTask({ ...task, priority: e.target.value })}
+          required
+        >
+          <option value="">Set Priority</option>
+          <option value="LOW">Low</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+
         <div className="buttons">
           <button type="submit" className="create">
             Edit Task

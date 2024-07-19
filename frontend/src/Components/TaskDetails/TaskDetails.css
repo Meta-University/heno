@@ -69,6 +69,25 @@
   font-size: 25px;
 }
 
+.task.high {
+  background-color: rgb(252, 99, 99);
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 10%;
+}
+
+.task.medium {
+  background-color: rgb(247, 187, 74);
+  justify-content: flex-end;
+  width: 10%;
+}
+
+.task.low {
+  background-color: rgb(149, 235, 149);
+  justify-content: flex-end;
+  width: 10%;
+}
+
 .comment-section {
   margin: 10px;
 }

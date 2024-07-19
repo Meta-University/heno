@@ -28,6 +28,7 @@ import RecommendationTable from "./Components/RecommendationTable/Recommendation
 import RecommendationLoader from "./Components/RecommendationLoader/RecommendationLoader";
 import ProjectChart from "./Components/DataVisualization/ProjectChart";
 import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
+import TaskCalendar from "./Components/TaskCalendar/TaskCalendar";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -187,6 +188,10 @@ function App() {
               <Route
                 path="/visualization/:id"
                 element={user ? <ProjectChart /> : <Login />}
+              />
+              <Route
+                path="/calender"
+                element={user ? <TaskCalendar /> : <Login />}
               />
             </Routes>
           </div>

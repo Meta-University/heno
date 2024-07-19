@@ -90,15 +90,7 @@ taskRouter.get("/tasks", async (req, res) => {
   try {
     const tasks = await prisma.task.findMany({
       where: {
-        OR: [
-          { assignee_id: userId },
-          { project: { manager_id: userId } },
-          // {
-          //   project: {
-          //     teamMembers: { some: { id: userId } },
-          //   },
-          // },
-        ],
+        OR: [{ assignee_id: userId }, { project: { manager_id: userId } }],
       },
       include: {
         project: {
@@ -146,6 +138,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     title,
     description,
     status,
+    priority,
     due_date,
     start_date,
     assignee_id,
@@ -183,6 +176,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
           title,
           description,
           status,
+          priority,
           due_date: new Date(due_date),
           start_date: new Date(start_date),
           assignee: { connect: { id: parseInt(assignee_id) } },
