@@ -63,25 +63,25 @@ taskRouter.post("/tasks", async (req, res) => {
     assigneeId,
     projectId,
   } = req.body;
-  // try {
-  const task = await prisma.task.create({
-    data: {
-      title,
-      description,
-      status,
-      priority,
-      start_date: new Date(start_date),
-      due_date: new Date(due_date),
-      assignee: { connect: { id: assigneeId } },
-      project: {
-        connect: { id: projectId },
+  try {
+    const task = await prisma.task.create({
+      data: {
+        title,
+        description,
+        status,
+        priority,
+        start_date: new Date(start_date),
+        due_date: new Date(due_date),
+        assignee: { connect: { id: assigneeId } },
+        project: {
+          connect: { id: projectId },
+        },
       },
-    },
-  });
-  res.json(task);
-  // } catch (err) {
-  //   res.status(500).json({ message: err.message });
-  // }
+    });
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 taskRouter.get("/tasks", async (req, res) => {
@@ -93,11 +93,11 @@ taskRouter.get("/tasks", async (req, res) => {
         OR: [
           { assignee_id: userId },
           { project: { manager_id: userId } },
-          {
-            project: {
-              teamMembers: { some: { id: userId } },
-            },
-          },
+          // {
+          //   project: {
+          //     teamMembers: { some: { id: userId } },
+          //   },
+          // },
         ],
       },
       include: {
@@ -208,7 +208,11 @@ taskRouter.put("/tasks/:id", async (req, res) => {
 taskRouter.delete("/tasks/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.comment.deleteMany();
+    await prisma.comment.deleteMany({
+      where: {
+        task_id: parseInt(id),
+      },
+    });
     const task = await prisma.task.delete({
       where: {
         id: parseInt(id),

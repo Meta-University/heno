@@ -184,7 +184,18 @@ projectRouter.put(
 projectRouter.delete("/projects/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.task.deleteMany();
+    await prisma.comment.deleteMany({
+      where: {
+        task: {
+          project_id: parseInt(id),
+        },
+      },
+    });
+    await prisma.task.deleteMany({
+      where: {
+        project_id: parseInt(id),
+      },
+    });
     const project = await prisma.project.delete({
       where: {
         id: parseInt(id),
