@@ -6,7 +6,7 @@ import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 
-function ProjectDetails(props) {
+function ProjectDetails({ edit, editClick }) {
   const { id } = useParams();
   const [project, setProject] = useState([]);
   const [displayEditForm, setDisplayEditForm] = useState(false);
@@ -52,22 +52,6 @@ function ProjectDetails(props) {
     setDisplayEditForm(!displayEditForm);
   }
 
-  async function handleDeleteProject() {
-    try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        navigate("/projects");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   function getStatusClass(status) {
     if (status == "NOT_STARTED") {
       return "not-started";
@@ -107,27 +91,7 @@ function ProjectDetails(props) {
   if (loading) return <SkeletonLoader />;
 
   return (
-    <div className="project-details-container ">
-      <div className="project-details-header">
-        <div className="overview">
-          <i className="fa-solid fa-list"></i>
-          <h3>Project Overview</h3>
-        </div>
-        <div className="delete-edit-icon">
-          <i className="fa-solid fa-pen" onClick={handleEditClick}></i>
-          <i className="fa-solid fa-trash" onClick={handleDeleteProject}></i>
-        </div>
-      </div>
-
-      <Link
-        to={{
-          pathname: `/visualization/${id}`,
-          state: { projectData: tasks },
-        }}
-      >
-        View Data Visualization
-      </Link>
-
+    <div>
       <div className="project-details">
         <div className="detail-row">
           <div className="detail">
@@ -240,10 +204,10 @@ function ProjectDetails(props) {
           </table>
         </div>
       </div>
-      <div className={`edit-form-container ${displayEditForm && "visible"}`}>
+      <div className={`edit-form-container ${edit && "visible"}`}>
         <EditForm
           project={project}
-          displayEditForm={handleEditClick}
+          displayEditForm={editClick}
           refreshProject={fetchProject}
         />
       </div>

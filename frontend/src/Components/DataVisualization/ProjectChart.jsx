@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import ComplexBarChart from "./ComplexBarChart";
 import MultiLineChart from "./MultiLineChart";
 import { useState, useEffect } from "react";
+import ProjectPieChart from "./ProjectPieChart";
+import TaskTimelineChart from "./TaskTimelineChart";
+import TeamTasksHistogram from "./TeamTaskHistogram";
 
 function ProjectChart() {
   const { id } = useParams();
@@ -31,8 +34,9 @@ function ProjectChart() {
       <h3>Project Progress Chart</h3>
       {tasks.length > 0 ? (
         <>
-          <ComplexBarChart tasks={tasks} width={600} height={400} />
-          <MultiLineChart tasks={tasks} width={600} height={400} />
+          <ProjectPieChart />
+          <TaskTimelineChart />
+          <TeamTasksHistogram />
         </>
       ) : (
         <p>Loading tasks...</p>

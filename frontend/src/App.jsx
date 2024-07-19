@@ -27,6 +27,7 @@ import SkeletonLoader from "./Components/SkeletonLoader/SkeletonLoader";
 import RecommendationTable from "./Components/RecommendationTable/RecommendationTable";
 import RecommendationLoader from "./Components/RecommendationLoader/RecommendationLoader";
 import ProjectChart from "./Components/DataVisualization/ProjectChart";
+import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -113,11 +114,12 @@ function App() {
                   )
                 }
               />
+
               <Route
                 path="/projects/:id"
                 element={
                   user ? (
-                    <ProjectDetails
+                    <ProjectInfoPage
                       handleSetScheduleDetails={handleSetScheduleDetails}
                     />
                   ) : (
