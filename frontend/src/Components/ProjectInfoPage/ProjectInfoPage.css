@@ -1,0 +1,19 @@
+.project-details-container {
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.title-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-details-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
