@@ -24,6 +24,13 @@ model User {
   comments Comment[]
   notifications Notification[]
   teamProjects Project[] @relation("TeamMembersProjects")
+
+  titleLockedTasks       Task[]   @relation("TitleLockUser")
+  descriptionLockedTasks Task[]   @relation("DescriptionLockUser")
+  statusLockedTasks      Task[]   @relation("StatusLockUser")
+  dueDateLockedTasks     Task[]   @relation("DueDateLockUser")
+  assigneeLockedTasks    Task[]   @relation("AssigneeLockUser")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -57,16 +64,31 @@ model Task {
   comments Comment[]
   priority Priority
   assignee User @relation(fields: [assignee_id], references: [id])
+
   title_is_updating Boolean @default(false)
   description_is_updating Boolean @default(false)
   status_is_updating Boolean @default(false)
   due_date_is_updating Boolean @default(false)
   assignee_is_updating Boolean @default(false)
+
   title_lockTimestamp DateTime?
   description_lockTimestamp DateTime?
   status_lockTimestamp DateTime?
   due_date_lockTimestamp DateTime?
   assignee_lockTimestamp DateTime?
+
+  title_lockUser_id        Int?
+  description_lockUser_id  Int?
+  status_lockUser_id       Int?
+  due_date_lockUser_id     Int?
+  assignee_lockUser_id     Int?
+
+  title_lockUser           User?      @relation("TitleLockUser", fields: [title_lockUser_id], references: [id])
+  description_lockUser     User?      @relation("DescriptionLockUser", fields: [description_lockUser_id], references: [id])
+  status_lockUser          User?      @relation("StatusLockUser", fields: [status_lockUser_id], references: [id])
+  due_date_lockUser        User?      @relation("DueDateLockUser", fields: [due_date_lockUser_id], references: [id])
+  assignee_lockUser        User?      @relation("AssigneeLockUser", fields: [assignee_lockUser_id], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
