@@ -1,18 +1,21 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { Server as SocketIOServer } from "socket.io";
 import { emitNotification } from "./notifications.js";
+import http from "http";
+import { io } from "../index.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();
-const io = new SocketIOServer();
 
 const LOCK_TIMEOUT = 60000;
 
-async function acquireLock(taskId, field) {
+async function acquireLock(taskId, field, userId) {
   const now = new Date();
   const task = await prisma.task.findUnique({
     where: { id: parseInt(taskId) },
+    include: {
+      [`${field}_lockUser`]: true,
+    },
   });
   if (!task) {
     throw new Error("Task not found");
@@ -20,12 +23,13 @@ async function acquireLock(taskId, field) {
 
   const lockField = `${field}_is_updating`;
   const lockTimestampField = `${field}_lockTimestamp`;
+  const lockUserField = `${field}_lockUser_id`;
 
   if (
     task[lockField] &&
     new Date(task[lockTimestampField].getTime() + LOCK_TIMEOUT) > now
   ) {
-    return false;
+    return { acquired: false, lockUser: task[`${field}_lockUser`] };
   }
 
   await prisma.task.update({
@@ -33,21 +37,24 @@ async function acquireLock(taskId, field) {
     data: {
       [lockField]: true,
       [lockTimestampField]: now,
+      [lockUserField]: userId,
     },
   });
 
-  return true;
+  return { acquired: true };
 }
 
 async function releaseLock(taskId, field) {
   const lockField = `${field}_is_updating`;
   const lockTimestampField = `${field}_lockTimestamp`;
+  const lockUserField = `${field}_lockUser_id`;
 
   await prisma.task.update({
     where: { id: parseInt(taskId) },
     data: {
       [lockField]: false,
       [lockTimestampField]: null,
+      [lockUserField]: null,
     },
   });
 }
@@ -144,6 +151,8 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     assignee_id,
     projectId,
   } = req.body;
+  console.log(req.session.user);
+  const userId = req.session.user.id;
 
   try {
     const fieldsToLock = [
@@ -155,17 +164,23 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     ];
 
     for (const field of fieldsToLock) {
-      const acquired = await acquireLock(id, field);
+      const { acquired, lockUser } = await acquireLock(id, field, userId);
       if (!acquired) {
-        return res.status(409).json({
-          error: `This task is being upated by someone else. Please try again after one minute`,
+        const errorMessage = `This task is currently being updated by ${lockUser.name}. Please try again after one minute`;
+        io.to(`task:${id}`).emit("taskUpdateError", {
+          taskId: id,
+          error: errorMessage,
         });
+        return res.status(409).json({ error: errorMessage });
       }
     }
+
+    io.to(`task:${id}`).emit("taskEditing", { taskId: id });
 
     setTimeout(async () => {
       for (const field of fieldsToLock) {
         await releaseLock(id, field);
+        io.to(`task:${id}`).emit("fieldUnlocked", { taskId: id, field });
       }
     }, LOCK_TIMEOUT);
 
@@ -191,11 +206,17 @@ taskRouter.put("/tasks/:id", async (req, res) => {
         updatedTask.project_id
       );
 
-      res.json({ message: "Task updated successfuly" });
+      io.to(`task:${id}`).emit("taskUpdated", updatedTask);
+      res.json({ message: "Task updated successfully", task: updatedTask });
     }, 2000);
   } catch (err) {
     console.error("Error updating task", err);
-    res.status(500).json({ message: "Internal server error" });
+    const errorMessage = "Internal server error";
+    io.to(`task:${id}`).emit("taskUpdateError", {
+      taskId: id,
+      error: errorMessage,
+    });
+    res.status(500).json({ message: errorMessage });
   }
 });
 

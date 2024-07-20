@@ -62,9 +62,9 @@ const io = new SocketIOServer(server, {
 sessionStore.sync();
 app.use(router);
 app.use(projectRouter);
-app.use(taskRouter);
 app.use(reorganiseRouuter);
 app.use(notificationRouter);
+app.use(taskRouter);
 app.use(recommendRouuter);
 
 app.get("/", (req, res) => {
@@ -72,9 +72,15 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected ", socket.id);
-
   socket.emit("notification", { messagee: `Welcome to heno` });
+
+  socket.on("joinTask", (taskId) => {
+    socket.join(`task:${taskId}`);
+  });
+
+  socket.on("leaveTask", (taskId) => {
+    socket.leave(`task:${taskId}`);
+  });
 
   socket.on("disconnect", () => {
     console.log("A user disconnected ", socket.id);

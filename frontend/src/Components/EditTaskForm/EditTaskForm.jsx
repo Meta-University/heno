@@ -2,6 +2,9 @@ import "./EditTaskForm.css";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CustomAlert from "../CustomAlert/CustomAlert";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 function EditTaskForm(props) {
   const { id } = useParams();
@@ -10,6 +13,7 @@ function EditTaskForm(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [displayAlert, setDisplayAlert] = useState(false);
+  const [lockedFields, setLockedFields] = useState([]);
   const navigate = useNavigate();
 
   async function fetchTask() {
@@ -29,6 +33,18 @@ function EditTaskForm(props) {
 
   useEffect(() => {
     fetchTask();
+    socket.emit("joinTask", id);
+
+    socket.on("taskUpdateError", ({ taskId, error }) => {
+      if (taskId === id) {
+        setError(error);
+      }
+    });
+
+    return () => {
+      socket.emit("leaveTask", id);
+      socket.off("taskUpdateError");
+    };
   }, [id]);
 
   function handleDisplayAlert() {
@@ -40,6 +56,7 @@ function EditTaskForm(props) {
     try {
       const response = await fetch(`http://localhost:3000/tasks/${id}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,8 +67,6 @@ function EditTaskForm(props) {
         props.displayEditForm();
         props.refreshTask();
       } else {
-        const data = await response.json();
-        setError(data.error);
         setDisplayAlert(true);
       }
     } catch (error) {
