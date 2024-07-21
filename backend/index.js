@@ -78,6 +78,10 @@ io.on("connection", (socket) => {
     socket.join(`task:${taskId}`);
   });
 
+  socket.on("joinUserRoom", (userId) => {
+    socket.join(`user:${userId}`);
+  });
+
   socket.on("leaveTask", (taskId) => {
     socket.leave(`task:${taskId}`);
   });

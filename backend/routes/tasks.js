@@ -8,6 +8,7 @@ const taskRouter = express.Router();
 const prisma = new PrismaClient();
 
 const LOCK_TIMEOUT = 60000;
+const blockedUsers = new Map();
 
 async function acquireLock(taskId, field, userId) {
   const now = new Date();
@@ -171,6 +172,12 @@ taskRouter.put("/tasks/:id", async (req, res) => {
           taskId: id,
           error: errorMessage,
         });
+
+        if (!blockedUsers.has(id)) {
+          blockedUsers.set(id, new Set());
+        }
+
+        blockedUsers.get(id).add(userId);
         return res.status(409).json({ error: errorMessage });
       }
     }
@@ -180,7 +187,17 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     setTimeout(async () => {
       for (const field of fieldsToLock) {
         await releaseLock(id, field);
-        io.to(`task:${id}`).emit("fieldUnlocked", { taskId: id, field });
+      }
+
+      if (blockedUsers.has(id)) {
+        blockedUsers.get(id).forEach((blockedUserId) => {
+          const notifyMessage = "You can now update task";
+          io.to(`user:${blockedUserId}`).emit("lockReleased", {
+            taskId: id,
+            message: notifyMessage,
+          });
+        });
+        blockedUsers.delete(id);
       }
     }, LOCK_TIMEOUT);
 

@@ -1,8 +1,9 @@
 import "./EditTaskForm.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CustomAlert from "../CustomAlert/CustomAlert";
 import io from "socket.io-client";
+import { UserContext } from "../../UserContext";
 
 const socket = io("http://localhost:3000");
 
@@ -14,6 +15,8 @@ function EditTaskForm(props) {
   const [error, setError] = useState("");
   const [displayAlert, setDisplayAlert] = useState(false);
   const [lockedFields, setLockedFields] = useState([]);
+  const [notify, setNotify] = useState("");
+  const { user, updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function fetchTask() {
@@ -34,6 +37,7 @@ function EditTaskForm(props) {
   useEffect(() => {
     fetchTask();
     socket.emit("joinTask", id);
+    socket.emit("joinUserRoom", user.id);
 
     socket.on("taskUpdateError", ({ taskId, error }) => {
       if (taskId === id) {
@@ -41,11 +45,19 @@ function EditTaskForm(props) {
       }
     });
 
+    socket.on("lockReleased", ({ taskId, message }) => {
+      if (taskId === id) {
+        setLockedFields((prev) => prev.filter((f) => f !== field));
+        setNotify(message);
+        setDisplayAlert(true);
+      }
+    });
+
     return () => {
       socket.emit("leaveTask", id);
       socket.off("taskUpdateError");
     };
-  }, [id]);
+  }, [id, user.id]);
 
   function handleDisplayAlert() {
     setDisplayAlert(false);
@@ -86,6 +98,10 @@ function EditTaskForm(props) {
 
       {error && displayAlert && (
         <CustomAlert message={error} onClose={handleDisplayAlert} />
+      )}
+
+      {notify && displayAlert && (
+        <CustomAlert message={notify} onClose={handleDisplayAlert} />
       )}
 
       <form onSubmit={handleEditTask}>
