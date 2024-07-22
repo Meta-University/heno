@@ -1,7 +1,11 @@
 import "./EditTaskForm.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CustomAlert from "../CustomAlert/CustomAlert";
+import io from "socket.io-client";
+import { UserContext } from "../../UserContext";
+
+const socket = io("http://localhost:3000");
 
 function EditTaskForm(props) {
   const { id } = useParams();
@@ -10,6 +14,9 @@ function EditTaskForm(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [displayAlert, setDisplayAlert] = useState(false);
+  const [lockedFields, setLockedFields] = useState([]);
+  const [notify, setNotify] = useState("");
+  const { user, updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function fetchTask() {
@@ -29,7 +36,28 @@ function EditTaskForm(props) {
 
   useEffect(() => {
     fetchTask();
-  }, [id]);
+    socket.emit("joinTask", id);
+    socket.emit("joinUserRoom", user.id);
+
+    socket.on("taskUpdateError", ({ taskId, error }) => {
+      if (taskId === id) {
+        setError(error);
+      }
+    });
+
+    socket.on("lockReleased", ({ taskId, message }) => {
+      if (taskId === id) {
+        setLockedFields((prev) => prev.filter((f) => f !== field));
+        setNotify(message);
+        setDisplayAlert(true);
+      }
+    });
+
+    return () => {
+      socket.emit("leaveTask", id);
+      socket.off("taskUpdateError");
+    };
+  }, [id, user.id]);
 
   function handleDisplayAlert() {
     setDisplayAlert(false);
@@ -40,6 +68,7 @@ function EditTaskForm(props) {
     try {
       const response = await fetch(`http://localhost:3000/tasks/${id}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,8 +79,6 @@ function EditTaskForm(props) {
         props.displayEditForm();
         props.refreshTask();
       } else {
-        const data = await response.json();
-        setError(data.error);
         setDisplayAlert(true);
       }
     } catch (error) {
@@ -71,6 +98,10 @@ function EditTaskForm(props) {
 
       {error && displayAlert && (
         <CustomAlert message={error} onClose={handleDisplayAlert} />
+      )}
+
+      {notify && displayAlert && (
+        <CustomAlert message={notify} onClose={handleDisplayAlert} />
       )}
 
       <form onSubmit={handleEditTask}>
