@@ -24,12 +24,11 @@ Description: Heno is a project management tool built using React and Node.js. It
   - [x] User can update a task
   - [x] User can delete a task
   - [x] User can assign tasks to team members
-  - [x] User can comment on a task
 
 - [x] Concurrency Control
   - [x] TC1: Lock-based concurrency for editing tasks
 
-- [x] AI Integration
+- [x] AI-Empowered Schedule Reorganization 
   - [x] TC2: AI-suggested reorganization of task schedules
 
 - [x] Task Interaction
