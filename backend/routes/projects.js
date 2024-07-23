@@ -59,7 +59,6 @@ projectRouter.get("/projects", async (req, res) => {
             assignee: true,
           },
         },
-
         manager: true,
         teamMembers: true,
       },
