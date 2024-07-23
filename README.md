@@ -1,12 +1,19 @@
 # Project Name: Heno
-https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
-Intern: Joy Itodo
-Intern Manager: Shulin Zhao
-Intern Director: Cesar Barraza
+<b>Project Plan:</b> https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
-Category: Productivity/Professional Services
-Description: Heno is a project management tool built using React and Node.js. It helps teams create and plan projects and tasks, with real-time updates and effective communication
+<b>Intern:</b> Joy Itodo
+
+<b>Intern Manager:</b> Shulin Zhao
+
+<b>Intern Director:</b> Cesar Barraza
+
+<b>Peer Mentors: </b> Yiming Wang and Haibo Zhang
+
+<b>Category:</b> Productivity/Professional Services
+
+## Description
+Heno is a project management tool built using React and Node.js. It helps teams create and plan projects and tasks, with real-time updates and effective communication
 
 ## MVP features
 - [x] User Authentication
