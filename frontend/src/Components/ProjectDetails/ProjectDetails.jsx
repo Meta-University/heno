@@ -15,6 +15,9 @@ function ProjectDetails({ edit, editClick }) {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [currentSchedule, setCurrentSchedule] = useState([]);
   const [loading, setLoading] = useState(false);
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return new Date(a.start_date) - new Date(b.start_date);
+  });
 
   async function fetchProject() {
     try {
@@ -186,7 +189,7 @@ function ProjectDetails({ edit, editClick }) {
               </tr>
             </thead>
             <tbody>
-              {tasks.map((task, index) => (
+              {sortedTasks.map((task, index) => (
                 <tr key={index}>
                   <td>
                     <Link to={`/tasks/${task.id}`}>

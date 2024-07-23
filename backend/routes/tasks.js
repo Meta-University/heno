@@ -109,6 +109,7 @@ taskRouter.get("/tasks", async (req, res) => {
         assignee: true,
       },
     });
+    tasks.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch tasks" });

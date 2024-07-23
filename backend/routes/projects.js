@@ -79,6 +79,9 @@ projectRouter.get("/projects/:id", async (req, res) => {
       },
       include: {
         tasks: {
+          orderBy: {
+            start_date: "asc",
+          },
           include: {
             assignee: true,
           },
@@ -160,7 +163,17 @@ projectRouter.put(
     const { tasks } = req.body;
 
     for (const task of tasks) {
-      const { id, project_id, assignee_id, ...updateData } = task;
+      const {
+        id,
+        project_id,
+        assignee_id,
+        title_lockUser_id,
+        description_lockUser_id,
+        status_lockUser_id,
+        due_date_lockUser_id,
+        assignee_lockUser_id,
+        ...updateData
+      } = task;
       await prisma.task.update({
         where: {
           id: parseInt(task.id),
@@ -173,6 +186,31 @@ projectRouter.put(
           assignee: {
             connect: { id: parseInt(assignee_id) },
           },
+          title_lockUser: title_lockUser_id
+            ? {
+                connect: { id: parseInt(title_lockUser_id) },
+              }
+            : undefined,
+          description_lockUser: description_lockUser_id
+            ? {
+                connect: { id: parseInt(description_lockUser_id) },
+              }
+            : undefined,
+          status_lockUser: status_lockUser_id
+            ? {
+                connect: { id: parseInt(status_lockUser_id) },
+              }
+            : undefined,
+          due_date_lockUser: due_date_lockUser_id
+            ? {
+                connect: { id: parseInt(due_date_lockUser_id) },
+              }
+            : undefined,
+          assignee_lockUser: assignee_lockUser_id
+            ? {
+                connect: { id: parseInt(assignee_lockUser_id) },
+              }
+            : undefined,
         },
       });
     }
