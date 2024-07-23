@@ -10,7 +10,7 @@
   align-items: center;
 }
 
-.modal-content {
+#feedback-form {
   background: white;
   padding: 20px;
   border-radius: 5px;
@@ -35,7 +35,7 @@
   color: white;
 }
 
-textarea {
+#feedback-form textarea {
   width: 90%;
   height: 100px;
   margin-top: 10px;

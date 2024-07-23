@@ -15,8 +15,8 @@ function RetryReorganisationModal({ showModal, onClose, onSubmit }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>Retry Schedule Generation</h2>
+      <div id="feedback-form" className="modal-content">
+        <h2>Retry Schedule Reorganization</h2>
         <p>Please provide your feedback to improve the schedule:</p>
         <textarea
           value={feedback}
