@@ -11,7 +11,7 @@ export async function reorganiseSchedule(schedule) {
       credentials: "include",
     });
     const data = await response.json();
-    return [data.reorganizedSchedule, data.changes];
+    return [data.resolvedSchedule, data.changes];
   } catch (error) {
     console.log(error);
   }

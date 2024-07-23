@@ -11,6 +11,7 @@ function ScheduleDiff() {
   const [currentSchedule, setCurrentSchedule] = useState(null);
   const [aiSuggestedSchedule, setAiSuggestedSchedule] = useState(null);
   const [changes, setChanges] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -68,7 +69,11 @@ function ScheduleDiff() {
     });
   }
 
-  function handleRollBack() {
+  function handleDisapprove() {
+    setShowPopup(true);
+  }
+
+  function handleRollback() {
     navigate(`/projects/${id}`);
   }
 
@@ -237,18 +242,25 @@ function ScheduleDiff() {
         <h3>Reasons for changes</h3>
         <ul>
           {changes.map((change, index) => (
-            <li key={index}>
-              {change.message ? change.message : change.change}
-            </li>
+            <li key={index}>{change}</li>
           ))}
         </ul>
       </div>
+      {showPopup && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>Do you want to try again?</p>
+            <button onClick={j}>Yes</button>
+            <button onClick={handleRollback}>No</button>
+          </div>
+        </div>
+      )}
       <div className="ok-rollback-btn">
         <button className="ok-btn" onClick={handleUpdateProjectDetails}>
-          Ok
+          Approve
         </button>
-        <button className="rollback-btn" onClick={handleRollBack}>
-          Rollback
+        <button className="rollback-btn" onClick={handleDisapprove}>
+          Disapprove
         </button>
       </div>
     </div>

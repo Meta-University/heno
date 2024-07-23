@@ -59,6 +59,7 @@ projectRouter.get("/projects", async (req, res) => {
             assignee: true,
           },
         },
+
         manager: true,
         teamMembers: true,
       },
@@ -79,6 +80,9 @@ projectRouter.get("/projects/:id", async (req, res) => {
       },
       include: {
         tasks: {
+          orderBy: {
+            start_date: "asc",
+          },
           include: {
             assignee: true,
           },
