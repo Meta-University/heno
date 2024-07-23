@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { reorganiseSchedule } from "../../reorganiseSchedule";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
+import RetryReorganisationModal from "../RetryReorganisationModal/RetryReorganisationModal";
 
 function ScheduleDiff() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function ScheduleDiff() {
   const [aiSuggestedSchedule, setAiSuggestedSchedule] = useState(null);
   const [changes, setChanges] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [showRetryModal, setShowRetryModal] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -63,7 +65,7 @@ function ScheduleDiff() {
           status: task.status !== suggestedTask.status,
           start_date: task.start_date !== suggestedTask.start_date,
           due_date: task.due_date !== suggestedTask.due_date,
-          assignee: task.assignee_id !== suggestedTask.assignee_id,
+          assignee: task.assignee.name !== suggestedTask.assignee.name,
         },
       };
     });
@@ -74,10 +76,49 @@ function ScheduleDiff() {
   }
 
   function handleRollback() {
+    setShowPopup(false);
     navigate(`/projects/${id}`);
   }
 
+  function handleRetry() {
+    setShowPopup(false);
+    setShowRetryModal(true);
+  }
+
+  function handleCloseRetryModal() {
+    setShowRetryModal(false);
+  }
+
+  async function handleSubmitFeedback(feedback) {
+    setAiSuggestedSchedule("");
+    setChanges("");
+    try {
+      const response = await fetch("http://localhost:3000/retry-schedule", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentSchedule,
+          feedback,
+        }),
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+
+        setAiSuggestedSchedule(data.resolvedSchedule);
+        setChanges(data.changes);
+      } else {
+        console.error("Failed to fetch schedules or changes");
+      }
+    } catch (error) {
+      console.error("Error retrying schedule:", error);
+    }
+  }
+
   async function handleUpdateProjectDetails() {
+    console.log(aiSuggestedSchedule.tasks);
     try {
       const response = await fetch(
         `http://localhost:3000/projects/${id}/approve-suggestions`,
@@ -230,7 +271,7 @@ function ScheduleDiff() {
                           : ""
                       }`}
                     >
-                      {task.assignee.name}
+                      {task.assignee && task.assignee.name}
                     </td>
                   </tr>
                 ))}
@@ -250,10 +291,18 @@ function ScheduleDiff() {
         <div className="modal-overlay">
           <div className="modal">
             <p>Do you want to try again?</p>
-            <button onClick={j}>Yes</button>
+            <button onClick={handleRetry}>Yes</button>
             <button onClick={handleRollback}>No</button>
           </div>
         </div>
+      )}
+
+      {showRetryModal && (
+        <RetryReorganisationModal
+          showModal={showRetryModal}
+          onClose={handleCloseRetryModal}
+          onSubmit={handleSubmitFeedback}
+        />
       )}
       <div className="ok-rollback-btn">
         <button className="ok-btn" onClick={handleUpdateProjectDetails}>

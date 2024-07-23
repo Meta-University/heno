@@ -28,7 +28,8 @@ function detectConflicts(currentSchedule, suggestedSchedule) {
         conflicts: getConflictDetails(
           currentTask,
           suggestedTask,
-          currentSchedule.teamMembers
+          currentSchedule.teamMembers,
+          currentSchedule.manager
         ),
       });
     }
@@ -47,7 +48,15 @@ function isConflict(task1, task2) {
   );
 }
 
-function getConflictDetails(task1, task2, teamMembers) {
+const findMemberOrManager = (id, teamMembers, manager) => {
+  const member = teamMembers.find((member) => member.id === id);
+  if (member) {
+    return member;
+  }
+  return manager;
+};
+
+function getConflictDetails(task1, task2, teamMembers, manager) {
   const conflicts = {};
 
   if (task1.title !== task2.title)
@@ -62,9 +71,20 @@ function getConflictDetails(task1, task2, teamMembers) {
   if (task1.due_date !== task2.due_date)
     conflicts.due_date = { current: task1.due_date, suggested: task2.due_date };
   if (task1.assignee_id !== task2.assignee_id) {
+    const currentAssignee = findMemberOrManager(
+      task1.assignee_id,
+      teamMembers,
+      manager
+    );
+    const suggestedAssignee = findMemberOrManager(
+      task2.assignee_id,
+      teamMembers,
+      manager
+    );
+
     conflicts.assignee = {
-      current: teamMembers.find((member) => member.id === task1.assignee_id),
-      suggested: teamMembers.find((member) => member.id === task2.assignee_id),
+      current: currentAssignee,
+      suggested: suggestedAssignee,
     };
   }
 
@@ -379,15 +399,8 @@ reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
         (a, b) => new Date(a.start_date) - new Date(b.start_date)
       );
 
-      console.log(schedule);
-
-      console.log(reorganizedSchedule);
-      console.log(resolvedSchedule);
-
-      // const changes = JSON.parse(message.response.text());
       const changesList = generateChangesList(schedule, resolvedSchedule);
       const changes = generateChangeSentences(changesList);
-      console.log(changes);
 
       res.json({ resolvedSchedule, changes });
     }
@@ -397,6 +410,109 @@ reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
     console.error("Error reorganising schedule: ", error);
     res.status(500).json({ error: "Failed to reorganize schedule" });
   }
+});
+
+reorganiseRouuter.post("/retry-schedule", async (req, res) => {
+  const currentSchedule = req.body.currentSchedule;
+
+  const feedback = req.body.feedback;
+  const prompt = `
+  The user did not approve the suggested schedule for their project. Here are the details of the current schedule and the user's feedback:
+    Current Schedule:
+    ${JSON.stringify(currentSchedule)}
+    Feedback:
+    ${feedback}
+    Please generate a new schedule taking the feedback into consideration. Ensure that the workload is balanced among team members and the tasks' start and end dates align properly with the project's timeline. Provide the reorganized schedule in the same format as the current schedule and do not suggest a new task
+  `;
+  try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const generationConfig = {
+      temperature: 1,
+      topP: 0.95,
+      topK: 64,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+    };
+
+    async function run() {
+      const chatSession = model.startChat({
+        generationConfig,
+
+        history: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: "`Reorganize the following project  schedule to be more efficient and balanced:\\n  ${JSON.stringify(\n          schedule\n        )}\\n  Provide the reorganized schedule in the same format and do not suggest a new task`",
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "Please provide the `schedule` JSON data so I can reorganize it for you. I need to see the current task list and their assigned dates to create a more efficient and balanced schedule. \n",
+              },
+            ],
+          },
+
+          {
+            role: "user",
+            parts: [
+              {
+                text: "The user does not approve this changes can you try again\n",
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "You're right, I need more information to suggest a better schedule.  \n\nTo make the most efficient and balanced schedule, I need to know **what the user doesn't like about the previous reorganization** and **what their priorities are**.  \n\nFor example, please tell me: \n\n* **What specific aspects of the previous reorganization did the user disapprove of?** (e.g., Did they think certain tasks were moved too early or late? Did they think the task distribution was uneven?)\n* **Are there any specific team members or tasks that have higher priority?**  \n* **Are there any constraints that need to be considered, such as team members being unavailable on certain days?**\n\nOnce you provide this information, I can create a more tailored and user-approved schedule! \n",
+              },
+            ],
+          },
+          {
+            role: "user",
+            parts: [
+              {
+                text: "The task description was uneven and the project kick of meeting should be assigned to the manager",
+              },
+            ],
+          },
+        ],
+      });
+
+      const result = await chatSession.sendMessage(prompt);
+
+      const reorganizedSchedule = JSON.parse(result.response.text());
+      reorganizedSchedule.tasks.sort(
+        (a, b) => new Date(a.start_date) - new Date(b.start_date)
+      );
+      const resolvedSchedule = await handleAutomaticConflictResolution(
+        currentSchedule,
+        reorganizedSchedule
+      );
+      resolvedSchedule.tasks.sort(
+        (a, b) => new Date(a.start_date) - new Date(b.start_date)
+      );
+
+      console.log(resolvedSchedule);
+
+      const changesList = generateChangesList(
+        currentSchedule,
+        resolvedSchedule
+      );
+      const changes = generateChangeSentences(changesList);
+
+      res.json({ resolvedSchedule, changes });
+    }
+
+    run();
+  } catch (error) {}
 });
 
 export default reorganiseRouuter;
