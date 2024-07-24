@@ -19,6 +19,8 @@
     "firebase": "^10.12.2",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.14",
     "openai": "^4.52.2",
     "pexels": "^1.4.0",
     "react": "^18.3.1",
