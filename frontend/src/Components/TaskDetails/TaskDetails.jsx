@@ -150,11 +150,6 @@ function TaskDetails() {
         <h4>Description</h4>
         <p>{task.description}</p>
 
-        <div className="file-upload">
-          <h3>Upload file</h3>
-          <input type="file" />
-        </div>
-
         <Comments taskId={id} />
       </div>
       <div className={`edit-form-container ${displayEditForm && "visible"}`}>

@@ -57,6 +57,11 @@ function Sidebar(props) {
           >
             <Link to="/notifications">
               <i className="fa-solid fa-bell"></i>
+              {props.notificationCount > 0 && (
+                <span className="notification-badge">
+                  {props.notificationCount}
+                </span>
+              )}
               <p>Notifications</p>
             </Link>
           </li>
