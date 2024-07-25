@@ -45,6 +45,7 @@ Heno is a project management tool built using React and Node.js. It helps teams 
 ### Stretch Features
 - [x] Notifications
   - [x] Real-time notifications for task updates and comments
+  - [x] Email notifications
 
 - [x] AI Recommended Tasks
    - [x] AI-driven task recommendations based on project details
