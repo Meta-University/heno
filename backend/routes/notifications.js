@@ -1,6 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { io } from "../index.js";
+import { sendEmailNotification } from "../emailNotifications.js";
 
 const notificationRouter = express.Router();
 const prisma = new PrismaClient();
@@ -33,6 +34,29 @@ async function emitNotification(type, taskId, commentId, content, projectId) {
 
   notifications.forEach((notification) => {
     io.emit(`notifications-${notification.user_id}`, notification);
+  });
+
+  projectUsers.map(async (user) => {
+    if (type === "TASK_EDIT") {
+      await sendEmailNotification(
+        "joyoneh.15@gmail.com",
+        "Task Updated",
+        `<h1>Task Updated</h1>
+            <p>Hello ${user.name},</p>
+         <p>${content}</p>
+         <p>Please log in to the system to view the comment and respond if necessary.</p>
+        `
+      );
+    } else if (type === "COMMENT") {
+      await sendEmailNotification(
+        "joyoneh.15@gmail.com",
+        "New Comment on Task",
+        `<h1>New Comment on Task</h1>
+        <p>Hello ${user.name},</p>
+         <p>${content}</p>
+         <p>Please log in to the system to view the comment and respond if necessary.</p>`
+      );
+    }
   });
 }
 
@@ -73,6 +97,23 @@ notificationRouter.get("/notifications/:userId", async (req, res) => {
   } catch (error) {
     console.error("Error fetching notifications", error);
     res.status(500).json({ error: "Failed to fetch notifications" });
+  }
+});
+
+notificationRouter.delete("/notifications/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedNotification = await Notification.findByIdAndDelete(id);
+
+    if (!deletedNotification) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+
+    res.json({ message: "Notification deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting notification", error: error.message });
   }
 });
 

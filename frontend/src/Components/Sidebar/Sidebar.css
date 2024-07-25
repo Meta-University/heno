@@ -45,11 +45,23 @@
 }
 
 .sidebar-items li {
+  position: relative;
   display: flex;
   gap: 10px;
   flex-direction: row;
   align-items: center;
   color: white;
+}
+
+.notification-badge {
+  background-color: whitesmoke;
+  color: #333;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  position: absolute;
+  top: 5px;
+  right: 210px;
 }
 
 .sidebar-items ul li.selected {

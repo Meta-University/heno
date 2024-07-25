@@ -13,6 +13,8 @@ import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import notificationRouter from "./routes/notifications.js";
 import recommendRouuter from "./recommend.js";
+import cron from "node-cron";
+import { checkAndSendNotifications } from "./emailNotifications.js";
 
 const app = express();
 
@@ -49,6 +51,10 @@ app.use(
     },
   })
 );
+
+cron.schedule("0 0 * * *", () => {
+  checkAndSendNotifications();
+});
 
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {

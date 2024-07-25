@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { emitNotification } from "./notifications.js";
 import http from "http";
 import { io } from "../index.js";
+import { sendEmailNotification } from "../emailNotifications.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();
@@ -153,7 +154,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
     assignee_id,
     projectId,
   } = req.body;
-  console.log(req.session.user);
+
   const userId = req.session.user.id;
 
   try {
@@ -225,6 +226,7 @@ taskRouter.put("/tasks/:id", async (req, res) => {
       );
 
       io.to(`task:${id}`).emit("taskUpdated", updatedTask);
+
       res.json({ message: "Task updated successfully", task: updatedTask });
     }, 2000);
   } catch (err) {

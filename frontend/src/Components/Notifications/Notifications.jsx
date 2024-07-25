@@ -4,7 +4,7 @@ import { UserContext } from "../../UserContext";
 import io from "socket.io-client";
 import "./Notifications.css";
 
-function Notifications() {
+function Notifications({ onNotificationsRead }) {
   const [notifications, setNotifications] = useState([]);
   const { user, updateUser } = useContext(UserContext);
 
@@ -17,6 +17,8 @@ function Notifications() {
     });
 
     fetchNotifications(user.id);
+
+    onNotificationsRead();
 
     return () => {
       socket.disconnect();
@@ -38,6 +40,25 @@ function Notifications() {
     }
   }
 
+  async function deleteNotification(id) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/notifications/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to delete notification");
+      }
+      setNotifications(
+        notifications.filter((notification) => notification._id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting notification", error);
+    }
+  }
+
   const sortedNotifications = [...notifications].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -49,6 +70,7 @@ function Notifications() {
         {sortedNotifications.map((notification, index) => (
           <div key={index} className="notification-item">
             <p>{notification.content}</p>
+
             <p>
               {new Date(notification.createdAt).toLocaleDateString()} at{" "}
               {new Date(notification.createdAt).toLocaleTimeString()}

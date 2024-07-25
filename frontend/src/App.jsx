@@ -29,6 +29,8 @@ import RecommendationLoader from "./Components/RecommendationLoader/Recommendati
 import ProjectChart from "./Components/DataVisualization/ProjectChart";
 import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
 import TaskCalendar from "./Components/TaskCalendar/TaskCalendar";
+import io from "socket.io-client";
+import { subscribeToNotifications } from "./subscribeToNotifications";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -44,6 +46,7 @@ function App() {
   const [recommendedProjectInfo, setRecommendedProjectInfo] = useState([]);
   const [recommendedTasks, setRecommendedTasks] = useState([]);
   const [recommendationLoading, setRecommendationLoading] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   function handleSetScheduleDetails(current, aiSuggested, changes) {
     setCurrentSchedule(current);
@@ -74,8 +77,26 @@ function App() {
     setRecommendationLoading(loading);
   }
 
+  function handleNotificationsRead() {
+    setUnreadNotifications(0);
+  }
+
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
+
+    const socket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
+
+    if (user) {
+      subscribeToNotifications(user.id, (notification) => {
+        setUnreadNotifications((prev) => prev + 1);
+      });
+    }
+
+    return () => {
+      socket.disconnect();
+    };
   }, [user]);
 
   return (
@@ -86,7 +107,11 @@ function App() {
             <Navbar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
           )}
           {user && (
-            <Sidebar isOpen={isSidebarOpen} toogleSidebar={toogleSidebar} />
+            <Sidebar
+              isOpen={isSidebarOpen}
+              toogleSidebar={toogleSidebar}
+              notificationCount={unreadNotifications}
+            />
           )}
           <div
             className={`main-content ${
@@ -152,7 +177,15 @@ function App() {
               <Route path="/tasks/:id/edit" element={<EditTaskForm />} />
               <Route
                 path="/notifications"
-                element={user ? <Notifications /> : <Login />}
+                element={
+                  user ? (
+                    <Notifications
+                      onNotificationsRead={handleNotificationsRead}
+                    />
+                  ) : (
+                    <Login />
+                  )
+                }
               />
               <Route
                 path="/ai-recommendation"
