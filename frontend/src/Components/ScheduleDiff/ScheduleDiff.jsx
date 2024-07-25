@@ -118,7 +118,6 @@ function ScheduleDiff() {
   }
 
   async function handleUpdateProjectDetails() {
-    console.log(aiSuggestedSchedule.tasks);
     try {
       const response = await fetch(
         `http://localhost:3000/projects/${id}/approve-suggestions`,
