@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import "./Chart.css";
 
 function MultiLineChart({ tasks, width, height }) {
-  console.log(tasks);
   const canvasRef = useRef(null);
 
   useEffect(() => {

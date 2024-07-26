@@ -17,7 +17,6 @@ function TaskModal({ task, onClose }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  console.log(editableTask);
   function handleChange(e) {
     const { name, value } = e.target;
     setEditableTask((prevTask) => ({
