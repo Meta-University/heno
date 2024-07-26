@@ -11,6 +11,8 @@ backend/node_modules/
 frontend/node_modules/
 backend/package-lock.json
 frontend/package-lock.json
+backend/node_modules/.package-lock.json
+.package-lock.json
 
 dist
 dist-ssr
