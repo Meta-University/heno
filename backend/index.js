@@ -53,13 +53,7 @@ app.use(
   })
 );
 
-// cron.schedule("0 0 * * *", () => {
-//   checkAndSendNotifications();
-// });
-
-const startTime = new Date(Date.now() + 60000);
-
-const job = schedule.scheduleJob(startTime, () => {
+const job = schedule.scheduleJob("0 0 * * *", () => {
   checkAndSendNotifications();
 });
 

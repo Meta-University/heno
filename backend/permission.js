@@ -5,7 +5,6 @@ async function checkProjectPermission(req, res, next) {
   const projectId = parseInt(req.params.projectId);
 
   const userId = req.session.user.id;
-  console.log(userId);
 
   try {
     const project = await prisma.project.findUnique({
