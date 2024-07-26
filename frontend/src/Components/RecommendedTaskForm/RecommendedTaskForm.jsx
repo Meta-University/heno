@@ -39,7 +39,6 @@ function RecommendedTaskForm(props) {
       }
 
       const data = await response.json();
-      console.log(data.recommendedTasks);
       setRecommendedTasks(data.recommendedTasks);
     } catch (error) {
       console.error("Error:", error);

@@ -15,6 +15,7 @@ import notificationRouter from "./routes/notifications.js";
 import recommendRouuter from "./recommend.js";
 import cron from "node-cron";
 import { checkAndSendNotifications } from "./emailNotifications.js";
+import schedule from "node-schedule";
 
 const app = express();
 
@@ -52,7 +53,7 @@ app.use(
   })
 );
 
-cron.schedule("0 0 * * *", () => {
+const job = schedule.scheduleJob("0 0 * * *", () => {
   checkAndSendNotifications();
 });
 

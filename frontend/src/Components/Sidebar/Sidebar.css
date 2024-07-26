@@ -53,6 +53,13 @@
   color: white;
 }
 
+.sidebar-items li:hover {
+  margin-right: 10px;
+  padding-left: 10px;
+  background-color: #ccc;
+  border-radius: 7px;
+}
+
 .notification-badge {
   background-color: whitesmoke;
   color: #333;
