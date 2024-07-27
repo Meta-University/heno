@@ -20,7 +20,7 @@ async function testEmailSending() {
       from: process.env.EMAIL_USER,
       to: "joyoneh.15@gmail.com",
       subject: "Test Email",
-      html: "<h1>This is a test email</h1><p>If you receive this, email sending is working.</p>",
+      html: "<h1>This is a test email</h1> <p>If you receive this, email sending is working.</p>",
     });
   } catch (error) {
     console.error("Error sending test email:", error);
