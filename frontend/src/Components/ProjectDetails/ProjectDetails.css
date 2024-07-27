@@ -197,13 +197,3 @@
   color: white;
   border-radius: 5px;
 }
-
-@media (max-width: 768px) {
-  .tasks {
-    overflow-x: auto;
-  }
-
-  .tasks table {
-    min-width: 600px;
-  }
-}

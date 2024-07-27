@@ -38,7 +38,7 @@ function CreateForm(props) {
       setProjects([...projects, data]);
       props.refreshProjects();
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
     props.displayForm();
   }

@@ -1,6 +1,6 @@
 # Project Name: Heno
 
-<b>Project Plan:</b> [PROJECTPLAN.md](PROJECTPLAN.md)
+<b>Project Plan:</b> https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
 <b>Intern:</b> Joy Itodo
 
@@ -35,7 +35,7 @@ Heno is a project management tool built using React and Node.js. It helps teams 
 - [x] Concurrency Control
   - [x] TC1: Lock-based concurrency for editing tasks
 
-- [x] AI-Empowered Schedule Reorganization
+- [x] AI-Empowered Schedule Reorganization 
   - [x] TC2: AI-suggested reorganization of task schedules
 
 - [x] Task Interaction

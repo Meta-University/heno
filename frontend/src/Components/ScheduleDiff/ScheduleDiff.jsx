@@ -121,6 +121,7 @@ function ScheduleDiff() {
   }
 
   async function handleUpdateProjectDetails() {
+    console.log(aiSuggestedSchedule.tasks);
     try {
       const response = await fetch(
         `${

@@ -14,13 +14,11 @@
 }
 
 .diff-table {
-  display: inline-block;
+  width: 75%;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
-  overflow-x: auto;
-  white-space: nowrap;
 }
 
 table {
@@ -146,19 +144,4 @@ td {
 
 .modal button:hover {
   background-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-  .diff-table {
-    margin: 5px;
-  }
-
-  table {
-    font-size: 14px;
-  }
-
-  .ok-btn,
-  .rollback-btn {
-    padding: 8px 16px;
-  }
 }
