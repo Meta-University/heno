@@ -15,7 +15,9 @@ function TaskDetails() {
 
   async function fetchTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`
+      );
       const data = await response.json();
       setTask(data);
     } catch (error) {
@@ -73,12 +75,15 @@ function TaskDetails() {
 
   async function handleDeleteTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         navigate("/tasks");
       }

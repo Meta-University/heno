@@ -21,12 +21,15 @@ function ProjectInfoPage({ handleSetScheduleDetails }) {
 
   async function handleDeleteProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         navigate("/projects");
       }

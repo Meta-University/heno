@@ -16,7 +16,9 @@ function EditForm(props) {
 
   async function fetchProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects/${id}`
+      );
       if (response.ok) {
         const project = await response.json();
         setProject(project);
@@ -41,21 +43,24 @@ function EditForm(props) {
   async function handleUpdate(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          status,
-          start_date,
-          due_date,
-          priority,
-        }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            status,
+            start_date,
+            due_date,
+            priority,
+          }),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const updatedProject = await response.json();

@@ -5,7 +5,7 @@ import CustomAlert from "../CustomAlert/CustomAlert";
 import io from "socket.io-client";
 import { UserContext } from "../../UserContext";
 
-const socket = io("http://localhost:3000");
+const socket = io(`${import.meta.env.VITE_BACKEND_URL}`);
 
 function EditTaskForm(props) {
   const { id } = useParams();
@@ -21,7 +21,9 @@ function EditTaskForm(props) {
 
   async function fetchTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`
+      );
       const data = await response.json();
       setTask(data);
       setIsLoading(false);
@@ -66,14 +68,17 @@ function EditTaskForm(props) {
   async function handleEditTask(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        }
+      );
 
       if (response.ok) {
         props.displayEditForm();

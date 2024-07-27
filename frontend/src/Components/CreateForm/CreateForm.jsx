@@ -15,22 +15,25 @@ function CreateForm(props) {
   async function handleCreateProject(event) {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/projects", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          status,
-          startDate,
-          dueDate,
-          priority,
-          teamMembers,
-        }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            status,
+            startDate,
+            dueDate,
+            priority,
+            teamMembers,
+          }),
+          credentials: "include",
+        }
+      );
       const data = await response.json();
       setProjects([...projects, data]);
       props.refreshProjects();

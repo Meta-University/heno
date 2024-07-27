@@ -54,13 +54,16 @@ function TaskModal({ task, onClose }) {
   async function handleEditTask(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(task),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${task.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(task),
+        }
+      );
 
       if (response.ok) {
         navigate(`/tasks/${id}`);

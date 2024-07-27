@@ -16,13 +16,16 @@ function HomeProjects() {
 
   async function receiveProjectList() {
     try {
-      const response = await fetch("http://localhost:3000/projects", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       setProjects(data);
     } catch (error) {

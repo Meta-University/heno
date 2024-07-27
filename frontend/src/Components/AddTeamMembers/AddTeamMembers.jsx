@@ -9,7 +9,7 @@ function AddTeamMembers(props) {
 
   useEffect(() => {
     if (query) {
-      fetch(`http://localhost:3000/users/search?query=${query}`)
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/users/search?query=${query}`)
         .then((response) => response.json())
         .then((data) => setSuggestions(data));
     } else {

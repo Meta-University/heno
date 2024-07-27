@@ -11,9 +11,12 @@ function TaskCalendar() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks`,
+        {
+          credentials: "include",
+        }
+      );
       const data = await response.json();
       setTasks(data);
     } catch (error) {

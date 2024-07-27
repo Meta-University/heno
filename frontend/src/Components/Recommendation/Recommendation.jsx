@@ -26,20 +26,23 @@ function Recommendation(props) {
     navigate("/loading");
 
     try {
-      const response = await fetch("http://localhost:3000/ai-recommend-tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          endGoals,
-          startDate,
-          endDate,
-          teamMembers,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/ai-recommend-tasks`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            endGoals,
+            startDate,
+            endDate,
+            teamMembers,
+          }),
+        }
+      );
       setDisplayForm(false);
 
       if (!response.ok) {

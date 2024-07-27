@@ -23,9 +23,11 @@ const port = 3000;
 const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
 
+console.log(process.env.DATABASE_URL);
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
 });
+
 const SequelizeStore = SequelizeStoreInit(session.Store);
 const sessionStore = new SequelizeStore({
   db: sequelize,
@@ -36,6 +38,8 @@ app.use(bodyParser.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
     credentials: true,
   })
 );

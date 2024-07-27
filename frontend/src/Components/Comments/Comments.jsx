@@ -10,7 +10,7 @@ function Comments({ taskId }) {
   async function fetchComments() {
     try {
       const response = await fetch(
-        `http://localhost:3000/tasks/${taskId}/comments`,
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${taskId}/comments`,
         {
           credentials: "include",
         }
@@ -35,7 +35,7 @@ function Comments({ taskId }) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/tasks/${taskId}/comments`,
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${taskId}/comments`,
         {
           method: "POST",
           headers: {
@@ -81,7 +81,7 @@ function Comments({ taskId }) {
   async function handleDeleteComment(commentId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/comments/${commentId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

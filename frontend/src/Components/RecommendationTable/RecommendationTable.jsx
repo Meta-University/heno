@@ -10,14 +10,17 @@ function RecommendationTable({ projectInfo, tasks, loading }) {
 
   async function handleApprove() {
     try {
-      const response = await fetch("http://localhost:3000/api/store-project", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...projectInfo, tasks, user }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/store-project`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...projectInfo, tasks, user }),
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to store project");

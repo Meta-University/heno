@@ -21,7 +21,9 @@ function ProjectDetails({ edit, editClick }) {
 
   async function fetchProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/projects/${id}`
+      );
       const data = await response.json();
       setProject(data.project);
       setCurrentSchedule(data.project);

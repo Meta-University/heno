@@ -23,7 +23,7 @@ function ScheduleDiff() {
     async function fetchSchedules() {
       try {
         const currentResponse = await fetch(
-          `http://localhost:3000/projects/${id}`
+          `${import.meta.env.VITE_BACKEND_URL}0/projects/${id}`
         );
 
         if (currentResponse.ok) {
@@ -93,17 +93,20 @@ function ScheduleDiff() {
     setAiSuggestedSchedule("");
     setChanges("");
     try {
-      const response = await fetch("http://localhost:3000/retry-schedule", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentSchedule,
-          feedback,
-        }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/retry-schedule`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentSchedule,
+            feedback,
+          }),
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
 
@@ -120,7 +123,9 @@ function ScheduleDiff() {
   async function handleUpdateProjectDetails() {
     try {
       const response = await fetch(
-        `http://localhost:3000/projects/${id}/approve-suggestions`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/projects/${id}/approve-suggestions`,
         {
           method: "PUT",
           headers: {

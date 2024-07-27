@@ -9,7 +9,7 @@ function Notifications({ onNotificationsRead }) {
   const { user, updateUser } = useContext(UserContext);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io(`${import.meta.env.VITE_BACKEND_URL}`, {
       withCredentials: true,
     });
     subscribeToNotifications(user.id, (notification) => {
@@ -28,7 +28,7 @@ function Notifications({ onNotificationsRead }) {
   async function fetchNotifications(userId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/notifications/${userId}`
+        `${import.meta.env.VITE_BACKEND_URL}/notifications/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch notifications");
@@ -43,7 +43,7 @@ function Notifications({ onNotificationsRead }) {
   async function deleteNotification(id) {
     try {
       const response = await fetch(
-        `http://localhost:3000/notifications/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/notifications/${id}`,
         {
           method: "DELETE",
         }

@@ -14,7 +14,9 @@ function ProjectChart() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await fetch(`http://localhost:3000/projects/${id}`);
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/projects/${id}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }
