@@ -71,7 +71,7 @@ function Sidebar(props) {
           >
             <Link to="/ai-recommendation">
               <i className="fa-solid fa-chalkboard"></i>
-              <p>AI Recommendation</p>
+              <p>AI Recommended Tasks</p>
             </Link>
           </li>
           <li

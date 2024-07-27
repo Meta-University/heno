@@ -13,17 +13,6 @@ const prisma = new PrismaClient();
 env.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
-
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 64,
-  maxOutputTokens: 8192,
-  responseMimeType: "application/json",
-};
 
 function detectConflicts(currentSchedule, suggestedSchedule) {
   const conflicts = [];
@@ -350,27 +339,55 @@ function generateChangeSentences(changes) {
   return sentences;
 }
 
-async function geminiChat(prompt) {
-  const chatSession = model.startChat({
-    generationConfig,
-  });
-
-  const result = await chatSession.sendMessage(prompt);
-  const message = await chatSession.sendMessage(
-    `Send a message on each of the changes made as a JSON.`
-  );
-
-  return JSON.parse(result.response.text());
-}
-
 reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
   const schedule = req.body.schedule;
-  const prompt = `Reorganize the following project  schedule to be more efficient and balanced:\n  ${JSON.stringify(
-    schedule
-  )}\n  Provide the reorganized schedule in the same format and do not suggest a new task`;
   try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const generationConfig = {
+      temperature: 1,
+      topP: 0.95,
+      topK: 64,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+    };
+
     async function run() {
-      const reorganizedSchedule = await geminiChat(prompt);
+      const chatSession = model.startChat({
+        generationConfig,
+
+        history: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: "Reorganize the following project  schedule to be more efficient and balanced:\n  ${JSON.stringify(schedule)}\n  Provide the reorganized schedule in the same format.{\n  id: 3,\n  title: 'Project Beta',\n  description: 'My second project',\n  status: 'IN_PROGRESS',\n  start_date: '2024-07-04T00:00:00.000Z',\n  due_date: '2024-07-11T00:00:00.000Z',\n  priority: 'LOW',\n  manager_id: 1,\n  createdAt: '2024-07-03T22:02:36.494Z',\n  updatedAt: '2024-07-04T21:31:43.347Z',\n  tasks: [\n    {\n      id: 2,\n      title: 'task 1',\n      description: 'Do all P0 tasks',\n      status: 'COMPLETED',\n      start_date: '2024-07-05T00:00:00.000Z',\n      due_date: '2024-07-19T00:00:00.000Z',\n      project_id: 3,\n      assignee_id: 3,\n      title_is_updating: false,\n      description_is_updating: false,\n      status_is_updating: false,\n      due_date_is_updating: false,\n      assignee_is_updating: false,\n      title_lockTimestamp: null,\n      description_lockTimestamp: null,\n      status_lockTimestamp: null,\n      due_date_lockTimestamp: null,\n      assignee_lockTimestamp: null,\n      createdAt: '2024-07-04T21:08:06.750Z',\n      updatedAt: '2024-07-07T22:12:38.985Z',\n      assignee: [Object]\n    },\n    {\n      id: 3,\n      title: 'task 2',\n      description: 'second',\n      status: 'IN_PROGRESS',\n      start_date: '2024-07-11T00:00:00.000Z',\n      due_date: '2024-07-22T00:00:00.000Z',\n      project_id: 3,\n      assignee_id: 3,\n      title_is_updating: false,\n      description_is_updating: false,\n      status_is_updating: false,\n      due_date_is_updating: false,\n      assignee_is_updating: false,\n      title_lockTimestamp: null,\n      description_lockTimestamp: null,\n      status_lockTimestamp: null,\n      due_date_lockTimestamp: null,\n      assignee_lockTimestamp: null,\n      createdAt: '2024-07-04T21:12:11.074Z',\n      updatedAt: '2024-07-04T21:12:11.074Z',\n      assignee: [Object]\n    }\n  ],\n  manager: {\n    id: 1,\n    name: 'jane doe',\n    email: 'jane@gmail.com',\n    password: '$2b$10$LOd/ArKrMgsACwB3UX8Oau5X3VzPozuCqMflgk1gMvMpOlljvD.pK',\n    role: 'PM',\n    createdAt: '2024-07-02T21:46:17.673Z',\n    updatedAt: '2024-07-02T21:46:17.673Z'\n  },\n  teamMembers: [\n    {\n      id: 2,\n      name: 'Timothy Itodo',\n      email: 'timo@gmail.com',\n      password: '$2b$10$MSPRhJXml55xrCGNHCkLAeM16XhPsfVUbHpXsdnEc0BkqBUPZCdn6',\n      role: 'TM',\n      createdAt: '2024-07-02T21:48:18.922Z',\n      updatedAt: '2024-07-02T21:48:18.922Z'\n    },\n    {\n      id: 3,\n      name: 'Zara Duruji',\n      email: 'zara@gmail.com',\n      password: '$2b$10$Slu0FKdZ4GFvQ12IHUy/uu03ubgwa9EIkSumNiMrSEN0uGN8JgqLG',\n      role: 'TM',\n      createdAt: '2024-07-02T21:48:45.361Z',\n      updatedAt: '2024-07-02T21:48:45.361Z'\n    }\n  ]\n}",
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: '```json\n{\n  "id": 3,\n  "title": "Project Beta",\n  "description": "My second project",\n  "status": "IN_PROGRESS",\n  "start_date": "2024-07-04T00:00:00.000Z",\n  "due_date": "2024-07-11T00:00:00.000Z",\n  "priority": "LOW",\n  "manager_id": 1,\n  "createdAt": "2024-07-03T22:02:36.494Z",\n  "updatedAt": "2024-07-04T21:31:43.347Z",\n  "tasks": [\n    {\n      "id": 2,\n      "title": "task 1",\n      "description": "Do all P0 tasks",\n      "status": "COMPLETED",\n      "start_date": "2024-07-05T00:00:00.000Z",\n      "due_date": "2024-07-09T00:00:00.000Z",\n      "project_id": 3,\n      "assignee_id": 3,\n      "title_is_updating": false,\n      "description_is_updating": false,\n      "status_is_updating": false,\n      "due_date_is_updating": false,\n      "assignee_is_updating": false,\n      "title_lockTimestamp": null,\n      "description_lockTimestamp": null,\n      "status_lockTimestamp": null,\n      "due_date_lockTimestamp": null,\n      "assignee_lockTimestamp": null,\n      "createdAt": "2024-07-04T21:08:06.750Z",\n      "updatedAt": "2024-07-07T22:12:38.985Z",\n      "assignee": [\n        {\n          "id": 3,\n          "name": "Zara Duruji",\n          "email": "zara@gmail.com",\n          "password": "$2b$10$Slu0FKdZ4GFvQ12IHUy/uu03ubgwa9EIkSumNiMrSEN0uGN8JgqLG",\n          "role": "TM",\n          "createdAt": "2024-07-02T21:48:45.361Z",\n          "updatedAt": "2024-07-02T21:48:45.361Z"\n        }\n      ]\n    },\n    {\n      "id": 3,\n      "title": "task 2",\n      "description": "second",\n      "status": "IN_PROGRESS",\n      "start_date": "2024-07-10T00:00:00.000Z",\n      "due_date": "2024-07-11T00:00:00.000Z",\n      "project_id": 3,\n      "assignee_id": 2,\n      "title_is_updating": false,\n      "description_is_updating": false,\n      "status_is_updating": false,\n      "due_date_is_updating": false,\n      "assignee_is_updating": false,\n      "title_lockTimestamp": null,\n      "description_lockTimestamp": null,\n      "status_lockTimestamp": null,\n      "due_date_lockTimestamp": null,\n      "assignee_lockTimestamp": null,\n      "createdAt": "2024-07-04T21:12:11.074Z",\n      "updatedAt": "2024-07-04T21:12:11.074Z",\n      "assignee": [\n        {\n          "id": 2,\n          "name": "Timothy Itodo",\n          "email": "timo@gmail.com",\n          "password": "$2b$10$MSPRhJXml55xrCGNHCkLAeM16XhPsfVUbHpXsdnEc0BkqBUPZCdn6",\n          "role": "TM",\n          "createdAt": "2024-07-02T21:48:18.922Z",\n          "updatedAt": "2024-07-02T21:48:18.922Z"\n        }\n      ]\n    }\n  ],\n  "manager": {\n    "id": 1,\n    "name": "jane doe",\n    "email": "jane@gmail.com",\n    "password": "$2b$10$LOd/ArKrMgsACwB3UX8Oau5X3VzPozuCqMflgk1gMvMpOlljvD.pK",\n    "role": "PM",\n    "createdAt": "2024-07-02T21:46:17.673Z",\n    "updatedAt": "2024-07-02T21:46:17.673Z"\n  },\n  "teamMembers": [\n    {\n      "id": 2,\n      "name": "Timothy Itodo",\n      "email": "timo@gmail.com",\n      "password": "$2b$10$MSPRhJXml55xrCGNHCkLAeM16XhPsfVUbHpXsdnEc0BkqBUPZCdn6",\n      "role": "TM",\n      "createdAt": "2024-07-02T21:48:18.922Z",\n      "updatedAt": "2024-07-02T21:48:18.922Z"\n    },\n    {\n      "id": 3,\n      "name": "Zara Duruji",\n      "email": "zara@gmail.com",\n      "password": "$2b$10$Slu0FKdZ4GFvQ12IHUy/uu03ubgwa9EIkSumNiMrSEN0uGN8JgqLG",\n      "role": "TM",\n      "createdAt": "2024-07-02T21:48:45.361Z",\n      "updatedAt": "2024-07-02T21:48:45.361Z"\n    }\n  ]\n}\n```\n\n**Changes made:**\n\n* **Task 1:**\n    * Due date moved from 2024-07-19 to 2024-07-09 to ensure it\'s completed before the project\'s due date.\n* **Task 2:**\n    * Start date moved from 2024-07-11 to 2024-07-10 to distribute the workload more evenly.\n    * Assignee changed to Timothy Itodo (id: 2) for workload balancing.\n\n**Reasoning:**\n\nThe original schedule had task 1 due after the project\'s due date, which is inefficient. The reorganization ensures that both tasks are completed before the project\'s deadline, while also distributing the workload evenly among team members. \n',
+              },
+            ],
+          },
+        ],
+      });
+
+      const result = await chatSession.sendMessage(
+        `Reorganize the following project  schedule to be more efficient and balanced:\n  ${JSON.stringify(
+          schedule
+        )}\n  Provide the reorganized schedule in the same format and do not suggest a new task`
+      );
+      const message = await chatSession.sendMessage(
+        `Send a message on each of the changes made as a JSON.`
+      );
+
+      const reorganizedSchedule = JSON.parse(result.response.text());
       reorganizedSchedule.tasks.sort(
         (a, b) => new Date(a.start_date) - new Date(b.start_date)
       );
@@ -407,10 +424,71 @@ reorganiseRouuter.post("/retry-schedule", async (req, res) => {
     ${feedback}
     Please generate a new schedule taking the feedback into consideration. Ensure that the workload is balanced among team members and the tasks' start and end dates align properly with the project's timeline. Provide the reorganized schedule in the same format as the current schedule and do not suggest a new task
   `;
-
   try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const generationConfig = {
+      temperature: 1,
+      topP: 0.95,
+      topK: 64,
+      maxOutputTokens: 8192,
+      responseMimeType: "application/json",
+    };
+
     async function run() {
-      const reorganizedSchedule = await geminiChat(prompt);
+      const chatSession = model.startChat({
+        generationConfig,
+
+        history: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: "`Reorganize the following project  schedule to be more efficient and balanced:\\n  ${JSON.stringify(\n          schedule\n        )}\\n  Provide the reorganized schedule in the same format and do not suggest a new task`",
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "Please provide the `schedule` JSON data so I can reorganize it for you. I need to see the current task list and their assigned dates to create a more efficient and balanced schedule. \n",
+              },
+            ],
+          },
+
+          {
+            role: "user",
+            parts: [
+              {
+                text: "The user does not approve this changes can you try again\n",
+              },
+            ],
+          },
+          {
+            role: "model",
+            parts: [
+              {
+                text: "You're right, I need more information to suggest a better schedule.  \n\nTo make the most efficient and balanced schedule, I need to know **what the user doesn't like about the previous reorganization** and **what their priorities are**.  \n\nFor example, please tell me: \n\n* **What specific aspects of the previous reorganization did the user disapprove of?** (e.g., Did they think certain tasks were moved too early or late? Did they think the task distribution was uneven?)\n* **Are there any specific team members or tasks that have higher priority?**  \n* **Are there any constraints that need to be considered, such as team members being unavailable on certain days?**\n\nOnce you provide this information, I can create a more tailored and user-approved schedule! \n",
+              },
+            ],
+          },
+          {
+            role: "user",
+            parts: [
+              {
+                text: "The task description was uneven and the project kick of meeting should be assigned to the manager",
+              },
+            ],
+          },
+        ],
+      });
+
+      const result = await chatSession.sendMessage(prompt);
+
+      const reorganizedSchedule = JSON.parse(result.response.text());
       reorganizedSchedule.tasks.sort(
         (a, b) => new Date(a.start_date) - new Date(b.start_date)
       );
@@ -421,6 +499,8 @@ reorganiseRouuter.post("/retry-schedule", async (req, res) => {
       resolvedSchedule.tasks.sort(
         (a, b) => new Date(a.start_date) - new Date(b.start_date)
       );
+
+      console.log(resolvedSchedule);
 
       const changesList = generateChangesList(
         currentSchedule,

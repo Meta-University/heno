@@ -17,11 +17,6 @@
   font-size: 24px;
 }
 
-.task-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
 .task-table {
   padding: 5px;
   width: 100%;
@@ -30,7 +25,7 @@
   border-spacing: 0;
   border: 1px solid #ddd;
   margin-top: 20px;
-  min-width: 600px;
+  border-radius: 10px;
   overflow: hidden;
 }
 

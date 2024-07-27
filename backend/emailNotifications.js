@@ -16,32 +16,22 @@ const transporter = nodemailer.createTransport({
 
 async function sendReminderNotificationEmail(user, task, type) {
   const subject = type === "start" ? "Task Starting Soon" : "Task Due Soon";
-  const loginUrl = "http://localhost:5173/login";
   const html = `
     <h1>${subject}</h1>
     <p>Hello ${user.name},</p>
-    <p>This is a reminder that the ${
-      type === "start" ? "start date" : "due date"
-    } of your task: ${task.title} is fast approaching</p>
+    <p>This is a reminder about your task: ${task.title}</p>
     <p>${type === "start" ? "Start" : "Due"} Date: ${new Date(
     type === "start" ? task.start_date : task.due_date
   ).toLocaleDateString()}</p>
-    <p>Please <a href="${loginUrl}">log in</a>  to your account for more details.</p>
+    <p>Please log in to your account for more details.</p>
   `;
 
-  try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: user.email,
-      subject,
-      html,
-    });
-  } catch (error) {
-    console.error(
-      `Error sending email to ${user.email} for task ${task.title}:`,
-      error
-    );
-  }
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to: "joyoneh.15@gmail.com",
+    subject,
+    html,
+  });
 }
 
 export async function sendEmailNotification(to, subject, html) {
@@ -52,6 +42,7 @@ export async function sendEmailNotification(to, subject, html) {
       subject,
       html,
     });
+    console.log("Email sent: %s", info.messageId);
   } catch (error) {
     console.error("Error sending email:", error);
   }
@@ -59,8 +50,7 @@ export async function sendEmailNotification(to, subject, html) {
 
 export async function checkAndSendNotifications() {
   const today = new Date();
-  const threeDaysFromNow = new Date(today);
-  threeDaysFromNow.setDate(today.getDate() + 3);
+  const threeDaysFromNow = new Date(today.setDate(today.getDate() + 3));
 
   const upcomingTasks = await prisma.task.findMany({
     where: {

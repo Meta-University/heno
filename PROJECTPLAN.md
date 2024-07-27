@@ -1,15 +1,11 @@
 # Project Name: Heno
-For full details including timelies, wireframes, designs, see: [Project Plan Document](https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing)
-
+https://docs.google.com/document/d/1NOvkJmvaQqjIpZoUuXl-t2kShQjH4kAj3lvV5Kzetzg/edit?usp=sharing
 
 Intern: Joy Itodo
-
 Intern Manager: Shulin Zhao
-
 Intern Director: Cesar Barraza
 
 Category: Productivity/Professional Services
-
 Description: A project management tool that helps teams create and plan projects and tasks, with real-time updates and effective communication
 
 ## User roles
@@ -152,62 +148,15 @@ For your project, you should demonstrate that you can apply what you’ve learne
 Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out.
 
 ### Technical Challenge #1 - [Name/Small Description]
+What
+What problem are you solving, and what parts go beyond what you learned in CodePath?
+How
+Explain in words how you’ll solve this problem.
 
-#### What
-<b>Concurrent Writing:</b> There is a possibility that multiple users (either manager + one team member, or multiple team members) are attempting to update the same task item. This is a “popular” challenge in almost every domain in computer science, eg, cache coherence and consistency, data consistency in distributed systems, etc. Solving the concurrent writes problem in this project would be beneficial to understanding MESI cache protocol, lock-based concurrency control, etc.
-
-#### How
-
-- [P0]: Lock-based Concurrency Control (Coarse-granularity, non-blocking)
-Maintain a “giant” lock for each task, and require to obtain the lock prior to attempting the update request. Pseudo code looks like:
-
-
-  ```
-  If !is_updating:
-    update()
-  Else:
-    # Failing this request immediately
-    notify("other(s) is updating now, please try another time")
-    return
-  ```
-
-- [P1]: Lock-based Concurrency Control (Fine-granularity, non-blocking)
-A stretch is, instead of maintaining a lock for all items in a task, each item in this task could have its own lock: the locks are finer hence the update failure rate will be reduced.
-
-- [P1]: Lock-based Concurrency Control (Fine-granularity,  blocking with timeout)
-Another stretch is allowing a `timeout` awaiting tolerance before failing the update request.
-
-
-
-### Technical Challenge #2
-
-#### What
-<b>AI-empowered Schedule Reorganisation:</b>
- The admin/manager could be overwhelmed with creating and assigning numeral tasks to members, and the schedule (start_time, end_time, assignee) could be imbalanced. To address this, we could take advantage of public LLAMA (e.g. ChatGPT) interfaces to help reorganise the task schedule to be more efficient and better balanced.
-
-#### How
-
-1. A button available to manager, "AI help me reorganise please"
-2. Collect the snapshot of current status
-3. Construct a LLAMA request, and send out
-4. Receive and parse the response
-5. Based on the response, generate a "diff" screenshot comparing "now" vs "AI-suggested"
-6. If manager agrees on the change, click "OK" to apply the changes; if not, rollback
-
+You’re encouraged to expand on this section with pseudo-code, links to external frameworks, architecture / design diagrams, anything that you can use to explain this to others!
+Technical Challenge #2
+What
+How
 
 ## Database Integration
-I am using Prisma to interact with Postgresql for database storage.
-
-## External APIs
-The project will make use of the Gemini API to reorganize tasks schedules and make it more efficient for the manager.
-
-## Authentication
-Users can create an account, their information will be stored in the database (passwords will be hashed). If user information is correct when logging in, they will be authenticated.
-I am implementing cooking/session management with the “express-session” module, cookies will expire 1 year after the user has logged in unless they log out from their account.
-
-
-## Visuals and Interactions
-
-- Interesting Cursor Interaction: When hovering on an item that is clickable, it changes the cursor to a pointer
-- UI Component with Custom Visual Styling: Making use of font awesome icons.
-- Loading State: Making use of the react useState hook to monitor when a user is fetching data or performing an asynchronous operation. If this state is true, a loading component screen will be displayed.
+I am using Postgres (PgAdmin)

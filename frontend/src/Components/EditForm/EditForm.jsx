@@ -64,7 +64,7 @@ function EditForm(props) {
 
       if (response.ok) {
         const updatedProject = await response.json();
-        console.error("Project updated: ", updatedProject);
+        console.log("Project updated: ", updatedProject);
         props.refreshProject();
         navigate(`/projects/${id}`);
       } else {

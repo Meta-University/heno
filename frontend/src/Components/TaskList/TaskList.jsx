@@ -53,42 +53,40 @@ function TaskList(props) {
         <h1>My Tasks</h1>
       </div>
 
-      <div className="task-table-wrapper">
-        <table className="task-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Project</th>
-              <th>Assignee</th>
-              <th>Due</th>
-              <th> </th>
+      <table className="task-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Project</th>
+            <th>Assignee</th>
+            <th>Due</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.id}>
+              <td>#{task.id}</td>
+              <td>{capitalizeFirstLetters(task.title)}</td>
+              <td className={getStatusClass(task.status)}>
+                {formatText(task.status)}
+              </td>
+              <td>{capitalizeFirstLetters(task.project.title)}</td>
+              <td>
+                {task.assignee
+                  ? capitalizeFirstLetters(task.assignee.name)
+                  : "Unaasigned"}
+              </td>
+              <td>{new Date(task.due_date).toLocaleDateString()}</td>
+              <td>
+                <Link to={`/tasks/${task.id}`}>View</Link>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {tasks.map((task) => (
-              <tr key={task.id}>
-                <td>#{task.id}</td>
-                <td>{capitalizeFirstLetters(task.title)}</td>
-                <td className={getStatusClass(task.status)}>
-                  {formatText(task.status)}
-                </td>
-                <td>{capitalizeFirstLetters(task.project.title)}</td>
-                <td>
-                  {task.assignee
-                    ? capitalizeFirstLetters(task.assignee.name)
-                    : "Unaasigned"}
-                </td>
-                <td>{new Date(task.due_date).toLocaleDateString()}</td>
-                <td>
-                  <Link to={`/tasks/${task.id}`}>View</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

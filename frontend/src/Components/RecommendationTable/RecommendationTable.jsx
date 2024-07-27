@@ -148,32 +148,30 @@ function RecommendationTable({ projectInfo, tasks, loading }) {
             </div>
           </div>
 
-          <div className="table-wrapper">
-            <table className="tasks-table">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Assignee</th>
+          <table className="tasks-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Assignee</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map((task, index) => (
+                <tr key={index}>
+                  <td>{task.title}</td>
+                  <td>{task.description}</td>
+                  <td>{task.status}</td>
+                  <td>{new Date(task.startDate).toLocaleDateString()}</td>
+                  <td>{new Date(task.dueDate).toLocaleDateString()}</td>
+                  <td>{task.assignment}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {tasks.map((task, index) => (
-                  <tr key={index}>
-                    <td>{task.title}</td>
-                    <td>{task.description}</td>
-                    <td>{task.status}</td>
-                    <td>{new Date(task.startDate).toLocaleDateString()}</td>
-                    <td>{new Date(task.dueDate).toLocaleDateString()}</td>
-                    <td>{task.assignment}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
           <div className="buttons">
             <button className="approve-button" onClick={handleApprove}>
               Approve

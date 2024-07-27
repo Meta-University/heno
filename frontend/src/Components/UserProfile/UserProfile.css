@@ -2,9 +2,9 @@
   position: absolute;
   top: 50px;
   right: 45px;
-  background-color: whitesmoke;
+  background-color: #fcdebe;
   border-radius: 7px;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }

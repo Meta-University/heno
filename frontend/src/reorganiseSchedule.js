@@ -16,6 +16,6 @@ export async function reorganiseSchedule(schedule) {
     const data = await response.json();
     return [data.resolvedSchedule, data.changes];
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
