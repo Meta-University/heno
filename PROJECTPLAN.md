@@ -151,7 +151,7 @@ For your project, you should demonstrate that you can apply what you’ve learne
 
 Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out.
 
-### Technical Challenge #1 - [Name/Small Description]
+### Technical Challenge #1 
 
 #### What
 <b>Concurrent Writing:</b> There is a possibility that multiple users (either manager + one team member, or multiple team members) are attempting to update the same task item. This is a “popular” challenge in almost every domain in computer science, eg, cache coherence and consistency, data consistency in distributed systems, etc. Solving the concurrent writes problem in this project would be beneficial to understanding MESI cache protocol, lock-based concurrency control, etc.
