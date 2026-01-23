@@ -1,7 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { io } from "../index.js";
-import { sendEmailNotification } from "../emailNotifications.js";
+// import { sendEmailNotification } from "../emailNotifications.js";
 
 const notificationRouter = express.Router();
 const prisma = new PrismaClient();
@@ -37,26 +37,26 @@ async function emitNotification(type, taskId, commentId, content, projectId) {
   });
 
   projectUsers.map(async (user) => {
-    if (type === "TASK_EDIT") {
-      await sendEmailNotification(
-        "joyoneh.15@gmail.com",
-        "Task Updated",
-        `<h1>Task Updated</h1>
-            <p>Hello ${user.name},</p>
-         <p>${content}</p>
-         <p>Please log in to the system to view the comment and respond if necessary.</p>
-        `
-      );
-    } else if (type === "COMMENT") {
-      await sendEmailNotification(
-        "joyoneh.15@gmail.com",
-        "New Comment on Task",
-        `<h1>New Comment on Task</h1>
-        <p>Hello ${user.name},</p>
-         <p>${content}</p>
-         <p>Please log in to the system to view the comment and respond if necessary.</p>`
-      );
-    }
+    // if (type === "TASK_EDIT") {
+    //   await sendEmailNotification(
+    //     "joyoneh.15@gmail.com",
+    //     "Task Updated",
+    //     `<h1>Task Updated</h1>
+    //         <p>Hello ${user.name},</p>
+    //      <p>${content}</p>
+    //      <p>Please log in to the system to view the comment and respond if necessary.</p>
+    //     `
+    //   );
+    // } else if (type === "COMMENT") {
+    //   await sendEmailNotification(
+    //     "joyoneh.15@gmail.com",
+    //     "New Comment on Task",
+    //     `<h1>New Comment on Task</h1>
+    //     <p>Hello ${user.name},</p>
+    //      <p>${content}</p>
+    //      <p>Please log in to the system to view the comment and respond if necessary.</p>`
+    //   );
+    // }
   });
 }
 

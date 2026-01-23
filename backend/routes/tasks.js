@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { emitNotification } from "./notifications.js";
 import http from "http";
 import { io } from "../index.js";
-import { sendEmailNotification } from "../emailNotifications.js";
+// import { sendEmailNotification } from "../emailNotifications.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();

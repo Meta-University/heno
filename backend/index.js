@@ -14,7 +14,7 @@ import { Server as SocketIOServer } from "socket.io";
 import notificationRouter from "./routes/notifications.js";
 import recommendRouuter from "./recommend.js";
 import cron from "node-cron";
-import { checkAndSendNotifications } from "./emailNotifications.js";
+// import { checkAndSendNotifications } from "./emailNotifications.js";
 import schedule from "node-schedule";
 
 const app = express();
@@ -25,6 +25,12 @@ env.config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
 });
 const SequelizeStore = SequelizeStoreInit(session.Store);
 const sessionStore = new SequelizeStore({
@@ -54,7 +60,7 @@ app.use(
 );
 
 const job = schedule.scheduleJob("0 0 * * *", () => {
-  checkAndSendNotifications();
+  // checkAndSendNotifications();
 });
 
 const server = http.createServer(app);
