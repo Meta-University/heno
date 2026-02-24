@@ -23,8 +23,14 @@ function HomeProjects() {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 401) {
+        navigate("/login");
+        return;
+      }
       const data = await response.json();
-      setProjects(data);
+      if (Array.isArray(data)) {
+        setProjects(data);
+      }
     } catch (error) {
       console.log(error);
     }

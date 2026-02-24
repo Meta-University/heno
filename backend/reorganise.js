@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-2.0-flash",
 });
 
 const generationConfig = {
@@ -73,17 +73,135 @@ function getConflictDetails(task1, task2, teamMembers, manager) {
   return conflicts;
 }
 
+function findMemberOrManager(id, teamMembers, manager) {
+  const member = teamMembers.find((member) => member.id === id);
+  if (member) return member;
+  return manager;
+}
+
+function detectConflicts(currentSchedule, suggestedSchedule) {
+  const conflicts = [];
+  for (const currentTask of currentSchedule.tasks) {
+    const suggestedTask = suggestedSchedule.tasks.find((t) => t.id === currentTask.id);
+    if (suggestedTask && isConflict(currentTask, suggestedTask)) {
+      conflicts.push({
+        taskId: currentTask.id,
+        conflicts: getConflictDetails(currentTask, suggestedTask, currentSchedule.teamMembers, currentSchedule.manager),
+      });
+    }
+  }
+  return conflicts;
+}
+
+function autoResolveConflict(conflict, currentSchedule, suggestedSchedule) {
+  const resolution = { taskId: conflict.taskId, changes: {} };
+  for (const [key, value] of Object.entries(conflict.conflicts)) {
+    resolution.changes[key] = value.suggested;
+  }
+  return resolution;
+}
+
+function autoResolveConflicts(conflicts, currentSchedule, suggestedSchedule) {
+  return conflicts.map((conflict) => autoResolveConflict(conflict, currentSchedule, suggestedSchedule));
+}
+
+function applyResolutions(currentSchedule, resolutions) {
+  const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule));
+  for (const resolution of resolutions) {
+    const task = updatedSchedule.tasks.find((t) => t.id === resolution.taskId);
+    if (task) {
+      Object.assign(task, resolution.changes);
+    }
+  }
+  return updatedSchedule;
+}
+
+async function handleAutomaticConflictResolution(currentSchedule, suggestedSchedule) {
+  const conflicts = detectConflicts(currentSchedule, suggestedSchedule);
+  if (conflicts.length === 0) {
+    return suggestedSchedule;
+  }
+  const resolutions = autoResolveConflicts(conflicts, currentSchedule, suggestedSchedule);
+  return applyResolutions(currentSchedule, resolutions);
+}
+
+function generateChangesList(currentSchedule, resolvedSchedule) {
+  const changes = [];
+  for (let i = 0; i < currentSchedule.tasks.length; i++) {
+    const currentTask = currentSchedule.tasks[i];
+    const resolvedTask = resolvedSchedule.tasks.find((t) => t.id === currentTask.id);
+    if (!resolvedTask) continue;
+    
+    const taskChanges = {};
+    if (currentTask.status !== resolvedTask.status) {
+      taskChanges.status = { from: currentTask.status, to: resolvedTask.status };
+    }
+    if (!datesAreEqual(currentTask.start_date, resolvedTask.start_date)) {
+      taskChanges.start_date = { from: currentTask.start_date, to: resolvedTask.start_date };
+    }
+    if (!datesAreEqual(currentTask.due_date, resolvedTask.due_date)) {
+      taskChanges.due_date = { from: currentTask.due_date, to: resolvedTask.due_date };
+    }
+    if (currentTask.assignee_id !== resolvedTask.assignee_id) {
+      taskChanges.assignee = {
+        from: currentSchedule.teamMembers.find((m) => m.id === currentTask.assignee_id)?.name,
+        to: resolvedSchedule.teamMembers.find((m) => m.id === resolvedTask.assignee_id)?.name,
+      };
+    }
+    if (Object.keys(taskChanges).length > 0) {
+      changes.push({ taskId: currentTask.id, taskTitle: currentTask.title, changes: taskChanges });
+    }
+  }
+  return changes;
+}
+
+function generateChangeSentences(changes) {
+  const sentences = [];
+  changes.forEach((change) => {
+    const { taskTitle, changes: taskChanges } = change;
+    if (taskChanges.status) {
+      sentences.push(`${taskTitle} status changed from ${taskChanges.status.from} to ${taskChanges.status.to}.`);
+    }
+    if (taskChanges.start_date) {
+      sentences.push(`${taskTitle} start date changed from ${new Date(taskChanges.start_date.from).toLocaleDateString()} to ${new Date(taskChanges.start_date.to).toLocaleDateString()}.`);
+    }
+    if (taskChanges.due_date) {
+      sentences.push(`${taskTitle} due date changed from ${new Date(taskChanges.due_date.from).toLocaleDateString()} to ${new Date(taskChanges.due_date.to).toLocaleDateString()}.`);
+    }
+    if (taskChanges.assignee) {
+      sentences.push(`${taskTitle} assignee changed from ${taskChanges.assignee.from} to ${taskChanges.assignee.to}.`);
+    }
+  });
+  return sentences;
+}
+
 // --- AI INTERACTION ---
 
-async function geminiChat(prompt) {
-  try {
-    const chatSession = model.startChat({ generationConfig });
-    const result = await chatSession.sendMessage(prompt);
-    const text = cleanGeminiResponse(result.response.text());
-    return JSON.parse(text);
-  } catch (error) {
-    console.error("Gemini Chat Error:", error);
-    throw new Error("Failed to parse AI response");
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function geminiChat(prompt, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const chatSession = model.startChat({ generationConfig });
+      const result = await chatSession.sendMessage(prompt);
+      const text = cleanGeminiResponse(result.response.text());
+      return JSON.parse(text);
+    } catch (error) {
+      console.error(`Gemini Chat Error (attempt ${attempt}/${retries}):`, error.message);
+      
+      if (error.status === 429 && attempt < retries) {
+        const waitTime = Math.min(60000, 10000 * attempt);
+        console.log(`Rate limited. Waiting ${waitTime/1000}s before retry...`);
+        await sleep(waitTime);
+        continue;
+      }
+      
+      if (attempt === retries) {
+        throw new Error("Failed to get AI response after retries");
+      }
+    }
   }
 }
 

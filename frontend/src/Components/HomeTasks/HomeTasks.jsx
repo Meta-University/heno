@@ -32,8 +32,14 @@ function HomeTasks() {
       const response = await fetch("http://localhost:3000/tasks", {
         credentials: "include",
       });
+      if (response.status === 401) {
+        navigate("/login");
+        return;
+      }
       const data = await response.json();
-      setTasks(data);
+      if (Array.isArray(data)) {
+        setTasks(data);
+      }
     } catch (error) {
       console.error("Error fetching tasks", error);
     }
@@ -81,8 +87,10 @@ function HomeTasks() {
       </div>
       {displayForm && (
         <CreateTaskForm
-          teamMembers={tasks[0].project && tasks[0].project.teamMembers}
           displayForm={handleDisplayForm}
+          onTaskCreated={(newTask) => {
+            setTasks([...tasks, newTask]);
+          }}
         />
       )}
       <div className="tabs">

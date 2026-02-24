@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./TaskList.css";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 
 function TaskList(props) {
   const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();
 
   async function fetchTasks() {
     try {
       const response = await fetch("http://localhost:3000/tasks", {
         credentials: "include",
       });
+      if (response.status === 401) {
+        navigate("/login");
+        return;
+      }
       const data = await response.json();
-      setTasks(data);
+      if (Array.isArray(data)) {
+        setTasks(data);
+      }
     } catch (error) {
       console.error("Error fetching tasks", error);
     }
@@ -71,7 +78,7 @@ function TaskList(props) {
                 <td className={getStatusClass(task.status)}>
                   {formatText(task.status)}
                 </td>
-                <td>{capitalizeFirstLetters(task.project.title)}</td>
+                <td>{task.project ? capitalizeFirstLetters(task.project.title) : "Personal"}</td>
                 <td>
                   {task.assignee
                     ? capitalizeFirstLetters(task.assignee.name)

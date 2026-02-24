@@ -25,8 +25,10 @@ function EditTaskForm(props) {
       const data = await response.json();
       setTask(data);
       setIsLoading(false);
-      if (data.project) {
+      if (data.project && data.project.teamMembers) {
         setTeamMembers(data.project.teamMembers);
+      } else if (data.assignee) {
+        setTeamMembers([data.assignee]);
       }
     } catch (error) {
       console.error("Error fetching task:", error);

@@ -9,6 +9,13 @@ const taskRouter = express.Router();
 const prisma = new PrismaClient();
 
 const LOCK_TIMEOUT = 60000;
+
+function requireAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Unauthorized. Please log in." });
+  }
+  next();
+}
 const blockedUsers = new Map();
 
 async function acquireLock(taskId, field, userId) {
@@ -61,7 +68,7 @@ async function releaseLock(taskId, field) {
   });
 }
 
-taskRouter.post("/tasks", async (req, res) => {
+taskRouter.post("/tasks", requireAuth, async (req, res) => {
   const {
     title,
     description,
@@ -73,18 +80,25 @@ taskRouter.post("/tasks", async (req, res) => {
     projectId,
   } = req.body;
   try {
+    const taskData = {
+      title,
+      description,
+      status,
+      priority,
+      start_date: new Date(start_date),
+      due_date: new Date(due_date),
+      assignee: { connect: { id: assigneeId } },
+    };
+
+    if (projectId) {
+      taskData.project = { connect: { id: projectId } };
+    }
+
     const task = await prisma.task.create({
-      data: {
-        title,
-        description,
-        status,
-        priority,
-        start_date: new Date(start_date),
-        due_date: new Date(due_date),
-        assignee: { connect: { id: assigneeId } },
-        project: {
-          connect: { id: projectId },
-        },
+      data: taskData,
+      include: {
+        project: true,
+        assignee: true,
       },
     });
     res.json(task);
@@ -93,13 +107,17 @@ taskRouter.post("/tasks", async (req, res) => {
   }
 });
 
-taskRouter.get("/tasks", async (req, res) => {
+taskRouter.get("/tasks", requireAuth, async (req, res) => {
   const userId = req.session.user.id;
 
   try {
     const tasks = await prisma.task.findMany({
       where: {
-        OR: [{ assignee_id: userId }, { project: { manager_id: userId } }],
+        OR: [
+          { assignee_id: userId },
+          { project: { manager_id: userId } },
+          { AND: [{ assignee_id: userId }, { project_id: null }] },
+        ],
       },
       include: {
         project: {
@@ -141,7 +159,7 @@ taskRouter.get("/tasks/:id", async (req, res) => {
   }
 });
 
-taskRouter.put("/tasks/:id", async (req, res) => {
+taskRouter.put("/tasks/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
   const {
@@ -275,7 +293,7 @@ taskRouter.get("/tasks/:id/comments", async (req, res) => {
   }
 });
 
-taskRouter.post("/tasks/:taskId/comments", async (req, res) => {
+taskRouter.post("/tasks/:taskId/comments", requireAuth, async (req, res) => {
   const { taskId } = req.params;
   const userId = req.session.user.id;
   const { content } = req.body;
@@ -313,7 +331,7 @@ taskRouter.post("/tasks/:taskId/comments", async (req, res) => {
   }
 });
 
-taskRouter.delete("/comments/:commentId", async (req, res) => {
+taskRouter.delete("/comments/:commentId", requireAuth, async (req, res) => {
   const { commentId } = req.params;
   const userId = req.session.user.id;
 

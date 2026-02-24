@@ -7,22 +7,34 @@ const notificationRouter = express.Router();
 const prisma = new PrismaClient();
 
 async function emitNotification(type, taskId, commentId, content, projectId) {
-  const projectUsers = await prisma.user.findMany({
-    where: {
-      OR: [
-        { projects: { some: { id: projectId } } },
-        { teamProjects: { some: { id: projectId } } },
-      ],
-    },
-  });
+  let usersToNotify = [];
+
+  if (projectId) {
+    usersToNotify = await prisma.user.findMany({
+      where: {
+        OR: [
+          { projects: { some: { id: projectId } } },
+          { teamProjects: { some: { id: projectId } } },
+        ],
+      },
+    });
+  } else {
+    const task = await prisma.task.findUnique({
+      where: { id: parseInt(taskId) },
+      include: { assignee: true },
+    });
+    if (task && task.assignee) {
+      usersToNotify = [task.assignee];
+    }
+  }
 
   const notifications = await Promise.all(
-    projectUsers.map(async (user) => {
+    usersToNotify.map(async (user) => {
       return prisma.notification.create({
         data: {
           type,
           task_id: parseInt(taskId),
-          comment_id: parseInt(commentId),
+          comment_id: commentId ? parseInt(commentId) : null,
           user: {
             connect: { id: parseInt(user.id) },
           },
@@ -34,29 +46,6 @@ async function emitNotification(type, taskId, commentId, content, projectId) {
 
   notifications.forEach((notification) => {
     io.emit(`notifications-${notification.user_id}`, notification);
-  });
-
-  projectUsers.map(async (user) => {
-    // if (type === "TASK_EDIT") {
-    //   await sendEmailNotification(
-    //     "joyoneh.15@gmail.com",
-    //     "Task Updated",
-    //     `<h1>Task Updated</h1>
-    //         <p>Hello ${user.name},</p>
-    //      <p>${content}</p>
-    //      <p>Please log in to the system to view the comment and respond if necessary.</p>
-    //     `
-    //   );
-    // } else if (type === "COMMENT") {
-    //   await sendEmailNotification(
-    //     "joyoneh.15@gmail.com",
-    //     "New Comment on Task",
-    //     `<h1>New Comment on Task</h1>
-    //     <p>Hello ${user.name},</p>
-    //      <p>${content}</p>
-    //      <p>Please log in to the system to view the comment and respond if necessary.</p>`
-    //   );
-    // }
   });
 }
 
