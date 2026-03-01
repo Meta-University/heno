@@ -52,7 +52,11 @@ app.use(
     credentials: true,
   })
 );
-const isProduction = process.env.NODE_ENV === "production";
+// Use cross-origin cookies when frontend is on a different origin (e.g. localhost → Render).
+// Set COOKIE_CROSS_ORIGIN=true in Render Environment so session works from your frontend.
+const cookieCrossOrigin =
+  process.env.COOKIE_CROSS_ORIGIN === "true" ||
+  process.env.NODE_ENV === "production";
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "TOPSECRETWORD",
@@ -60,8 +64,8 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      sameSite: isProduction ? "none" : "lax",
-      secure: isProduction,
+      sameSite: cookieCrossOrigin ? "none" : "lax",
+      secure: cookieCrossOrigin,
       expires: new Date(Date.now() + YEAR_TO_MILLISECOND_CONVERTION_FACTOR),
     },
   })
