@@ -19,7 +19,10 @@ import schedule from "node-schedule";
 
 const app = express();
 
-const port = 3000;
+// Required on Render: so req.secure is true (cookie with Secure flag gets set)
+app.set("trust proxy", 1);
+
+const port = process.env.PORT || 3000;
 const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
 
@@ -41,7 +44,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const allowedOrigins = [
   "http://localhost:5173",
-  ...(process.env.FRONTEND_ORIGIN ? [process.env.FRONTEND_ORIGIN] : []),
+  "https://heno-1p67.onrender.com", // production frontend on Render
+  ...(process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(",").map((o) => o.trim()) : []),
 ].filter(Boolean);
 app.use(
   cors({
