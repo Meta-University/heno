@@ -1,6 +1,7 @@
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000", {
+import { SOCKET_URL } from "./config";
+const socket = io(SOCKET_URL, {
   withCredentials: true,
 });
 

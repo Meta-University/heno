@@ -4,8 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import CustomAlert from "../CustomAlert/CustomAlert";
 import io from "socket.io-client";
 import { UserContext } from "../../UserContext";
+import { API_BASE, SOCKET_URL } from "../../config";
 
-const socket = io("http://localhost:3000");
+const socket = io(SOCKET_URL);
 
 function EditTaskForm(props) {
   const { id } = useParams();
@@ -21,7 +22,7 @@ function EditTaskForm(props) {
 
   async function fetchTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const response = await fetch(`${API_BASE}/tasks/${id}`);
       const data = await response.json();
       setTask(data);
       setIsLoading(false);
@@ -68,7 +69,7 @@ function EditTaskForm(props) {
   async function handleEditTask(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+      const response = await fetch(`${API_BASE}/tasks/${id}`, {
         method: "PUT",
         credentials: "include",
         headers: {

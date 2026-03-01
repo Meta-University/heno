@@ -1,6 +1,8 @@
+import { API_BASE } from "./config";
+
 export async function reorganiseSchedule(schedule) {
   try {
-    const response = await fetch("http://localhost:3000/reorganise-schedule", {
+    const response = await fetch(`${API_BASE}/reorganise-schedule`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

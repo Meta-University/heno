@@ -3,6 +3,7 @@ import "./RecommendationTable.css";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { UserContext } from "../../UserContext";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../config";
 
 function RecommendationTable({ projectInfo, tasks, loading }) {
   const { user, updateUser } = useContext(UserContext);
@@ -10,7 +11,7 @@ function RecommendationTable({ projectInfo, tasks, loading }) {
 
   async function handleApprove() {
     try {
-      const response = await fetch("http://localhost:3000/api/store-project", {
+      const response = await fetch(`${API_BASE}/api/store-project`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

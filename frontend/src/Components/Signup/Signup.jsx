@@ -2,6 +2,7 @@ import "./Signup.css";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext";
+import { API_BASE } from "../../config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Signup() {
   async function handleSignup(event) {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/signup", {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

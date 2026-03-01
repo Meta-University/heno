@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_BASE } from "../../config";
 import "./TaskModal.css";
 
 function TaskModal({ task, onClose }) {
@@ -54,7 +55,7 @@ function TaskModal({ task, onClose }) {
   async function handleEditTask(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
+      const response = await fetch(`${API_BASE}/tasks/${task.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

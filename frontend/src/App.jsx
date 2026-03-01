@@ -30,6 +30,7 @@ import ProjectChart from "./Components/DataVisualization/ProjectChart";
 import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
 import TaskCalendar from "./Components/TaskCalendar/TaskCalendar";
 import io from "socket.io-client";
+import { SOCKET_URL } from "./config";
 import { subscribeToNotifications } from "./subscribeToNotifications";
 
 function App() {
@@ -83,7 +84,7 @@ function App() {
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
 
-    const socket = io("http://localhost:3000", {
+    const socket = io(SOCKET_URL, {
       withCredentials: true,
     });
 

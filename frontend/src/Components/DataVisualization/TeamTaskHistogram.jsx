@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import { useParams } from "react-router-dom";
+import { API_BASE } from "../../config";
 
 const TeamTasksHistogram = () => {
   const { id } = useParams();
@@ -10,7 +11,7 @@ const TeamTasksHistogram = () => {
   useEffect(() => {
     async function fetchProjectData() {
       try {
-        const response = await fetch(`http://localhost:3000/projects/${id}`);
+        const response = await fetch(`${API_BASE}/projects/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch project data");
         }

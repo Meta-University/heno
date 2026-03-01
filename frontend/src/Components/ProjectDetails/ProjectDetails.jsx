@@ -5,6 +5,7 @@ import EditForm from "../EditForm/EditForm";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
+import { API_BASE } from "../../config";
 
 function ProjectDetails({ edit, editClick }) {
   const { id } = useParams();
@@ -21,7 +22,7 @@ function ProjectDetails({ edit, editClick }) {
 
   async function fetchProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const response = await fetch(`${API_BASE}/projects/${id}`);
       const data = await response.json();
       setProject(data.project);
       setCurrentSchedule(data.project);

@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../UserContext";
+import { API_BASE } from "../../config";
 import "./CreateTaskForm.css";
 
 function CreateTaskForm(props) {
@@ -37,7 +38,7 @@ function CreateTaskForm(props) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

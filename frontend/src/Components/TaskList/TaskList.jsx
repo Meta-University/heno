@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./TaskList.css";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { API_BASE } from "../../config";
 
 function TaskList(props) {
   const [tasks, setTasks] = useState([]);
@@ -9,7 +10,7 @@ function TaskList(props) {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         credentials: "include",
       });
       if (response.status === 401) {

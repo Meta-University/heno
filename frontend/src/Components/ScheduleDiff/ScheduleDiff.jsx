@@ -5,6 +5,7 @@ import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { reorganiseSchedule } from "../../reorganiseSchedule";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 import RetryReorganisationModal from "../RetryReorganisationModal/RetryReorganisationModal";
+import { API_BASE } from "../../config";
 
 function ScheduleDiff() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function ScheduleDiff() {
     async function fetchSchedules() {
       try {
         const currentResponse = await fetch(
-          `http://localhost:3000/projects/${id}`
+          `${API_BASE}/projects/${id}`
         );
 
         if (currentResponse.ok) {
@@ -93,7 +94,7 @@ function ScheduleDiff() {
     setAiSuggestedSchedule("");
     setChanges("");
     try {
-      const response = await fetch("http://localhost:3000/retry-schedule", {
+      const response = await fetch(`${API_BASE}/retry-schedule`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +121,7 @@ function ScheduleDiff() {
   async function handleUpdateProjectDetails() {
     try {
       const response = await fetch(
-        `http://localhost:3000/projects/${id}/approve-suggestions`,
+        `${API_BASE}/projects/${id}/approve-suggestions`,
         {
           method: "PUT",
           headers: {

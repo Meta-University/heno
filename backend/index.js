@@ -39,21 +39,29 @@ const sessionStore = new SequelizeStore({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+const allowedOrigins = [
+  "http://localhost:5173",
+  ...(process.env.FRONTEND_ORIGIN ? [process.env.FRONTEND_ORIGIN] : []),
+].filter(Boolean);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+      else cb(null, false);
+    },
     credentials: true,
   })
 );
+const isProduction = process.env.NODE_ENV === "production";
 app.use(
   session({
-    secret: "TOPSECRETWORD",
+    secret: process.env.SESSION_SECRET || "TOPSECRETWORD",
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      sameSite: false,
-      secure: false,
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
       expires: new Date(Date.now() + YEAR_TO_MILLISECOND_CONVERTION_FACTOR),
     },
   })
@@ -66,7 +74,7 @@ const job = schedule.scheduleJob("0 0 * * *", () => {
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },

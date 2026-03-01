@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Comments.css";
+import { API_BASE } from "../../config";
 
 function Comments({ taskId }) {
   const [comments, setComments] = useState([]);
@@ -10,7 +11,7 @@ function Comments({ taskId }) {
   async function fetchComments() {
     try {
       const response = await fetch(
-        `http://localhost:3000/tasks/${taskId}/comments`,
+        `${API_BASE}/tasks/${taskId}/comments`,
         {
           credentials: "include",
         }
@@ -35,7 +36,7 @@ function Comments({ taskId }) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/tasks/${taskId}/comments`,
+        `${API_BASE}/tasks/${taskId}/comments`,
         {
           method: "POST",
           headers: {
@@ -81,7 +82,7 @@ function Comments({ taskId }) {
   async function handleDeleteComment(commentId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/comments/${commentId}`,
+        `${API_BASE}/comments/${commentId}`,
         {
           method: "DELETE",
           headers: {

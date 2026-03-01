@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import CreateButton from "../CreateButton/CreateButton";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { API_BASE } from "../../config";
 
 function HomeTasks() {
   const [tasks, setTasks] = useState([]);
@@ -29,7 +30,7 @@ function HomeTasks() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         credentials: "include",
       });
       if (response.status === 401) {

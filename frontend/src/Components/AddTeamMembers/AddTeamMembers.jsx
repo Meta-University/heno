@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./AddTeamMembers.css";
 import { IoMdClose } from "react-icons/io";
+import { API_BASE } from "../../config";
 
 function AddTeamMembers(props) {
   const [query, setQuery] = useState("");
@@ -9,7 +10,7 @@ function AddTeamMembers(props) {
 
   useEffect(() => {
     if (query) {
-      fetch(`http://localhost:3000/users/search?query=${query}`)
+      fetch(`${API_BASE}/users/search?query=${query}`)
         .then((response) => response.json())
         .then((data) => setSuggestions(data));
     } else {

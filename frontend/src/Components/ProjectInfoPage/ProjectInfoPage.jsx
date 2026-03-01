@@ -4,6 +4,7 @@ import ProjectChart from "../DataVisualization/ProjectChart";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import KanbanBoard from "../KanbanBoard/KanbanBoard";
+import { API_BASE } from "../../config";
 
 function ProjectInfoPage({ handleSetScheduleDetails }) {
   const { id } = useParams();
@@ -21,7 +22,7 @@ function ProjectInfoPage({ handleSetScheduleDetails }) {
 
   async function handleDeleteProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`, {
+      const response = await fetch(`${API_BASE}/projects/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

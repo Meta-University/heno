@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { subscribeToNotifications } from "../../subscribeToNotifications";
 import { UserContext } from "../../UserContext";
 import io from "socket.io-client";
+import { API_BASE, SOCKET_URL } from "../../config";
 import "./Notifications.css";
 
 function Notifications({ onNotificationsRead }) {
@@ -9,7 +10,7 @@ function Notifications({ onNotificationsRead }) {
   const { user, updateUser } = useContext(UserContext);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io(SOCKET_URL, {
       withCredentials: true,
     });
     subscribeToNotifications(user.id, (notification) => {
@@ -28,7 +29,7 @@ function Notifications({ onNotificationsRead }) {
   async function fetchNotifications(userId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/notifications/${userId}`
+        `${API_BASE}/notifications/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch notifications");
@@ -43,7 +44,7 @@ function Notifications({ onNotificationsRead }) {
   async function deleteNotification(id) {
     try {
       const response = await fetch(
-        `http://localhost:3000/notifications/${id}`,
+        `${API_BASE}/notifications/${id}`,
         {
           method: "DELETE",
         }

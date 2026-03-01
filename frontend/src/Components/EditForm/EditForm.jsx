@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./EditForm.css";
 import { IoMdClose } from "react-icons/io";
+import { API_BASE } from "../../config";
 
 function EditForm(props) {
   const { id } = useParams();
@@ -16,7 +17,7 @@ function EditForm(props) {
 
   async function fetchProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const response = await fetch(`${API_BASE}/projects/${id}`);
       if (response.ok) {
         const project = await response.json();
         setProject(project);
@@ -41,7 +42,7 @@ function EditForm(props) {
   async function handleUpdate(event) {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`, {
+      const response = await fetch(`${API_BASE}/projects/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
