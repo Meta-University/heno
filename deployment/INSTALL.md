@@ -258,7 +258,7 @@ The backend is a Node.js server that listens on `PORT` and uses PostgreSQL and s
 
 - **Live demo (full app):**  
   *If the frontend is hosted, add the URL here, for example:*
-  - *Frontend: https://heno.onrender.com (or your Vercel/Netlify URL)*
+  - *Frontend: [https://heno.onrender.com](https://heno-1p67.onrender.com/) (or your Vercel/Netlify URL)*
 
 If you deploy the frontend, update this section with the actual live app URL.
 
