@@ -2,24 +2,13 @@
 
 This folder is for **screenshots of key features** used in the User Guide (`USER_GUIDE.md`). Add PNG (or JPG) images with the filenames below so the guide can reference them.
 
-## Checklist: Screenshots to Capture
+<img width="1440" height="780" alt="Screenshot 2026-03-01 at 7 44 15 PM" src="https://github.com/user-attachments/assets/90e47257-a566-47ed-99ff-ccb6ad5c5d14" />
+<img width="1440" height="779" alt="Screenshot 2026-03-01 at 7 44 30 PM" src="https://github.com/user-attachments/assets/81690c61-9666-45cc-a31b-6eae254af282" />
+<img width="1440" height="777" alt="Screenshot 2026-03-01 at 7 42 51 PM" src="https://github.com/user-attachments/assets/c76200a9-87ae-42da-9b0f-a8dd2727a7b2" />
+<img width="1440" height="780" alt="Screenshot 2026-03-01 at 7 43 10 PM" src="https://github.com/user-attachments/assets/3ed02ef4-78e7-44fb-a5b4-6cfb53fc3cfd" />
+<img width="1440" height="777" alt="Screenshot 2026-03-01 at 7 43 23 PM" src="https://github.com/user-attachments/assets/d25d5c36-62ba-4483-b5a7-e0579179d01a" />
+<img width="1440" height="773" alt="Screenshot 2026-03-01 at 7 43 39 PM" src="https://github.com/user-attachments/assets/9a671b65-9220-4fd8-911b-90d27156ab3f" />
 
-Capture these from a running instance of Heno (with sample data if helpful):
-
-| # | Filename | What to capture |
-|---|----------|-----------------|
-| 1 | `01-login.png` | Login page: email and password fields, Login button |
-| 2 | `02-home.png` | Home page: welcome message, Home Tasks, Home Projects sections |
-| 3 | `03-projects-list.png` | Projects page: "My Projects" header, project cards, create button |
-| 4 | `04-project-details.png` | A single project open: project info, tabs/actions (e.g. Kanban, team) |
-| 5 | `05-kanban-board.png` | Kanban view: columns (e.g. TODO, In Progress, Completed) with tasks, drag-and-drop visible |
-| 6 | `06-task-list.png` | Tasks page: list of tasks with key info (title, status, dates, etc.) |
-| 7 | `07-task-details.png` | One task open: full details, comments section, edit option |
-| 8 | `08-notifications.png` | Notifications page: list of notifications, read/unread state |
-| 9 | `09-ai-recommendation.png` | AI Recommendation: either the input form or the results table (or both in one screenshot) |
-| 10 | `10-calendar.png` | Calendar page: month view with tasks on the calendar |
-| 11 | `11-schedule-diff.png` | Schedule diff view: current vs AI-suggested schedule comparison |
-| 12 | `12-visualization.png` | Project visualization: charts/timeline for a project |
 
 ## Tips
 
@@ -27,18 +16,6 @@ Capture these from a running instance of Heno (with sample data if helpful):
 - **Hide or blur** any real personal data (emails, names) if screenshots are shared publicly; use test accounts when possible.
 - **PNG** is preferred for clarity; JPG is fine if you need smaller file size.
 - After adding screenshots, you can reference them in `USER_GUIDE.md` with relative paths, e.g. `![Login](screenshots/01-login.png)`.
-
-## Referencing in USER_GUIDE.md
-
-To show a screenshot in the User Guide, add a line like:
-
-```markdown
-![Login screen](screenshots/01-login.png)
-```
-
-Place it in the relevant "Key Features" or "Screenshots" section in `USER_GUIDE.md`.
-
----
 
 ## Troubleshooting Common Issues
 
@@ -60,11 +37,6 @@ Place it in the relevant "Key Features" or "Screenshots" section in `USER_GUIDE.
 - **Wrong or outdated URL** – Confirm you're on the correct app address (e.g. no typo in the URL).
 - **Refresh** – Reload the page. If it persists, log out and log back in.
 
-### Kanban drag-and-drop doesn't update status
-
-- **No change after drop** – Make sure you dropped the task in a different column (e.g. from TODO to In Progress). Refresh and try again.
-- **Error message** – Check your internet connection. If you see an error in the app, try again later or contact support.
-
 ### AI Recommendation is slow or fails
 
 - **Long wait** – AI recommendations can take 30 seconds or more. Stay on the loading page until it finishes.
@@ -79,11 +51,6 @@ Place it in the relevant "Key Features" or "Screenshots" section in `USER_GUIDE.
 
 - **No tasks with dates** – Only tasks with start or due dates appear. Edit tasks and set dates if needed.
 - **Wrong month** – Use the calendar controls to move to the correct month.
-
-### Schedule diff or visualization is empty or wrong
-
-- **No schedule data** – Schedule diff and visualizations need project and task data. Create tasks with dates and status first.
-- **Stale data** – Refresh the project page or re-open the diff/visualization after updating tasks.
 
 ### General "something went wrong" or blank pages
 
@@ -103,9 +70,6 @@ A: Go to **Projects** → click the create/new project button → fill in the fo
 
 **Q: How do I add tasks to a project?**  
 A: Open the project, then add tasks from the project view (e.g. "Add task" or similar). You can also create or edit tasks from the **Tasks** page and link them to a project.
-
-**Q: What is the Kanban board?**  
-A: It's a board with columns (e.g. TODO, In Progress, Completed). You drag tasks between columns to change their status.
 
 **Q: What is AI Recommendation?**  
 A: You describe a project (title, description, goals, dates, team). The app suggests a list of tasks for that project. You can then add those tasks to a real project.
