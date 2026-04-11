@@ -1,21 +1,39 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import env from "dotenv";
-import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
+import { withGeminiRetry } from "./geminiRetry.js";
+import {
+  geminiPrimaryModel,
+  geminiFallbackModel,
+} from "./geminiModels.js";
 
 const reorganiseRouuter = express.Router();
 const prisma = new PrismaClient();
 env.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
+
+function sendGeminiError(res, err) {
+  if (err?.status === 429) {
+    return res.status(429).json({
+      error:
+        "Gemini API quota or rate limit exceeded for this key. Wait and retry, enable billing in Google AI Studio (https://aistudio.google.com/), try GEMINI_MODEL / GEMINI_FALLBACK_MODEL, or create a new API key.",
+    });
+  }
+  if (err?.status === 503) {
+    return res.status(503).json({
+      error:
+        "Gemini is temporarily overloaded. Wait a minute and try again, or set GEMINI_MODEL=gemini-2.5-flash (or another model) in backend/.env.",
+    });
+  }
+  console.error("Gemini error:", err);
+  return res.status(500).json({ error: "AI request failed" });
+}
 
 const generationConfig = {
   temperature: 1,
@@ -148,7 +166,7 @@ function autoResolveConflict(conflict, currentSchedule, suggestedSchedule) {
         );
         break;
       case "assignee":
-        resolution.changes[key] = resolveAssigneeConflict(
+        resolution.changes.assignee_id = resolveAssigneeConflict(
           value.current,
           value.suggested,
           currentSchedule,
@@ -199,12 +217,20 @@ function resolveDueDateConflict(current, suggested, projectDueDate) {
   return current;
 }
 
+function assigneeRefToId(ref) {
+  if (ref == null) return null;
+  if (typeof ref === "object" && "id" in ref) return ref.id;
+  return ref;
+}
+
 function resolveAssigneeConflict(
-  currentAssigneeId,
-  suggestedAssigneeId,
+  currentAssigneeRef,
+  suggestedAssigneeRef,
   currentSchedule,
   suggestedSchedule
 ) {
+  const currentAssigneeId = assigneeRefToId(currentAssigneeRef);
+  const suggestedAssigneeId = assigneeRefToId(suggestedAssigneeRef);
   const currentAssignee = currentSchedule.teamMembers.find(
     (m) => m.id === currentAssigneeId
   );
@@ -239,6 +265,39 @@ function applyResolutions(currentSchedule, resolutions) {
   }
 
   return updatedSchedule;
+}
+
+/** Merge AI output with DB task shape so approve-suggestions gets assignee_id, project_id, etc. */
+function normalizeSuggestedTasks(currentSchedule, suggestedSchedule) {
+  return {
+    ...suggestedSchedule,
+    tasks: suggestedSchedule.tasks.map((t) => {
+      const cur = currentSchedule.tasks.find((c) => c.id === t.id);
+      const assignee_id =
+        t.assignee_id ??
+        (typeof t.assignee === "object" && t.assignee != null
+          ? t.assignee.id
+          : undefined) ??
+        cur?.assignee_id;
+      const project_id =
+        t.project_id ?? cur?.project_id ?? currentSchedule.id;
+      if (!cur) {
+        const { assignee, project, comments, ...rest } = t;
+        return { ...rest, assignee_id, project_id };
+      }
+      return {
+        ...cur,
+        title: t.title ?? cur.title,
+        description: t.description ?? cur.description,
+        status: t.status ?? cur.status,
+        start_date: t.start_date ?? cur.start_date,
+        due_date: t.due_date ?? cur.due_date,
+        priority: t.priority ?? cur.priority,
+        assignee_id,
+        project_id,
+      };
+    }),
+  };
 }
 
 async function handleAutomaticConflictResolution(
@@ -350,17 +409,41 @@ function generateChangeSentences(changes) {
   return sentences;
 }
 
-async function geminiChat(prompt) {
-  const chatSession = model.startChat({
+async function geminiChatWithModel(prompt, modelName) {
+  const m = genAI.getGenerativeModel({ model: modelName });
+  const chatSession = m.startChat({
     generationConfig,
   });
 
-  const result = await chatSession.sendMessage(prompt);
-  const message = await chatSession.sendMessage(
-    `Send a message on each of the changes made as a JSON.`
+  const result = await withGeminiRetry(
+    () => chatSession.sendMessage(prompt),
+    "reorganise(sendSchedule)"
+  );
+  await withGeminiRetry(
+    () =>
+      chatSession.sendMessage(
+        `Send a message on each of the changes made as a JSON.`
+      ),
+    "reorganise(sendChangesPrompt)"
   );
 
   return JSON.parse(result.response.text());
+}
+
+async function geminiChat(prompt) {
+  const primary = geminiPrimaryModel();
+  const fallback = geminiFallbackModel();
+  try {
+    return await geminiChatWithModel(prompt, primary);
+  } catch (err) {
+    if (err?.status === 429 && fallback !== primary) {
+      console.warn(
+        `Gemini 429 on ${primary}, retrying once with ${fallback}`
+      );
+      return await geminiChatWithModel(prompt, fallback);
+    }
+    throw err;
+  }
 }
 
 reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
@@ -369,27 +452,30 @@ reorganiseRouuter.post("/reorganise-schedule", async (req, res) => {
     schedule
   )}\n  Provide the reorganized schedule in the same format and do not suggest a new task`;
   try {
-    async function run() {
-      const reorganizedSchedule = await geminiChat(prompt);
-      reorganizedSchedule.tasks.sort(
-        (a, b) => new Date(a.start_date) - new Date(b.start_date)
-      );
-      const resolvedSchedule = await handleAutomaticConflictResolution(
-        schedule,
-        reorganizedSchedule
-      );
-      resolvedSchedule.tasks.sort(
-        (a, b) => new Date(a.start_date) - new Date(b.start_date)
-      );
+    const reorganizedSchedule = await geminiChat(prompt);
+    const normalizedSchedule = normalizeSuggestedTasks(
+      schedule,
+      reorganizedSchedule
+    );
+    normalizedSchedule.tasks.sort(
+      (a, b) => new Date(a.start_date) - new Date(b.start_date)
+    );
+    const resolvedSchedule = await handleAutomaticConflictResolution(
+      schedule,
+      normalizedSchedule
+    );
+    resolvedSchedule.tasks.sort(
+      (a, b) => new Date(a.start_date) - new Date(b.start_date)
+    );
 
-      const changesList = generateChangesList(schedule, resolvedSchedule);
-      const changes = generateChangeSentences(changesList);
+    const changesList = generateChangesList(schedule, resolvedSchedule);
+    const changes = generateChangeSentences(changesList);
 
-      res.json({ resolvedSchedule, changes });
-    }
-
-    run();
+    res.json({ resolvedSchedule, changes });
   } catch (error) {
+    if (error?.status === 429 || error?.status === 503) {
+      return sendGeminiError(res, error);
+    }
     console.error("Error reorganising schedule: ", error);
     res.status(500).json({ error: "Failed to reorganize schedule" });
   }
@@ -409,30 +495,36 @@ reorganiseRouuter.post("/retry-schedule", async (req, res) => {
   `;
 
   try {
-    async function run() {
-      const reorganizedSchedule = await geminiChat(prompt);
-      reorganizedSchedule.tasks.sort(
-        (a, b) => new Date(a.start_date) - new Date(b.start_date)
-      );
-      const resolvedSchedule = await handleAutomaticConflictResolution(
-        currentSchedule,
-        reorganizedSchedule
-      );
-      resolvedSchedule.tasks.sort(
-        (a, b) => new Date(a.start_date) - new Date(b.start_date)
-      );
+    const reorganizedSchedule = await geminiChat(prompt);
+    const normalizedSchedule = normalizeSuggestedTasks(
+      currentSchedule,
+      reorganizedSchedule
+    );
+    normalizedSchedule.tasks.sort(
+      (a, b) => new Date(a.start_date) - new Date(b.start_date)
+    );
+    const resolvedSchedule = await handleAutomaticConflictResolution(
+      currentSchedule,
+      normalizedSchedule
+    );
+    resolvedSchedule.tasks.sort(
+      (a, b) => new Date(a.start_date) - new Date(b.start_date)
+    );
 
-      const changesList = generateChangesList(
-        currentSchedule,
-        resolvedSchedule
-      );
-      const changes = generateChangeSentences(changesList);
+    const changesList = generateChangesList(
+      currentSchedule,
+      resolvedSchedule
+    );
+    const changes = generateChangeSentences(changesList);
 
-      res.json({ resolvedSchedule, changes });
+    res.json({ resolvedSchedule, changes });
+  } catch (error) {
+    if (error?.status === 429 || error?.status === 503) {
+      return sendGeminiError(res, error);
     }
-
-    run();
-  } catch (error) {}
+    console.error("Error retry schedule:", error);
+    res.status(500).json({ error: "Failed to retry schedule" });
+  }
 });
 
 export default reorganiseRouuter;

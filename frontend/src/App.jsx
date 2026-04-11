@@ -29,7 +29,6 @@ import RecommendationLoader from "./Components/RecommendationLoader/Recommendati
 import ProjectChart from "./Components/DataVisualization/ProjectChart";
 import ProjectInfoPage from "./Components/ProjectInfoPage/ProjectInfoPage";
 import TaskCalendar from "./Components/TaskCalendar/TaskCalendar";
-import io from "socket.io-client";
 import { subscribeToNotifications } from "./subscribeToNotifications";
 
 function App() {
@@ -83,18 +82,16 @@ function App() {
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
 
-    const socket = io("http://localhost:3000", {
-      withCredentials: true,
-    });
-
-    if (user) {
-      subscribeToNotifications(user.id, (notification) => {
-        setUnreadNotifications((prev) => prev + 1);
-      });
+    if (!user) {
+      return undefined;
     }
 
+    const unsubscribe = subscribeToNotifications(user.id, () => {
+      setUnreadNotifications((prev) => prev + 1);
+    });
+
     return () => {
-      socket.disconnect();
+      unsubscribe();
     };
   }, [user]);
 

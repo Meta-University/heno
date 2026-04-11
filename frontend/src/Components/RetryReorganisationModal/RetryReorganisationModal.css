@@ -42,3 +42,10 @@
   border-radius: 5px;
   outline: none;
 }
+
+.retry-modal-error {
+  color: #b00020;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: left;
+}

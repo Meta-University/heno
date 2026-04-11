@@ -1,9 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { emitNotification } from "./notifications.js";
-import http from "http";
 import { io } from "../index.js";
-import { sendEmailNotification } from "../emailNotifications.js";
 
 const taskRouter = express.Router();
 const prisma = new PrismaClient();
@@ -72,6 +70,7 @@ taskRouter.post("/tasks", async (req, res) => {
     assigneeId,
     projectId,
   } = req.body;
+  const actorUserId = req.session?.user?.id;
   try {
     const task = await prisma.task.create({
       data: {
@@ -86,6 +85,12 @@ taskRouter.post("/tasks", async (req, res) => {
           connect: { id: projectId },
         },
       },
+    });
+    await emitNotification("TASK_CREATED", {
+      taskId: task.id,
+      content: `New task "${task.title}" was created.`,
+      projectId: task.project_id,
+      actorUserId,
     });
     res.json(task);
   } catch (err) {
@@ -217,13 +222,12 @@ taskRouter.put("/tasks/:id", async (req, res) => {
         },
       });
 
-      await emitNotification(
-        "TASK_EDIT",
-        parseInt(id),
-        null,
-        `Task ${updatedTask.title} has been edited`,
-        updatedTask.project_id
-      );
+      await emitNotification("TASK_EDIT", {
+        taskId: parseInt(id, 10),
+        content: `Task "${updatedTask.title}" was updated.`,
+        projectId: updatedTask.project_id,
+        actorUserId: userId,
+      });
 
       io.to(`task:${id}`).emit("taskUpdated", updatedTask);
 
@@ -242,17 +246,35 @@ taskRouter.put("/tasks/:id", async (req, res) => {
 
 taskRouter.delete("/tasks/:id", async (req, res) => {
   const { id } = req.params;
+  const taskId = parseInt(id, 10);
+  const actorUserId = req.session?.user?.id;
   try {
+    const existing = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true, title: true, project_id: true },
+    });
+    if (!existing) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
     await prisma.comment.deleteMany({
       where: {
-        task_id: parseInt(id),
+        task_id: taskId,
       },
     });
     const task = await prisma.task.delete({
       where: {
-        id: parseInt(id),
+        id: taskId,
       },
     });
+
+    await emitNotification("TASK_DELETED", {
+      taskId: existing.id,
+      content: `Task "${existing.title}" was deleted.`,
+      projectId: existing.project_id,
+      actorUserId,
+    });
+
     res.json(task);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -299,12 +321,13 @@ taskRouter.post("/tasks/:taskId/comments", async (req, res) => {
     });
 
     if (task) {
-      await emitNotification(
-        "COMMENT",
-        parseInt(taskId),
-        comment.id,
-        `New comment has been added on task ${task.title}: ${content}`
-      );
+      await emitNotification("COMMENT", {
+        taskId: parseInt(taskId, 10),
+        commentId: comment.id,
+        content: `New comment on "${task.title}": ${content}`,
+        projectId: task.project_id,
+        actorUserId: userId,
+      });
     }
     res.status(201).json(comment);
   } catch (error) {
@@ -344,10 +367,21 @@ taskRouter.delete("/comments/:commentId", async (req, res) => {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    await prisma.comment.delete({
-      where: { id: parseInt(commentId) },
+    const projectId = comment.task.project_id;
+    const taskTitle = comment.task.title;
+
+    await emitNotification("COMMENT_DELETED", {
+      taskId: comment.task_id,
+      commentId: parseInt(commentId, 10),
+      content: `A comment was removed from task "${taskTitle}".`,
+      projectId,
+      actorUserId: userId,
     });
-    res.status(204).json({ message: "Comment deleted successfully" });
+
+    await prisma.comment.delete({
+      where: { id: parseInt(commentId, 10) },
+    });
+    res.status(204).send();
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to delete comment" });

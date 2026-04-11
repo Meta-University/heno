@@ -1,13 +1,29 @@
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000", {
-  withCredentials: true,
-});
+let socket;
 
-function subscribeToNotifications(userId, callback) {
-  socket.on(`notifications-${userId}`, (notification) => {
-    callback(notification);
-  });
+function getSocket() {
+  if (!socket) {
+    socket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
+  }
+  return socket;
 }
 
-export { subscribeToNotifications };
+/**
+ * Subscribe to real-time notifications for a user. Returns an unsubscribe function.
+ */
+function subscribeToNotifications(userId, callback) {
+  if (userId == null) {
+    return () => {};
+  }
+  const s = getSocket();
+  const event = `notifications-${userId}`;
+  s.on(event, callback);
+  return () => {
+    s.off(event, callback);
+  };
+}
+
+export { subscribeToNotifications, getSocket };

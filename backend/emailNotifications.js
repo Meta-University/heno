@@ -5,21 +5,54 @@ import env from "dotenv";
 env.config();
 const prisma = new PrismaClient();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+let transporter;
+
+function areEmailNotificationsEnabled() {
+  const v = process.env.EMAIL_NOTIFICATIONS_ENABLED?.toLowerCase();
+  return v !== "false" && v !== "0";
+}
+
+function getMailer() {
+  if (!areEmailNotificationsEnabled()) {
+    return null;
+  }
+  if (!process.env.EMAIL_HOST) {
+    return null;
+  }
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT) || 587,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+  }
+  return transporter;
+}
+
+/** If set, every notification email is delivered here (dev / single-inbox testing). */
+function resolveOutboundEmailTo(intendedTo) {
+  const override = process.env.EMAIL_NOTIFICATIONS_TO?.trim();
+  if (override) {
+    return override;
+  }
+  return intendedTo;
+}
 
 async function sendReminderNotificationEmail(user, task, type) {
   const subject = type === "start" ? "Task Starting Soon" : "Task Due Soon";
   const loginUrl = "http://localhost:5173/login";
+  const override = process.env.EMAIL_NOTIFICATIONS_TO?.trim();
+  const routingNote = override
+    ? `<p><em>Originally for: ${user.name} &lt;${user.email}&gt;</em></p>`
+    : "";
+
   const html = `
     <h1>${subject}</h1>
     <p>Hello ${user.name},</p>
+    ${routingNote}
     <p>This is a reminder that the ${
       type === "start" ? "start date" : "due date"
     } of your task: ${task.title} is fast approaching</p>
@@ -29,28 +62,42 @@ async function sendReminderNotificationEmail(user, task, type) {
     <p>Please <a href="${loginUrl}">log in</a>  to your account for more details.</p>
   `;
 
+  const mailer = getMailer();
+  if (!mailer) return;
+  const to = resolveOutboundEmailTo(user.email);
+  if (!to) return;
   try {
-    await transporter.sendMail({
+    await mailer.sendMail({
       from: process.env.EMAIL_FROM,
-      to: user.email,
+      to,
       subject,
       html,
     });
   } catch (error) {
     console.error(
-      `Error sending email to ${user.email} for task ${task.title}:`,
+      `Error sending reminder email (${to}) for task ${task.title}:`,
       error
     );
   }
 }
 
 export async function sendEmailNotification(to, subject, html) {
+  const mailer = getMailer();
+  const recipient = resolveOutboundEmailTo(to);
+  if (!mailer || !recipient) {
+    return;
+  }
+  const override = process.env.EMAIL_NOTIFICATIONS_TO?.trim();
+  const body =
+    override && to && to !== override
+      ? `<p><em>Originally for: ${to}</em></p>${html}`
+      : html;
   try {
-    const info = await transporter.sendMail({
+    await mailer.sendMail({
       from: process.env.EMAIL_FROM,
-      to,
+      to: recipient,
       subject,
-      html,
+      html: body,
     });
   } catch (error) {
     console.error("Error sending email:", error);

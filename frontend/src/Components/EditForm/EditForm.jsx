@@ -18,14 +18,15 @@ function EditForm(props) {
     try {
       const response = await fetch(`http://localhost:3000/projects/${id}`);
       if (response.ok) {
-        const project = await response.json();
-        setProject(project);
-        setTitle(project.title);
-        setDescription(project.description);
-        setStatus(project.status);
-        setDueDate(project.due_date);
-        setStartDate(project.start_date);
-        setPriority(project.priority);
+        const data = await response.json();
+        const p = data.project ?? data;
+        setProject(p);
+        setTitle(p.title);
+        setDescription(p.description);
+        setStatus(p.status);
+        setDueDate(p.due_date);
+        setStartDate(p.start_date);
+        setPriority(p.priority);
       } else {
         console.error("Failed to fetch project");
       }

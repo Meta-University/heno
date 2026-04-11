@@ -7,6 +7,25 @@
   text-align: center;
 }
 
+.schedule-diff--error {
+  padding: 2rem 1.5rem;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.schedule-diff--error p {
+  color: #444;
+  line-height: 1.5;
+}
+
+.schedule-diff-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
 .diff-tables {
   display: flex;
   flex-direction: column;

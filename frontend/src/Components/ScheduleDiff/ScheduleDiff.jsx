@@ -1,6 +1,6 @@
 import "./ScheduleDiff.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import { reorganiseSchedule } from "../../reorganiseSchedule";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
@@ -14,37 +14,46 @@ function ScheduleDiff() {
   const [changes, setChanges] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [showRetryModal, setShowRetryModal] = useState(false);
+  const [reorganiseError, setReorganiseError] = useState(null);
+  const [retryError, setRetryError] = useState(null);
 
-  useEffect(() => {
+  const loadSchedules = useCallback(async () => {
     if (!id) {
       return;
     }
+    setReorganiseError(null);
+    setCurrentSchedule(null);
+    setAiSuggestedSchedule(null);
+    setChanges([]);
+    try {
+      const currentResponse = await fetch(
+        `http://localhost:3000/projects/${id}`
+      );
 
-    async function fetchSchedules() {
-      try {
-        const currentResponse = await fetch(
-          `http://localhost:3000/projects/${id}`
-        );
-
-        if (currentResponse.ok) {
-          const currentData = await currentResponse.json();
-          const [suggestedSchedule, changesData] = await reorganiseSchedule(
-            currentData.project
-          );
-
-          setCurrentSchedule(currentData.project);
-          setAiSuggestedSchedule(suggestedSchedule);
-          setChanges(changesData);
-        } else {
-          console.error("Failed to fetch schedules or changes");
-        }
-      } catch (error) {
-        console.error(error);
+      if (!currentResponse.ok) {
+        setReorganiseError("Could not load this project.");
+        return;
       }
-    }
 
-    fetchSchedules();
+      const currentData = await currentResponse.json();
+      const [suggestedSchedule, changesData] = await reorganiseSchedule(
+        currentData.project
+      );
+
+      setCurrentSchedule(currentData.project);
+      setAiSuggestedSchedule(suggestedSchedule);
+      setChanges(changesData);
+    } catch (error) {
+      console.error(error);
+      setReorganiseError(
+        error.message || "Something went wrong while loading the AI suggestion."
+      );
+    }
   }, [id]);
+
+  useEffect(() => {
+    loadSchedules();
+  }, [loadSchedules]);
 
   function formatText(text) {
     return text
@@ -82,6 +91,7 @@ function ScheduleDiff() {
 
   function handleRetry() {
     setShowPopup(false);
+    setRetryError(null);
     setShowRetryModal(true);
   }
 
@@ -90,8 +100,9 @@ function ScheduleDiff() {
   }
 
   async function handleSubmitFeedback(feedback) {
+    setRetryError(null);
     setAiSuggestedSchedule("");
-    setChanges("");
+    setChanges([]);
     try {
       const response = await fetch("http://localhost:3000/retry-schedule", {
         method: "POST",
@@ -104,16 +115,19 @@ function ScheduleDiff() {
         }),
         credentials: "include",
       });
+      const data = await response.json().catch(() => ({}));
       if (response.ok) {
-        const data = await response.json();
-
         setAiSuggestedSchedule(data.resolvedSchedule);
         setChanges(data.changes);
+        setShowRetryModal(false);
       } else {
-        console.error("Failed to fetch schedules or changes");
+        setRetryError(
+          data.error || `Retry failed (${response.status}). Try again later.`
+        );
       }
     } catch (error) {
       console.error("Error retrying schedule:", error);
+      setRetryError(error.message || "Network error while retrying.");
     }
   }
 
@@ -140,6 +154,27 @@ function ScheduleDiff() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  if (reorganiseError) {
+    return (
+      <div className="schedule-diff schedule-diff--error">
+        <h3>Couldn’t load AI schedule suggestion</h3>
+        <p>{reorganiseError}</p>
+        <div className="schedule-diff-error-actions">
+          <button type="button" className="ok-btn" onClick={loadSchedules}>
+            Try again
+          </button>
+          <button
+            type="button"
+            className="rollback-btn"
+            onClick={() => navigate(`/projects/${id}`)}
+          >
+            Back to project
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (!currentSchedule || !aiSuggestedSchedule) {
@@ -301,6 +336,7 @@ function ScheduleDiff() {
           showModal={showRetryModal}
           onClose={handleCloseRetryModal}
           onSubmit={handleSubmitFeedback}
+          errorMessage={retryError}
         />
       )}
       <div className="ok-rollback-btn">

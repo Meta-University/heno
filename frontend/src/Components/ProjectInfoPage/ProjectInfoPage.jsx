@@ -26,6 +26,7 @@ function ProjectInfoPage({ handleSetScheduleDetails }) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
       if (response.ok) {
         navigate("/projects");

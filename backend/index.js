@@ -23,8 +23,56 @@ const port = 3000;
 const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
 
+if (!process.env.DATABASE_URL) {
+  console.error(
+    "Set DATABASE_URL in backend/.env (PostgreSQL connection string, e.g. postgresql://user:pass@localhost:5432/dbname). For hosted Postgres that requires TLS, use a URL with sslmode=require or set DATABASE_SSL=true."
+  );
+  process.exit(1);
+}
+
+function databaseHostIsRemote(databaseUrl) {
+  try {
+    const u = new URL(databaseUrl);
+    const host = u.hostname.toLowerCase();
+    if (!host) return false;
+    return host !== "localhost" && host !== "127.0.0.1" && host !== "::1";
+  } catch {
+    return false;
+  }
+}
+
+function postgresDialectOptions() {
+  const url = process.env.DATABASE_URL ?? "";
+  if (process.env.DATABASE_SSL === "false" || process.env.DATABASE_SSL === "0") {
+    return {};
+  }
+  const urlWantsSsl =
+    /[?&]sslmode=require/i.test(url) ||
+    /[?&]sslmode=verify-full/i.test(url) ||
+    /[?&]sslmode=no-verify/i.test(url) ||
+    /[?&]ssl=true/i.test(url);
+  const useSsl =
+    process.env.DATABASE_SSL === "true" ||
+    process.env.DATABASE_SSL === "1" ||
+    urlWantsSsl ||
+    databaseHostIsRemote(url);
+  if (!useSsl) {
+    return {};
+  }
+  const strictVerify =
+    process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" ||
+    /[?&]sslmode=verify-full/i.test(url);
+  return {
+    ssl: {
+      require: true,
+      rejectUnauthorized: strictVerify,
+    },
+  };
+}
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
+  dialectOptions: postgresDialectOptions(),
 });
 const SequelizeStore = SequelizeStoreInit(session.Store);
 const sessionStore = new SequelizeStore({

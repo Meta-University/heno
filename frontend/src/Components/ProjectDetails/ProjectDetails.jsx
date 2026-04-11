@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import "./ProjectDetails.css";
 import EditForm from "../EditForm/EditForm";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
@@ -8,6 +8,7 @@ import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 
 function ProjectDetails({ edit, editClick }) {
   const { id } = useParams();
+  const location = useLocation();
   const [project, setProject] = useState([]);
   const [displayEditForm, setDisplayEditForm] = useState(false);
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function ProjectDetails({ edit, editClick }) {
 
   useEffect(() => {
     fetchProject();
-  }, [id]);
+  }, [id, location.pathname]);
 
   function addTask(task) {
     setTasks([...tasks, task]);

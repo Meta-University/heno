@@ -1,6 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import env from "dotenv";
+import { emitNotification } from "./notifications.js";
 
 const projectRouter = express.Router();
 const prisma = new PrismaClient();
@@ -120,11 +121,19 @@ function calculateProgress(tasks) {
 
 projectRouter.put("/projects/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, description, status, due_date, priority } = req.body;
+  const {
+    title,
+    description,
+    status,
+    due_date,
+    start_date,
+    priority,
+  } = req.body;
   const managerId = req.session.user.id;
+  const pid = parseInt(id, 10);
   try {
     const project = await prisma.project.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: pid },
     });
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -136,110 +145,186 @@ projectRouter.put("/projects/:id", async (req, res) => {
         .json({ message: "You are not authorized to edit this project" });
     }
 
-    const updatedProject = await prisma.project.update({
-      where: {
-        id: parseInt(id),
-      },
+    const data = {};
+    if (title != null) data.title = title;
+    if (description != null) data.description = description;
+    if (status != null) data.status = status;
+    if (priority != null) data.priority = priority;
+    if (due_date != null) data.due_date = new Date(due_date);
+    if (start_date != null) data.start_date = new Date(start_date);
 
-      data: {
-        name,
-        description,
-        status,
-        due_date: new Date(due_date),
-        priority,
-        manager_id: managerId,
-      },
+    const updatedProject = await prisma.project.update({
+      where: { id: pid },
+      data,
     });
+
+    await emitNotification("PROJECT_UPDATED", {
+      content: `Project "${updatedProject.title}" was updated.`,
+      projectId: pid,
+      actorUserId: managerId,
+    });
+
     res.json(updatedProject);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+function coerceTaskStatus(status) {
+  if (!status) return "TODO";
+  const s = String(status).toUpperCase().replace(/[- ]/g, "_");
+  if (["TODO", "IN_PROGRESS", "COMPLETED"].includes(s)) return s;
+  return "TODO";
+}
+
+function coercePriority(priority) {
+  if (!priority) return "MEDIUM";
+  const p = String(priority).toUpperCase();
+  if (["LOW", "MEDIUM", "HIGH"].includes(p)) return p;
+  return "MEDIUM";
+}
+
 projectRouter.put(
   "/projects/:projectId/approve-suggestions",
   async (req, res) => {
     const { projectId } = req.params;
     const { tasks } = req.body;
+    const pid = parseInt(projectId, 10);
 
-    for (const task of tasks) {
-      const {
-        id,
-        project_id,
-        assignee_id,
-        title_lockUser_id,
-        description_lockUser_id,
-        status_lockUser_id,
-        due_date_lockUser_id,
-        assignee_lockUser_id,
-        ...updateData
-      } = task;
-      await prisma.task.update({
-        where: {
-          id: parseInt(task.id),
-        },
-        data: {
-          ...updateData,
-          project: {
-            connect: { id: parseInt(project_id) },
-          },
-          assignee: {
-            connect: { id: parseInt(assignee_id) },
-          },
-          title_lockUser: title_lockUser_id
-            ? {
-                connect: { id: parseInt(title_lockUser_id) },
-              }
-            : undefined,
-          description_lockUser: description_lockUser_id
-            ? {
-                connect: { id: parseInt(description_lockUser_id) },
-              }
-            : undefined,
-          status_lockUser: status_lockUser_id
-            ? {
-                connect: { id: parseInt(status_lockUser_id) },
-              }
-            : undefined,
-          due_date_lockUser: due_date_lockUser_id
-            ? {
-                connect: { id: parseInt(due_date_lockUser_id) },
-              }
-            : undefined,
-          assignee_lockUser: assignee_lockUser_id
-            ? {
-                connect: { id: parseInt(assignee_lockUser_id) },
-              }
-            : undefined,
-        },
-      });
+    if (!Array.isArray(tasks)) {
+      return res.status(400).json({ error: "tasks array required" });
     }
 
-    res.status(200).json({ message: "Project updated successfuly" });
+    try {
+      const project = await prisma.project.findUnique({
+        where: { id: pid },
+        select: { tasks: { select: { id: true } } },
+      });
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      const taskIds = new Set(project.tasks.map((t) => t.id));
+
+      await prisma.$transaction(
+        tasks.map((task) => {
+          const taskId = parseInt(task.id, 10);
+          if (!taskIds.has(taskId)) {
+            throw new Error(`Task ${taskId} does not belong to this project`);
+          }
+
+          const assigneeIdRaw = task.assignee_id ?? task.assignee?.id;
+          const assignee_id = parseInt(assigneeIdRaw, 10);
+          const project_id = parseInt(task.project_id ?? pid, 10);
+
+          if (Number.isNaN(assignee_id)) {
+            throw new Error(`Task ${task.id} is missing a valid assignee_id`);
+          }
+
+          const start_date = new Date(task.start_date);
+          const due_date = new Date(task.due_date);
+          if (Number.isNaN(start_date.getTime()) || Number.isNaN(due_date.getTime())) {
+            throw new Error(`Task ${task.id} has invalid start_date or due_date`);
+          }
+
+          const {
+            title_lockUser_id,
+            description_lockUser_id,
+            status_lockUser_id,
+            due_date_lockUser_id,
+            assignee_lockUser_id,
+          } = task;
+
+          return prisma.task.update({
+            where: { id: taskId },
+            data: {
+              title: String(task.title ?? ""),
+              description: String(task.description ?? ""),
+              status: coerceTaskStatus(task.status),
+              start_date,
+              due_date,
+              priority: coercePriority(task.priority),
+              project: { connect: { id: project_id } },
+              assignee: { connect: { id: assignee_id } },
+              title_lockUser: title_lockUser_id
+                ? { connect: { id: parseInt(title_lockUser_id, 10) } }
+                : undefined,
+              description_lockUser: description_lockUser_id
+                ? { connect: { id: parseInt(description_lockUser_id, 10) } }
+                : undefined,
+              status_lockUser: status_lockUser_id
+                ? { connect: { id: parseInt(status_lockUser_id, 10) } }
+                : undefined,
+              due_date_lockUser: due_date_lockUser_id
+                ? { connect: { id: parseInt(due_date_lockUser_id, 10) } }
+                : undefined,
+              assignee_lockUser: assignee_lockUser_id
+                ? { connect: { id: parseInt(assignee_lockUser_id, 10) } }
+                : undefined,
+            },
+          });
+        })
+      );
+
+      await emitNotification("PROJECT_UPDATED", {
+        content:
+          "Approved AI schedule changes were applied to project tasks.",
+        projectId: pid,
+        actorUserId: req.session.user.id,
+      });
+
+      res.status(200).json({ message: "Project updated successfuly" });
+    } catch (error) {
+      console.error("approve-suggestions:", error);
+      res.status(500).json({
+        error: error.message || "Failed to apply schedule changes",
+      });
+    }
   }
 );
 
 projectRouter.delete("/projects/:id", async (req, res) => {
   const { id } = req.params;
+  const pid = parseInt(id, 10);
+  const actorUserId = req.session?.user?.id;
+  if (!actorUserId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   try {
+    const project = await prisma.project.findUnique({
+      where: { id: pid },
+      select: { id: true, title: true, manager_id: true },
+    });
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+    if (project.manager_id !== actorUserId) {
+      return res.status(403).json({ error: "Not authorized to delete project" });
+    }
+
+    await emitNotification("PROJECT_DELETED", {
+      content: `Project "${project.title}" was deleted.`,
+      projectId: pid,
+      actorUserId,
+    });
+
     await prisma.comment.deleteMany({
       where: {
         task: {
-          project_id: parseInt(id),
+          project_id: pid,
         },
       },
     });
     await prisma.task.deleteMany({
       where: {
-        project_id: parseInt(id),
+        project_id: pid,
       },
     });
-    const project = await prisma.project.delete({
+    const deleted = await prisma.project.delete({
       where: {
-        id: parseInt(id),
+        id: pid,
       },
     });
-    res.json(project);
+    res.json(deleted);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

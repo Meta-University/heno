@@ -1,42 +1,50 @@
 import React, { useEffect, useState, useContext } from "react";
 import { subscribeToNotifications } from "../../subscribeToNotifications";
 import { UserContext } from "../../UserContext";
-import io from "socket.io-client";
 import "./Notifications.css";
 
 function Notifications({ onNotificationsRead }) {
   const [notifications, setNotifications] = useState([]);
-  const { user, updateUser } = useContext(UserContext);
+  const [fetchError, setFetchError] = useState(null);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
-      withCredentials: true,
-    });
-    subscribeToNotifications(user.id, (notification) => {
-      setNotifications((prev) => [...prev, notification]);
+    if (!user?.id) {
+      return undefined;
+    }
+
+    const unsubscribe = subscribeToNotifications(user.id, (notification) => {
+      setNotifications((prev) => [notification, ...prev]);
     });
 
-    fetchNotifications(user.id);
-
+    fetchNotifications();
     onNotificationsRead();
 
     return () => {
-      socket.disconnect();
+      unsubscribe();
     };
-  }, [user.id]);
+    // Intentionally omit onNotificationsRead: parent passes a new function each render.
+  }, [user?.id]);
 
-  async function fetchNotifications(userId) {
+  async function fetchNotifications() {
+    setFetchError(null);
     try {
-      const response = await fetch(
-        `http://localhost:3000/notifications/${userId}`
-      );
+      const response = await fetch(`http://localhost:3000/notifications`, {
+        credentials: "include",
+      });
+      if (response.status === 401) {
+        setFetchError("Sign in again to load notifications.");
+        setNotifications([]);
+        return;
+      }
       if (!response.ok) {
         throw new Error("Failed to fetch notifications");
       }
       const data = await response.json();
-      setNotifications(data);
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching notifications", error);
+      setFetchError("Could not load notifications. Is the backend running?");
     }
   }
 
@@ -46,14 +54,13 @@ function Notifications({ onNotificationsRead }) {
         `http://localhost:3000/notifications/${id}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       if (!response.ok) {
         throw new Error("Failed to delete notification");
       }
-      setNotifications(
-        notifications.filter((notification) => notification._id !== id)
-      );
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch (error) {
       console.error("Error deleting notification", error);
     }
@@ -66,17 +73,37 @@ function Notifications({ onNotificationsRead }) {
   return (
     <div className="notifications-container">
       <h3>Notifications</h3>
+      {fetchError ? (
+        <p className="notifications-error" role="alert">
+          {fetchError}
+        </p>
+      ) : null}
       <div className="notifications-list">
-        {sortedNotifications.map((notification, index) => (
-          <div key={index} className="notification-item">
-            <p>{notification.content}</p>
-
-            <p>
-              {new Date(notification.createdAt).toLocaleDateString()} at{" "}
-              {new Date(notification.createdAt).toLocaleTimeString()}
-            </p>
-          </div>
-        ))}
+        {!fetchError && sortedNotifications.length === 0 ? (
+          <p className="notifications-empty">
+            No notifications yet. Edits, comments, and task changes on shared
+            projects appear here (including your own when you&apos;re the only
+            member).
+          </p>
+        ) : null}
+        {sortedNotifications.length > 0 ? (
+          sortedNotifications.map((notification) => (
+            <div key={notification.id} className="notification-item">
+              <p>{notification.content}</p>
+              <p className="notification-meta">
+                {new Date(notification.createdAt).toLocaleDateString()} at{" "}
+                {new Date(notification.createdAt).toLocaleTimeString()}
+              </p>
+              <button
+                type="button"
+                className="notification-dismiss"
+                onClick={() => deleteNotification(notification.id)}
+              >
+                Dismiss
+              </button>
+            </div>
+          ))
+        ) : null}
       </div>
     </div>
   );

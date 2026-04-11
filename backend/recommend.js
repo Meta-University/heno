@@ -1,24 +1,43 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import env from "dotenv";
-import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
+import { withGeminiRetry } from "./geminiRetry.js";
+import {
+  geminiPrimaryModel,
+  geminiFallbackModel,
+} from "./geminiModels.js";
 
 const recommendRouuter = express.Router();
 const prisma = new PrismaClient();
 env.config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+function sendGeminiError(res, err) {
+  if (err?.status === 429) {
+    return res.status(429).json({
+      error:
+        "Gemini API quota or rate limit exceeded for this key. Wait and retry, enable billing in Google AI Studio, or adjust GEMINI_MODEL / GEMINI_FALLBACK_MODEL in backend/.env.",
+    });
+  }
+  if (err?.status === 503) {
+    return res.status(503).json({
+      error:
+        "Gemini is temporarily overloaded. Wait a minute and try again, or set GEMINI_MODEL=gemini-2.5-flash (or another model) in backend/.env.",
+    });
+  }
+  console.error("Gemini error:", err);
+  return res.status(500).json({ error: "AI request failed" });
+}
+
 recommendRouuter.post("/ai-recommend-tasks", async (req, res) => {
   const { title, description, endGoals, startDate, endDate, teamMembers } =
     req.body;
   const teamMembersNames = teamMembers.map((member) => member.name);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
-  });
 
   const generationConfig = {
     temperature: 1,
@@ -28,7 +47,8 @@ recommendRouuter.post("/ai-recommend-tasks", async (req, res) => {
     responseMimeType: "application/json",
   };
 
-  async function run() {
+  async function runRecommendWithModel(modelName) {
+    const model = genAI.getGenerativeModel({ model: modelName });
     const chatSession = model.startChat({
       generationConfig,
 
@@ -70,16 +90,42 @@ recommendRouuter.post("/ai-recommend-tasks", async (req, res) => {
       ],
     });
 
-    const result = await chatSession.sendMessage(
-      `Project Title: ${title}\\nDescription: ${description}\\nEnd Goals: ${endGoals}\\nStart Date: ${startDate}\\nEnd Date: ${endDate}\\nTeam Members: ${teamMembersNames}\\n\\nRecommend tasks with title, description, start date, status(default todo)due dates and priorities and assignments to the team members provided, output should be in json`
+    const result = await withGeminiRetry(
+      () =>
+        chatSession.sendMessage(
+          `Project Title: ${title}\\nDescription: ${description}\\nEnd Goals: ${endGoals}\\nStart Date: ${startDate}\\nEnd Date: ${endDate}\\nTeam Members: ${teamMembersNames}\\n\\nRecommend tasks with title, description, start date, status(default todo)due dates and priorities and assignments to the team members provided, output should be in json`
+        ),
+      "recommend(sendMessage)"
     );
 
     const recommendedTask = JSON.parse(result.response.text());
-
-    res.json(recommendedTask);
+    return recommendedTask;
   }
 
-  run();
+  try {
+    const primary = geminiPrimaryModel();
+    const fallback = geminiFallbackModel();
+    let recommendedTask;
+    try {
+      recommendedTask = await runRecommendWithModel(primary);
+    } catch (err) {
+      if (err?.status === 429 && fallback !== primary) {
+        console.warn(
+          `Gemini 429 on ${primary}, retrying once with ${fallback}`
+        );
+        recommendedTask = await runRecommendWithModel(fallback);
+      } else {
+        throw err;
+      }
+    }
+    res.json(recommendedTask);
+  } catch (error) {
+    if (error?.status === 429 || error?.status === 503) {
+      return sendGeminiError(res, error);
+    }
+    console.error("Error recommending tasks:", error);
+    res.status(500).json({ error: "Failed to generate task recommendations" });
+  }
 });
 
 function getPriority(priority) {

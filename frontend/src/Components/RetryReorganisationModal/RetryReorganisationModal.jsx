@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./RetryReorganisationModal.css";
 
-function RetryReorganisationModal({ showModal, onClose, onSubmit }) {
+function RetryReorganisationModal({
+  showModal,
+  onClose,
+  onSubmit,
+  errorMessage,
+}) {
   const [feedback, setFeedback] = useState("");
 
   if (!showModal) {
@@ -10,7 +15,6 @@ function RetryReorganisationModal({ showModal, onClose, onSubmit }) {
 
   function handleSubmit() {
     onSubmit(feedback);
-    onClose();
   }
 
   return (
@@ -23,6 +27,11 @@ function RetryReorganisationModal({ showModal, onClose, onSubmit }) {
           onChange={(e) => setFeedback(e.target.value)}
           placeholder="Enter your feedback here"
         />
+        {errorMessage ? (
+          <p className="retry-modal-error" role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
         <div className="modal-actions">
           <button onClick={handleSubmit}>Submit</button>
           <button onClick={onClose}>Cancel</button>
