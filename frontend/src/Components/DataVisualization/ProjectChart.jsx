@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import ProjectPieChart from "./ProjectPieChart";
 import TaskTimelineChart from "./TaskTimelineChart";
 import TeamTasksHistogram from "./TeamTaskHistogram";
+import { API_BASE } from "../../config";
 
 function ProjectChart() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ function ProjectChart() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await fetch(`http://localhost:3000/projects/${id}`);
+        const response = await fetch(`${API_BASE}/projects/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }

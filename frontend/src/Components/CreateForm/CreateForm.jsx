@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreateForm.css";
 import AddTeamMembers from "../AddTeamMembers/AddTeamMembers";
+import { API_BASE } from "../../config";
 
 function CreateForm(props) {
   const [title, setTitle] = useState("");
@@ -15,7 +16,7 @@ function CreateForm(props) {
   async function handleCreateProject(event) {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/projects", {
+      const response = await fetch(`${API_BASE}/projects`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

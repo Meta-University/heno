@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CreateProjectButton from "../CreateProjectButton/CreateProjectButton";
 import CreateForm from "../CreateForm/CreateForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { API_BASE } from "../../config";
 
 function HomeProjects() {
   const [projects, setProjects] = useState([]);
@@ -16,15 +17,21 @@ function HomeProjects() {
 
   async function receiveProjectList() {
     try {
-      const response = await fetch("http://localhost:3000/projects", {
+      const response = await fetch(`${API_BASE}/projects`, {
         method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 401) {
+        navigate("/login");
+        return;
+      }
       const data = await response.json();
-      setProjects(data);
+      if (Array.isArray(data)) {
+        setProjects(data);
+      }
     } catch (error) {
       console.log(error);
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { API_BASE } from "../../config";
 import "./TaskCalendar.css";
 
 const localizer = momentLocalizer(moment);
@@ -11,7 +12,7 @@ function TaskCalendar() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         credentials: "include",
       });
       const data = await response.json();

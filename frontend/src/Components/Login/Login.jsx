@@ -2,6 +2,7 @@ import "./Login.css";
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../UserContext";
+import { API_BASE } from "../../config";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ function Login() {
     }
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/login", {
+      const response = await fetch(`${API_BASE}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

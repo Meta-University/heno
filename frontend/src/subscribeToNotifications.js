@@ -1,10 +1,11 @@
 import io from "socket.io-client";
+import { SOCKET_URL } from "./config";
 
 let socket;
 
 function getSocket() {
   if (!socket) {
-    socket = io("http://localhost:3000", {
+    socket = io(SOCKET_URL, {
       withCredentials: true,
     });
   }

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import CreateButton from "../CreateButton/CreateButton";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
+import { API_BASE } from "../../config";
 
 function HomeTasks() {
   const [tasks, setTasks] = useState([]);
@@ -29,11 +30,17 @@ function HomeTasks() {
 
   async function fetchTasks() {
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         credentials: "include",
       });
+      if (response.status === 401) {
+        navigate("/login");
+        return;
+      }
       const data = await response.json();
-      setTasks(data);
+      if (Array.isArray(data)) {
+        setTasks(data);
+      }
     } catch (error) {
       console.error("Error fetching tasks", error);
     }
@@ -81,8 +88,10 @@ function HomeTasks() {
       </div>
       {displayForm && (
         <CreateTaskForm
-          teamMembers={tasks[0].project && tasks[0].project.teamMembers}
           displayForm={handleDisplayForm}
+          onTaskCreated={(newTask) => {
+            setTasks([...tasks, newTask]);
+          }}
         />
       )}
       <div className="tabs">

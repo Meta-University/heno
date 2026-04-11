@@ -14,12 +14,15 @@ import { Server as SocketIOServer } from "socket.io";
 import notificationRouter from "./routes/notifications.js";
 import recommendRouuter from "./recommend.js";
 import cron from "node-cron";
-import { checkAndSendNotifications } from "./emailNotifications.js";
+// import { checkAndSendNotifications } from "./emailNotifications.js";
 import schedule from "node-schedule";
 
 const app = express();
 
-const port = 3000;
+// Required on Render: so req.secure is true (cookie with Secure flag gets set)
+app.set("trust proxy", 1);
+
+const port = process.env.PORT || 3000;
 const YEAR_TO_MILLISECOND_CONVERTION_FACTOR = 365 * 24 * 60 * 60 * 1000;
 env.config();
 
@@ -57,12 +60,13 @@ function postgresDialectOptions() {
     urlWantsSsl ||
     databaseHostIsRemote(url);
   if (!useSsl) {
-    return {};
+    return { keepAlive: true };
   }
   const strictVerify =
     process.env.DATABASE_SSL_REJECT_UNAUTHORIZED === "true" ||
     /[?&]sslmode=verify-full/i.test(url);
   return {
+    keepAlive: true,
     ssl: {
       require: true,
       rejectUnauthorized: strictVerify,
@@ -73,6 +77,12 @@ function postgresDialectOptions() {
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
   dialectOptions: postgresDialectOptions(),
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 120_000,
+    idle: 10_000,
+  },
 });
 const SequelizeStore = SequelizeStoreInit(session.Store);
 const sessionStore = new SequelizeStore({
@@ -81,40 +91,52 @@ const sessionStore = new SequelizeStore({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://heno-1p67.onrender.com", // production frontend on Render
+  ...(process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(",").map((o) => o.trim()) : []),
+].filter(Boolean);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+      else cb(null, false);
+    },
     credentials: true,
   })
 );
+// Use cross-origin cookies when frontend is on a different origin (e.g. localhost → Render).
+// Set COOKIE_CROSS_ORIGIN=true in Render Environment so session works from your frontend.
+const cookieCrossOrigin =
+  process.env.COOKIE_CROSS_ORIGIN === "true" ||
+  process.env.NODE_ENV === "production";
 app.use(
   session({
-    secret: "TOPSECRETWORD",
+    secret: process.env.SESSION_SECRET || "TOPSECRETWORD",
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      sameSite: false,
-      secure: false,
+      sameSite: cookieCrossOrigin ? "none" : "lax",
+      secure: cookieCrossOrigin,
       expires: new Date(Date.now() + YEAR_TO_MILLISECOND_CONVERTION_FACTOR),
     },
   })
 );
 
 const job = schedule.scheduleJob("0 0 * * *", () => {
-  checkAndSendNotifications();
+  // checkAndSendNotifications();
 });
 
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-sessionStore.sync();
 app.use(router);
 app.use(projectRouter);
 app.use(reorganiseRouuter);
@@ -146,8 +168,42 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function connectDatabaseWithRetry() {
+  const attempts = Number(process.env.DB_CONNECT_RETRIES || 5);
+  const baseDelayMs = Number(process.env.DB_CONNECT_RETRY_MS || 2000);
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    if (i > 0) {
+      await sleep(baseDelayMs * i);
+    }
+    try {
+      await sequelize.authenticate();
+      await sessionStore.sync();
+      return;
+    } catch (err) {
+      lastErr = err;
+      console.error(
+        `Database connection attempt ${i + 1}/${attempts} failed:`,
+        err.message
+      );
+    }
+  }
+  throw lastErr;
+}
+
+connectDatabaseWithRetry()
+  .then(() => {
+    server.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Could not connect to PostgreSQL:", err.message);
+    process.exit(1);
+  });
 
 export { io };

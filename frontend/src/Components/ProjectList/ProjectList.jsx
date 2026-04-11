@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import CreateForm from "../CreateForm/CreateForm";
 import ProjectCard from "../ProjectCard/ProjectCard";
 import CreateProjectButton from "../CreateProjectButton/CreateProjectButton";
+import { API_BASE } from "../../config";
 
 function ProjectList(props) {
   const [displayCreateProjectForm, setDisplayCreateProjectForm] =
@@ -20,7 +21,7 @@ function ProjectList(props) {
 
   async function receiveProjectList() {
     try {
-      const response = await fetch("http://localhost:3000/projects", {
+      const response = await fetch(`${API_BASE}/projects`, {
         method: "GET",
         credentials: "include",
         headers: {

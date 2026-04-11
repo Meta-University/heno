@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./KanbanBoard.css";
 import { useParams } from "react-router-dom";
+import { API_BASE } from "../../config";
 
 function categorizeTasks(tasks) {
   return {
@@ -59,7 +60,7 @@ function KanbanBoard() {
 
   async function fetchProject() {
     try {
-      const response = await fetch(`http://localhost:3000/projects/${id}`);
+      const response = await fetch(`${API_BASE}/projects/${id}`);
       const data = await response.json();
       setTasks(data.project.tasks || []);
     } catch (error) {

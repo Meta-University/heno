@@ -54,8 +54,8 @@ model Task {
   status TaskStatus
   start_date DateTime
   due_date DateTime
-  project_id Int
-  project Project @relation(fields: [project_id], references: [id])
+  project_id Int?
+  project Project? @relation(fields: [project_id], references: [id])
   assignee_id Int
   comments Comment[]
   priority Priority

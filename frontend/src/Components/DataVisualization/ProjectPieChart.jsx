@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 import { useParams } from "react-router-dom";
+import { API_BASE } from "../../config";
 
 function ProjectPieChart() {
   const { id } = useParams();
@@ -14,7 +15,7 @@ function ProjectPieChart() {
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await fetch(`http://localhost:3000/projects/${id}`);
+        const response = await fetch(`${API_BASE}/projects/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }

@@ -5,6 +5,7 @@ import EditTaskForm from "../EditTaskForm/EditTaskForm";
 import { capitalizeFirstLetters } from "../../capitalizeFirstLetters";
 import CustomAlert from "../CustomAlert/CustomAlert";
 import Comments from "../Comments/Comments";
+import { API_BASE } from "../../config";
 
 function TaskDetails() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ function TaskDetails() {
 
   async function fetchTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`);
+      const response = await fetch(`${API_BASE}/tasks/${id}`);
       const data = await response.json();
       setTask(data);
     } catch (error) {
@@ -73,7 +74,7 @@ function TaskDetails() {
 
   async function handleDeleteTask() {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+      const response = await fetch(`${API_BASE}/tasks/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

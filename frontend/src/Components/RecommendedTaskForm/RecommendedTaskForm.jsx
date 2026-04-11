@@ -1,6 +1,7 @@
 import "./RecommendedTaskForm.css";
 import { useState } from "react";
 import AddTeamMembers from "../AddTeamMembers/AddTeamMembers";
+import { API_BASE } from "../../config";
 
 function RecommendedTaskForm(props) {
   const [title, setTitle] = useState("");
@@ -19,7 +20,7 @@ function RecommendedTaskForm(props) {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/ai-recommend-tasks", {
+      const response = await fetch(`${API_BASE}/ai-recommend-tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import "./Signup.css";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext";
+import { API_BASE } from "../../config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -17,15 +18,24 @@ function Signup() {
 
   async function handleSignup(event) {
     event.preventDefault();
+    if (!role || role === "public") {
+      setError("Please select a role (Project Manager or Team Member)");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    setError("");
     try {
-      const response = await fetch("http://localhost:3000/signup", {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
-          email,
+          name: name.trim(),
+          email: email.trim(),
           password,
           confirmPassword,
           role,
@@ -33,20 +43,24 @@ function Signup() {
         credentials: "include",
       });
 
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        setError(`Signup failed (${response.status})`);
+        return;
+      }
       if (response.ok) {
         const loggedInUser = data.user;
         updateUser(loggedInUser);
         navigate("/home");
       } else {
-        setError("Login failed");
-      }
-
-      if (data.error) {
-        alert(data.error);
+        setError(data.message || data.error || "Signup failed");
       }
     } catch (error) {
-      console.log(error);
+      setError("Something went wrong. Please try again.");
+      console.error(error);
     }
   }
 
@@ -125,9 +139,11 @@ function Signup() {
           <select
             className="select-signup"
             name="role"
+            value={role}
             onChange={(e) => setRole(e.target.value)}
+            required
           >
-            <option value="public">Select Role</option>
+            <option value="">Select Role</option>
             <option value="PM">Project Manager</option>
             <option value="TM">Team Member</option>
           </select>

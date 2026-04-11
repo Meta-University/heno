@@ -7,7 +7,14 @@ const projectRouter = express.Router();
 const prisma = new PrismaClient();
 env.config();
 
-projectRouter.post("/projects", async (req, res) => {
+function requireAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Unauthorized. Please log in." });
+  }
+  next();
+}
+
+projectRouter.post("/projects", requireAuth, async (req, res) => {
   const {
     title,
     description,
@@ -41,7 +48,7 @@ projectRouter.post("/projects", async (req, res) => {
   }
 });
 
-projectRouter.get("/projects", async (req, res) => {
+projectRouter.get("/projects", requireAuth, async (req, res) => {
   const userId = req.session.user.id;
 
   try {
@@ -119,7 +126,7 @@ function calculateProgress(tasks) {
   return (totalProgress / tasks.length) * 100;
 }
 
-projectRouter.put("/projects/:id", async (req, res) => {
+projectRouter.put("/projects/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   const {
     title,

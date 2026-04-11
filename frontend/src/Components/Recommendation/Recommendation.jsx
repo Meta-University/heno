@@ -3,6 +3,7 @@ import "./Recommendation.css";
 import RecommendedTaskForm from "../RecommendedTaskForm/RecommendedTaskForm";
 import RecommendationTable from "../RecommendationTable/RecommendationTable";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../../config";
 
 function Recommendation(props) {
   const [displayForm, setDisplayForm] = useState(false);
@@ -26,7 +27,7 @@ function Recommendation(props) {
     navigate("/loading");
 
     try {
-      const response = await fetch("http://localhost:3000/ai-recommend-tasks", {
+      const response = await fetch(`${API_BASE}/ai-recommend-tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

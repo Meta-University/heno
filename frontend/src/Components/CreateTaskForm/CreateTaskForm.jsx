@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "../../UserContext";
+import { API_BASE } from "../../config";
 import "./CreateTaskForm.css";
 
 function CreateTaskForm(props) {
+  const { user } = useContext(UserContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
@@ -10,6 +13,13 @@ function CreateTaskForm(props) {
   const [dueDate, setDueDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const projectId = props.projectId;
+  const isPersonalTask = !projectId && (!props.teamMembers || props.teamMembers.length === 0);
+
+  useEffect(() => {
+    if (isPersonalTask && user) {
+      setAssigneeId(user.id.toString());
+    }
+  }, [isPersonalTask, user]);
 
   async function handleCreateTask(e) {
     e.preventDefault();
@@ -21,11 +31,14 @@ function CreateTaskForm(props) {
       priority,
       due_date: dueDate,
       start_date: startDate,
-      projectId,
     };
 
+    if (projectId) {
+      newTask.projectId = projectId;
+    }
+
     try {
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch(`${API_BASE}/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,9 +47,14 @@ function CreateTaskForm(props) {
         credentials: "include",
       });
       const data = await response.json();
-      props.addTask(data);
+      if (props.addTask) {
+        props.addTask(data);
+      }
+      if (props.onTaskCreated) {
+        props.onTaskCreated(data);
+      }
     } catch (error) {
-      console.error("Error creating task", task);
+      console.error("Error creating task", error);
     }
     props.displayForm();
   }
@@ -79,18 +97,27 @@ function CreateTaskForm(props) {
             onChange={(e) => setDueDate(e.target.value)}
             required
           />
-          <select
-            value={assigneeId}
-            onChange={(e) => setAssigneeId(e.target.value)}
-            required
-          >
-            <option value="">Select team member</option>
-            {props.teamMembers.map((member) => (
-              <option key={member.id} value={member.id}>
-                {member.name}
-              </option>
-            ))}
-          </select>
+          {isPersonalTask ? (
+            <input
+              type="text"
+              value={user?.name || ""}
+              disabled
+              className="assignee-display"
+            />
+          ) : (
+            <select
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              required
+            >
+              <option value="">Select team member</option>
+              {props.teamMembers && props.teamMembers.map((member) => (
+                <option key={member.id} value={member.id}>
+                  {member.name}
+                </option>
+              ))}
+            </select>
+          )}
 
           <select
             value={status}
